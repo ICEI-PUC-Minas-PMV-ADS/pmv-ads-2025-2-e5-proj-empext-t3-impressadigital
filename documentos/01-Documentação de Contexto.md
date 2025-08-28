@@ -12,7 +12,19 @@ Nesse momento o grupo deve apresentar a situação-problema (dor/oportunidade) d
 
 ## Objetivos
 
-Aqui o grupo deve descrever os objetivos do trabalho indicando que o objetivo é aplicar os conceitos de extensão universitária no desenvolvimento de um sistema sociotécnico que impacte positivamente a comunidade.
+Desenvolver uma plataforma digital de vendas de artigos personalizados para festas e eventos, oferecendo uma alternativa prática e acessível em comparação às empresas que atuam apenas no meio físico.
+
+### Objetivos Específicos:
+
+Facilitar o contato do cliente com a empresa por meio de um sistema online, permitindo solicitações de encomendas sem necessidade de deslocamento.
+
+Integrar o fechamento de pedidos via WhatsApp, garantindo flexibilidade na personalização de produtos conforme a necessidade do cliente.
+
+Disponibilizar um painel de controle para a empresa acompanhar e gerenciar os pedidos, mantendo registro completo das vendas realizadas.
+
+Melhorar a eficiência do processo de atendimento e aumentar o alcance da empresa no ambiente digital.
+
+Proporcionar ao cliente uma experiência intuitiva, ágil e confiável ao realizar suas encomendas.
 
 ## Justificativa
 
