@@ -1,22 +1,21 @@
 # TÍTULO DO PROJETO
 
-`CURSO`
+Análise e Desenvolvimento de Sistemas - PUC Minas
 
-`DISCIPLINA`
+Projeto: Desenvolvimento de uma Aplicação Distribuída
 
-`SEMESTRE`
+5º SEMESTRE DE 2025
 
 Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo desenvolvido.
 
 ## Integrantes
 
-* Nome completo do aluno 1
-* Nome completo do aluno 2
-* Nome completo do aluno 3
-* Nome completo do aluno 4
-* Nome completo do aluno 5
-* Nome completo do aluno 6
-
+Brian Mucio Duarte
+Erick Cambraia Nunes
+Douglas Henrique de Sousa e Silva
+Luiza Maria da Silva Machado
+Marcelly Giovanna de Souza e Maia
+Mateus Salomé Rocha Silva
 ## Orientador
 
 * Nome completo do professor orientador
