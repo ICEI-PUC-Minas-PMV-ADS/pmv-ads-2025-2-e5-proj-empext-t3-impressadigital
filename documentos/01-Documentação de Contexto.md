@@ -24,10 +24,9 @@ Proporcionar ao cliente uma experiência intuitiva, ágil e confiável ao realiz
 
 ## Justificativa
 
-Descreva as dores/dificuldades do parceiro que motivam trabalhar na construção da solução.
+A criação da plataforma de e-commerce para a gráfica surge da necessidade de oferecer um ambiente digital centralizado, eficiente e seguro, capaz de atender às demandas de clientes que buscam soluções gráficas personalizadas e de qualidade. Atualmente, os serviços da gráfica são oferecidos de forma dispersa, com um catálogo limitado e pouca integração, o que dificulta a atração e fidelização de clientes, além de comprometer a experiência de compra.
 
-> **Links Úteis**:
-> - [Como montar a justificativa](https://guiadamonografia.com.br/como-montar-justificativa-do-tcc/)
+A ausência de um sistema digital robusto resulta em um atendimento ineficiente e reduz a competitividade diante do mercado, tornando os processos mais lentos e menos acessíveis. Com a implementação da plataforma, será possível centralizar os serviços, automatizar processos e ampliar o portfólio de produtos de maneira organizada e intuitiva, proporcionando uma experiência de compra moderna, prática e confiável.
 
 ## Relação com a Extensão Universitária
 
