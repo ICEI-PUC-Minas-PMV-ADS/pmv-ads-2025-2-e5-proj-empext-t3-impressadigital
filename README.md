@@ -1,4 +1,4 @@
-# TÍTULO DO PROJETO
+# IMPRESSA DIGITAL
 
 Análise e Desenvolvimento de Sistemas - PUC Minas
 
@@ -10,12 +10,13 @@ Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo de
 
 ## Integrantes
 
-Brian Mucio Duarte
-Erick Cambraia Nunes
-Douglas Henrique de Sousa e Silva
-Luiza Maria da Silva Machado
-Marcelly Giovanna de Souza e Maia
-Mateus Salomé Rocha Silva
+* Brian Mucio Duarte
+* Erick Cambraia Nunes
+* Douglas Henrique de Sousa e Silva
+* Luiza Maria da Silva Machado
+* Marcelly Giovanna de Souza e Maia
+* Mateus Salomé Rocha Silva
+
 ## Orientador
 
 * Nome completo do professor orientador
