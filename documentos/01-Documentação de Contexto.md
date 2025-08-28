@@ -30,8 +30,9 @@ A ausência de um sistema digital robusto resulta em um atendimento ineficiente 
 
 ## Relação com a Extensão Universitária
 
-Relacionar a situação-problema da organização com o impacto social esperado com a implantação do sistema sociotécnico.
-Apresentar aqui como este projeto extensionista transforma a realidade do parceiro e dos alunos.
+O projeto estabelece uma conexão prática entre o conhecimento acadêmico e as demandas da comunidade, ao aplicar conceitos adquiridos na universidade para resolver desafios reais enfrentados por uma gráfica. O desenvolvimento da plataforma de e-commerce possibilita a integração entre teoria e prática, oferecendo aos envolvidos a oportunidade de aplicar competências em desenvolvimento web, experiência do usuário, segurança da informação e gestão de sistemas de forma concreta e inovadora.
+
+Além disso, a iniciativa contribui para a modernização de um negócio local, gerando impacto econômico e social positivo. O projeto favorece a inclusão digital, amplia o acesso a serviços gráficos personalizados e fortalece a competitividade da empresa diante de um mercado cada vez mais tecnológico. Essa transformação reforça a importância da universidade como agente de inovação, sustentabilidade e melhoria contínua na comunidade.
 
 ## Descrição do Parceiro
 
