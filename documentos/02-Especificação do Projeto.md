@@ -97,8 +97,136 @@ As referências abaixo irão auxiliá-lo na geração do artefato “Diagrama de
 ## Modelo da Base de Dados
 
 # Para banco de dados relacional:
-- Apresentar o MER (Modelo Entidade-Relacionamento)
-- Apresentar o Projeto Físico da Base de Dados (estrutura das tabelas, tipos de dados, chaves primárias e estrangeiras)
-# Para banco de dados NoSQL:
-Apresentar o Modelo da Base de Dados (estrutura dos documentos, coleções, ou grafos, conforme o tipo de NoSQL utilizado)
+
+## **Controle e segurança**
+
+1. **cargos**
+
+   * **Função:** Guarda os cargos do sistema (ex: Administrador, Atendente).
+   * **Dependências:** Nenhuma. Outras tabelas usam o `id` dessa tabela para associar cargos a usuários (`usuarios_admin_cargos`).
+
+2. **usuarios\_admin**
+
+   * **Função:** Armazena os usuários administrativos que acessam o sistema.
+   * **Dependências:** Nenhuma direta, mas pode enviar mídias (`midias.enviado_por_admin`).
+
+3. **usuarios\_admin\_cargos**
+
+   * **Função:** Relaciona usuários a cargos (muitos-para-muitos).
+   * **Dependências:**
+
+     * `usuario_admin_id` → `usuarios_admin(id)`
+     * `cargo_id` → `cargos(id)`
+
+---
+
+## **Clientes e endereços**
+
+4. **clientes**
+
+   * **Função:** Armazena dados dos clientes da gráfica.
+   * **Dependências:** Nenhuma. Outras tabelas dependem dela (`enderecos_clientes`, `vendas`, `carrinho`).
+
+5. **enderecos\_clientes**
+
+   * **Função:** Guarda endereços de entrega ou contato de clientes.
+   * **Dependências:**
+
+     * `cliente_id` → `clientes(id)`
+
+---
+
+## **Catálogo e portfólio**
+
+6. **categorias**
+
+   * **Função:** Organiza produtos em categorias (ex: Cartões, Banners).
+   * **Dependências:**
+
+     * `pai_id` → `categorias(id)` (para subcategorias)
+
+7. **midias**
+
+   * **Função:** Armazena arquivos de mídia (imagens, PDFs, etc) usados em produtos ou portfólio.
+   * **Dependências:**
+
+     * `enviado_por_admin` → `usuarios_admin(id)`
+
+8. **produtos**
+
+   * **Função:** Guarda os produtos que podem ser vendidos (ex: Cartão de Visita).
+   * **Dependências:**
+
+     * `midia_principal_id` → `midias(id)`
+
+9. **produtos\_categorias**
+
+   * **Função:** Relaciona produtos a categorias (muitos-para-muitos).
+   * **Dependências:**
+
+     * `produto_id` → `produtos(id)`
+     * `categoria_id` → `categorias(id)`
+
+10. **produtos\_midias**
+
+    * **Função:** Relaciona produtos às mídias adicionais (muitos-para-muitos), indicando se é principal.
+    * **Dependências:**
+
+      * `produto_id` → `produtos(id)`
+      * `midia_id` → `midias(id)`
+
+11. **itens\_portfolio**
+
+    * **Função:** Guarda exemplos de trabalhos já feitos (portfólio), podendo ter um produto associado.
+    * **Dependências:**
+
+      * `produto_id` → `produtos(id)`
+
+12. **portfolio\_midias**
+
+    * **Função:** Relaciona itens do portfólio às mídias (imagens, PDFs).
+    * **Dependências:**
+
+      * `item_portfolio_id` → `itens_portfolio(id)`
+      * `midia_id` → `midias(id)`
+
+---
+
+## **Pedidos e carrinho**
+
+13. **vendas**
+
+    * **Função:** Registra as vendas feitas para os clientes.
+    * **Dependências:**
+
+      * `cliente_id` → `clientes(id)`
+
+14. **itens\_venda**
+
+    * **Função:** Detalha cada produto vendido em uma venda (quantidade, preço).
+    * **Dependências:**
+
+      * `venda_id` → `vendas(id)`
+      * `produto_id` → `produtos(id)`
+
+15. **carrinho**
+
+    * **Função:** Guarda produtos que o cliente adicionou ao carrinho, antes da venda.
+    * **Dependências:**
+
+      * `cliente_id` → `clientes(id)`
+      * `produto_id` → `produtos(id)`
+
+---
+
+### **Resumo de dependências principais**
+
+* **Usuarios e cargos:** `usuarios_admin_cargos` depende de `usuarios_admin` e `cargos`.
+* **Produtos e mídias:** `produtos_midias` depende de `produtos` e `midias`.
+* **Portfólio:** `portfolio_midias` depende de `itens_portfolio` e `midias`.
+* **Clientes e vendas:** `vendas` e `carrinho` dependem de `clientes`. `itens_venda` depende de `vendas` e `produtos`.
+* **Categorias:** podem ter subcategorias via `pai_id`.
+
+
+
 
