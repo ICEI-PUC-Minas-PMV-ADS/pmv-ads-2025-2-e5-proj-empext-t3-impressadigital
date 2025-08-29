@@ -1,7 +1,8 @@
 # Etapa 1 - Apresentação da proposta da Solução
 Arquivo de apresentação (em slides) da proposta de solução  
 
-[Apresentação comercial para empresa de agronegócios verde moderna.pdf](https://github.com/user-attachments/files/22053310/Apresentacao.comercial.para.empresa.de.agronegocios.verde.moderna.pdf)
+
+[Apresentação impressa digital.pdf](https://github.com/user-attachments/files/22053319/Apresentacao.impressa.digital.pdf)
 
 
 
