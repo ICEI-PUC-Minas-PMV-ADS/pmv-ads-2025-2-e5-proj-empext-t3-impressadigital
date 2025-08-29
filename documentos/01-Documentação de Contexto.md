@@ -36,4 +36,4 @@ Além disso, a iniciativa contribui para a modernização de um negócio local, 
 
 ## Descrição do Parceiro
 
-Apresente uma descrição resumida sobre a organização onde o projeto será desenvolvido para que possa ser compreendido o cenário do sistema sociotécnico.
+A Impressa Digital é uma empresa especializada na produção e personalização de materiais gráficos, localizada em Belo Horizonte - MG. O negócio atua em um cenário sociotécnico que enfrenta desafios específicos, como a ausência de uma plataforma digital para centralização dos serviços, o que dificulta a gestão eficiente dos pedidos, a automação de processos e a ampliação do alcance no mercado online.
