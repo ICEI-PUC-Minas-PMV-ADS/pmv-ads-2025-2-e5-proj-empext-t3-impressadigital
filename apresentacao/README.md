@@ -1,6 +1,9 @@
 # Etapa 1 - Apresentação da proposta da Solução
 Arquivo de apresentação (em slides) da proposta de solução  
-Deve conter a descrição do cliente, o Project Model Canvas e o Diagrama de Caso de Uso.
+
+[Apresentação comercial para empresa de agronegócios verde moderna.pdf](https://github.com/user-attachments/files/22053310/Apresentacao.comercial.para.empresa.de.agronegocios.verde.moderna.pdf)
+
+
 
 # Etapa 5 - Apresentação da Solução
 - Apresentação para Mostra de Extensão Eixo 5 ADS:
