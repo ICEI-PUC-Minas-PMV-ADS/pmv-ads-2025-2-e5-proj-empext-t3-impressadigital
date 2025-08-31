@@ -27,40 +27,40 @@ Descreva brevemente a arquitetura definida para o projeto e as tecnologias a ser
 <img width="1920" height="1486" alt="Group 1" src="https://github.com/user-attachments/assets/52fb9a4e-e172-4937-b84b-c58b77022353" />
 
 
-## Requisitos
-
-As tabelas que se seguem apresentam os requisitos funcionais e não funcionais que detalham o escopo do projeto. Para determinar a prioridade de requisitos, aplicar uma técnica de priorização de requisitos e detalhar como a técnica foi aplicada.
-
-Para mais informações, consulte os microfundamentos Fundamentos de Engenharia de Software e Engenharia de Requisitos de Software. 
+## Requisito
 
 ### Requisitos Funcionais
 
-|ID    | Descrição do Requisito  | Prioridade |
-|------|-----------------------------------------|----|
-|RF-001| Permitir que o usuário cadastre tarefas | ALTA | 
-|RF-002| Emitir um relatório de tarefas no mês   | MÉDIA |
+|ID    | Descrição do Requisito  | Prioridade | Responsável|
+|------|-----------------------------------------|----|----|
+|RF-001| O sistema deve permitir que os usuários se cadastrem. | ALTA | Brian Mucio Duarte |
+|RF-002| O sistema deve separar os produtos por categoria.  | MÉDIA | Douglas Henrique de Sousa e Silva |
+|RF-003| O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras. | BAIXA | Luiza Maria da Silva Machado |
+|RF-004| O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp". | ALTA | Mateus Salomé Rocha Silva |
+|RF-005| O sistema deve realizar um cálculo do frete de envio da compra. | MÉDIA | Marcelly Giovanna De Souza e Maia |
+|RF-006| O sistema deve trazer resultados para buscar personalizadas pelo nome ou categoria do produto. | MÉDIA | Erick Cambraia Nunes |
+|RF-007| O sistema deve permitir que os administradores visualizem e gerenciem pedidos realizados pelos clientes. | MÉDIA | Brian Mucio Duarte |
+|RF-008| O sistema deve permitir que os usuários removam produtos do carrinho ou alterem a quantidade. | BAIXA | Douglas Henrique de Sousa e Silva |
+|RF-009| O sistema deve permitir que os usuários façam login com suas credenciais. | ALTA | Luiza Maria da Silva Machado |
+|RF-010| O sistema deve exibir detalhes do produto, incluindo imagens, descrições e preços. | ALTA | Mateus Salomé Rocha Silva |
+|RF-011| O sistema deve permitir que os administradores adicionem, editem e removam produtos do catálogo | MÉDIA | Marcelly Giovanna De Souza e Maia |
+|RF-012| O sistema deve permitir que os administradores gerenciem categorias de produtos. | MÉDIA | Erick Cambraia Nunes |
+|RF-013| O sistema deve permitir que os usuários realizem logout com segurança. | ALTA | Brian Mucio Duarte |
+|RF-014| O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos. | MÉDIA | Douglas Henrique de Sousa e Silva |
+
 
 ### Requisitos não Funcionais
 
-|ID     | Descrição do Requisito  |Prioridade |
-|-------|-------------------------|----|
-|RNF-001| O sistema deve ser responsivo para rodar em um dispositivos móvel | MÉDIA | 
-|RNF-002| Deve processar requisições do usuário em no máximo 3s |  BAIXA | 
+|ID     | Descrição do Requisito  |Prioridade | Responsável|
+|-------|-------------------------|----|---|
+|RNF-001| O sistema deve ser responsivo para garantir uma boa experiência em dispositivos móveis. | ALTA |  Brian Mucio Duarte |
+|RNF-002| O sistema deve ser compatível com os navegadores modernos e dispositivos Android/iOS. | MÉDIA | Douglas Henrique de Sousa e Silva |
+|RNF-003| O sistema deve ser acessível, atendendo às normas de WCAG 2.1 para acessibilidade. | MÉDIA | Luiza Maria da Silva Machado |
+|RNF-004| O sistema deve garantir a segurança dos dados do usuário com criptografia de ponta a ponta. | ALTA | Mateus Salomé Rocha Silva |
+|RNF-005| A interface do usuário deve ser fácil de usar e navegar, permitindo que os clientes encontrem e adicionem produtos ao carrinho com facilidade. | ALTA | Marcelly Giovanna De Souza e Maia |
+|RNF-006| O código do sistema deve ser bem documentado e modular, facilitando a manutenção e a adição de novas funcionalidades no futuro. | MÉDIA | Erick Cambraia Nunes |
+ 
 
-Com base nas Histórias de Usuário, enumere os requisitos da sua solução. Classifique esses requisitos em dois grupos:
-
-- [Requisitos Funcionais
- (RF)](https://pt.wikipedia.org/wiki/Requisito_funcional):
- correspondem a uma funcionalidade que deve estar presente na
-  plataforma (ex: cadastro de usuário).
-- [Requisitos Não Funcionais
-  (RNF)](https://pt.wikipedia.org/wiki/Requisito_n%C3%A3o_funcional):
-  correspondem a uma característica técnica, seja de usabilidade,
-  desempenho, confiabilidade, segurança ou outro (ex: suporte a
-  dispositivos iOS e Android).
-Lembre-se que cada requisito deve corresponder à uma e somente uma
-característica alvo da sua solução. Além disso, certifique-se de que
-todos os aspectos capturados nas Histórias de Usuário foram cobertos.
 
 ## Restrições
 
