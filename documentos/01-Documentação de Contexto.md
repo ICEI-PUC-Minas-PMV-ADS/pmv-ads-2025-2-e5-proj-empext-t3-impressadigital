@@ -1,6 +1,9 @@
 # Introdução
 
-Texto descritivo apresentando a compreensão sobre extensão universitária discutido no microfundamento de nivelamento, relacionando a situação-problema da organização e ao sistema sociotécnico que será desenvolvido e implantado.
+A transformação digital tem impactado diretamente a forma como empresas de diferentes segmentos se relacionam com seus clientes, tornando indispensável a adoção de soluções tecnológicas que promovam eficiência, acessibilidade e competitividade. Nesse contexto, o setor gráfico também enfrenta o desafio de adaptar seus processos para atender às novas demandas de consumo, nas quais praticidade, personalização e agilidade são fatores essenciais para garantir a satisfação e fidelização dos clientes.
+
+Diante desse cenário, a proposta do sistema surge como uma solução estratégica para suprir as necessidades identificadas. A plataforma permitirá a criação de um catálogo digital dinâmico, a automatização de etapas do processo de compra e a ampliação do portfólio de produtos, garantindo mais agilidade, transparência e praticidade para os consumidores. Além disso, a implementação do e-commerce possibilitará uma melhor gestão administrativa, otimizando o controle de pedidos, reduzindo falhas operacionais e abrindo novas oportunidades de expansão da empresa no mercado digital.
+
 
 ## Problema
 
