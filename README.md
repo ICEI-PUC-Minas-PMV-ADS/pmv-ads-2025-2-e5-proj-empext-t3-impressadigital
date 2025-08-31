@@ -6,7 +6,7 @@ Projeto: Desenvolvimento de uma Aplicação Distribuída
 
 5º SEMESTRE DE 2025
 
-Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo desenvolvido.
+A transformação digital exige que empresas adotem soluções tecnológicas para manter eficiência, acessibilidade e competitividade. No setor gráfico, é necessário adaptar-se às novas demandas de consumo, como praticidade, personalização e agilidade. Nesse cenário, a proposta do sistema busca oferecer um catálogo digital dinâmico, automatizar processos de compra e ampliar o portfólio, garantindo agilidade, transparência e praticidade ao cliente. A implementação do e-commerce também melhora a gestão administrativa, reduz falhas e abre espaço para a expansão no mercado digital.
 
 ## Integrantes
 
@@ -19,7 +19,7 @@ Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo de
 
 ## Orientador
 
-* Nome completo do professor orientador
+* José Wilson da Costa
 
 ## Instruções de utilização
 
