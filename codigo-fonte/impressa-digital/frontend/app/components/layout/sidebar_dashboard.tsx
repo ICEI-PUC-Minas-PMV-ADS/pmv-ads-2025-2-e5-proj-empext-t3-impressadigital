@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 const menuItems = [
   { label: 'Dashboard', path: '/' },
   { label: 'Produtos', path: '/dashboard_products' },
-  { label: 'Categorias', path: '/categorias' },
+  { label: 'Categorias', path: '/dashboard_category' },
   { label: 'Clientes', path: '/clientes' },
   { label: 'Configurações', path: '/configuracoes' },
 ];
@@ -15,7 +15,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-gray-100 text-[#000000] h-screen p-4 flex flex-col font-bold font-sans items-center text-xl">
+    <aside className="w-[20%] bg-gray-100 text-[#000000] h-screen p-4 flex flex-col font-bold font-sans items-center text-xl">
       <nav className="flex flex-col gap-6 mt-20">
         {menuItems.map((item) => (
           <Link

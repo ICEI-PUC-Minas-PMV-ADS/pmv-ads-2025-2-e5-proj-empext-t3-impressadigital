@@ -28,7 +28,7 @@ const DashboardProducts: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen min-w-screen bg-gray-100 flex flex-col">
       <HeaderDashboard />
       <div className="flex flex-1">
         <SidebarDashboard />
@@ -40,7 +40,7 @@ const DashboardProducts: React.FC = () => {
             + ADICIONAR PRODUTO
           </button>
 
-          <div className="mt-8 overflow-x-auto">
+          <div className="mt-8 overflow-x-auto w-[95%]">
             <table className="min-w-full bg-white rounded-lg shadow">
               <thead>
                 <tr className="text-left text-black font-sans font-light">
