@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import HeaderDashboard from '../components/layout/header_dashboard';
-import SidebarDashboard from '../components/layout/sidebar_dashboard';
+import HeaderDashboard from "../components/layout/headerDashboard";
+import SidebarDashboard from "../components/layout/sidebarDashboard";
 
 const DashboardCategory: React.FC = () => {
   const [previews, setPreviews] = useState<string[]>([]);
@@ -65,45 +65,47 @@ const DashboardCategory: React.FC = () => {
               {/* Upload de fotos */}
               <div className="w-full px-4 py-4 border border-gray-300 rounded-2xl focus-within:ring-1 focus-within:ring-[#45A62D]">
                 <label
-                    htmlFor="fileUpload"
-                    className="px-4 py-2 rounded-2xl bg-[#45A62D] text-white font-semibold cursor-pointer w-fit"
+                  htmlFor="fileUpload"
+                  className="px-4 py-2 rounded-2xl bg-[#45A62D] text-white font-semibold cursor-pointer w-fit"
                 >
-                    Escolher imagens
+                  Escolher imagens
                 </label>
                 <input
-                    id="fileUpload"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                    onChange={handleFileChange}
+                  id="fileUpload"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={handleFileChange}
                 />
 
-              {/* Preview das imagens */}
-              {previews.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-sm text-gray-600 mb-2">Pré-visualizações:</p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {previews.map((src, index) => (
-                      <div key={index} className="relative w-32 h-32 group">
-                        <img
-                          src={src}
-                          alt={`Pré-visualização ${index + 1}`}
-                          className="w-32 h-32 object-cover rounded-2xl border"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-1 right-1 bg-[#45A62D] text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-80 hover:opacity-100 transition cursor-pointer"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
+                {/* Preview das imagens */}
+                {previews.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-600 mb-2">
+                      Pré-visualizações:
+                    </p>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {previews.map((src, index) => (
+                        <div key={index} className="relative w-32 h-32 group">
+                          <img
+                            src={src}
+                            alt={`Pré-visualização ${index + 1}`}
+                            className="w-32 h-32 object-cover rounded-2xl border"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-1 right-1 bg-[#45A62D] text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-80 hover:opacity-100 transition cursor-pointer"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
               {/* Descrição */}
               <textarea
@@ -120,10 +122,10 @@ const DashboardCategory: React.FC = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
                 onInput={(e) => {
                   const target = e.target as HTMLInputElement;
-                  target.value = target.value.replace(/[^0-9.,]/g, '');
+                  target.value = target.value.replace(/[^0-9.,]/g, "");
                   target.value = target.value
-                    .replace(/,/g, '.')
-                    .replace(/(\..*)\./g, '$1');
+                    .replace(/,/g, ".")
+                    .replace(/(\..*)\./g, "$1");
                 }}
               />
 
