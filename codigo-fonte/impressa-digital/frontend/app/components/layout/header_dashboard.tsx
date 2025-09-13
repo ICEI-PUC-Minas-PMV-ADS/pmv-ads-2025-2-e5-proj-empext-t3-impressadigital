@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function HeaderDashboard() {
   return (
-    <header className="flex items-center justify-between p-6 bg-gray-100 border-b-[#D9D9D9] border-2">
+    <header className="w-full flex items-center justify-between p-6 bg-white border-b-[#D9D9D9] border-2">
       <Link href="/">
         <Image src="/images/logo_impressa_digital.png" alt="Logo" width={150} height={104} />
       </Link>

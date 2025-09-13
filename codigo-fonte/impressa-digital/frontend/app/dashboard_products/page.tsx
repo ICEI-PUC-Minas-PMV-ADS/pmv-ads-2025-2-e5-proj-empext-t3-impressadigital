@@ -28,7 +28,7 @@ const DashboardProducts: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen min-w-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen min-w-screen bg-white flex flex-col">
       <HeaderDashboard />
       <div className="flex flex-1">
         <SidebarDashboard />

@@ -35,7 +35,7 @@ const DashboardCategory: React.FC = () => {
   }, [previews]);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <HeaderDashboard />
       <div className="flex flex-1">
         <SidebarDashboard />
