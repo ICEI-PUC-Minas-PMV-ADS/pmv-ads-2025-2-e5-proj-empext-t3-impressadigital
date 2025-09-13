@@ -43,7 +43,7 @@ const DashboardProducts: React.FC = () => {
   ]);
 
   return (
-    <div className="min-h-screen min-w-screen bg-white flex flex-col">
+    <div className="min-h-screen w-full bg-white flex flex-col">
       <HeaderDashboard />
       <div className="flex flex-1">
         <SidebarDashboard />
@@ -62,7 +62,7 @@ const DashboardProducts: React.FC = () => {
 
           <div className="mt-8 w-full text-black">
             {/* Cabeçalho - Desktop */}
-            <div className="bg-white rounded-lg shadow p-4 flex items-center font-semibold hidden md:flex">
+            <div className="bg-white rounded-lg shadow p-4 items-center font-semibold hidden md:flex">
               <div className="flex items-center gap-4 w-2/5">Nome / Imagem</div>
               <div className="w-1/5">Categoria</div>
               <div className="w-1/6">Preço</div>
@@ -111,22 +111,22 @@ const DashboardProducts: React.FC = () => {
                   {/* Mobile layout */}
                   <div className="flex flex-col md:hidden">
                     <div className="flex justify-between">
-                      <div className="flex flex-col flex-1 gap-1">
-                        <div className="flex flex-col">
+                      <div className="flex flex-col flex-1 gap-7">
+                        <div className="flex gap-x-1">
                           <span className="font-semibold">Nome:</span>
                           <span>{product.name}</span>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex gap-x-1">
                           <span className="font-semibold">Categoria:</span>
                           <span>{product.category}</span>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex gap-x-1">
                           <span className="font-semibold">Preço:</span>
                           <span>{product.price}</span>
                         </div>
                       </div>
 
-                      <div className="w-36 h-36 flex-shrink-0 ml-4">
+                      <div className="w-24 h-24 flex-shrink-0 ml-4 md:w-36 md:h-36">
                         <img
                           src={product.image}
                           alt={product.name}
