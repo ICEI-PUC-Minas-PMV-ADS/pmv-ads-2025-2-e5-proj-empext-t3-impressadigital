@@ -15,7 +15,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-[20%] bg-white text-[#000000] h-screen p-4 flex flex-col font-bold font-sans items-center text-xl">
+    <aside className="w-[20%] bg-white text-[#000000] p-4 flex flex-col font-bold font-sans items-center text-xl">
       <nav className="flex flex-col gap-6 mt-20">
         {menuItems.map((item) => (
           <Link

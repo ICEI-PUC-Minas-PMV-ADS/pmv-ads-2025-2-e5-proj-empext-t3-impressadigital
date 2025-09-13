@@ -44,7 +44,7 @@ const DashboardClients: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen min-w-screen bg-white flex flex-col text-black">
+    <div className="min-h-screen bg-white flex flex-col text-black">
       <HeaderDashboard />
       <div className="flex flex-1">
         <SidebarDashboard />
