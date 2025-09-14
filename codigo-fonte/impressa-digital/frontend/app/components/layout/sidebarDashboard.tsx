@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../../contexts/sidebarContext";
 
 const menuItems = [
-  { label: "Dashboard", path: "/" },
-  { label: "Produtos", path: "/dashboardProducts" },
-  { label: "Categorias", path: "/dashboardCategory" },
-  { label: "Clientes", path: "/dashboardClients" },
+  { label: "Dashboard", path: "/dashboard/" },
+  { label: "Produtos", path: "/dashboard/products" },
+  { label: "Categorias", path: "/dashboard/category" },
+  { label: "Clientes", path: "/dashboard/clients" },
   { label: "Configurações", path: "/configuracoes" },
 ];
 
@@ -44,9 +44,8 @@ export default function Sidebar() {
             <Link
               key={item.path}
               href={item.path}
-              className={`p-2 rounded transform transition-all duration-200 hover:scale-105 lg:ml-2 ${
-                pathname === item.path ? "text-[#45A62D] font-semibold" : ""
-              }`}
+              className={`p-2 rounded transform transition-all duration-200 hover:scale-105 lg:ml-2 ${pathname === item.path ? "text-[#45A62D] font-semibold" : ""
+                }`}
               onClick={closeSidebar}
             >
               {item.label}
