@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 
-
+/// só adicionar as imagens no json aqui abaixo para mudar o carrossel .
 export default function Carrossel() {
   const slides = [
   "/images/frame1.png",
