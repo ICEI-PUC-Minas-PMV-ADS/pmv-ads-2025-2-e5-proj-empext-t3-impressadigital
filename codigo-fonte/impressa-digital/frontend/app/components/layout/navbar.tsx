@@ -2,12 +2,14 @@ import Link from "next/link";
 
 export default function Navbar() {
   // Lista de categorias com labels e rotas
+
+  const host= "http://localhost:3000/"
   const categories = [
-    { label: "Inicio", href: "http://localhost:3000/" },
-    { label: "Categorias", href: "http://localhost:3000/" },
-    { label: "Novidades", href: "http://localhost:3000/" },
-    { label: "Ofertas", href: "http://localhost:3000/" },
-    { label: "Fale conosco", href: "http://localhost:3000/" },
+    { label: "Inicio", href: host },
+    { label: "Categorias", href: host+"dashboard/category" },
+    { label: "Produtos", href: host+"dashboard/products" },
+    { label: "Ofertas", href: host },
+    { label: "Fale conosco", href: host+"dashboard/contato" },
   ];
 
   return (
