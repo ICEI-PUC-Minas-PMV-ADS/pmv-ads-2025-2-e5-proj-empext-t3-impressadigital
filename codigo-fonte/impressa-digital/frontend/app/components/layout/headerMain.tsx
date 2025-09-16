@@ -69,7 +69,7 @@ export default function HeaderMain() {
 
       {/* Menu verde */}
       <div className="flex w-full items-center justify-center gap-6 py-3">
-        <ul className="flex flex-wrap gap-3">
+        <ul className="flex flex-wrap gap-3 justify-center">
           {[
             "Temas infantis",
             "Casamento",
