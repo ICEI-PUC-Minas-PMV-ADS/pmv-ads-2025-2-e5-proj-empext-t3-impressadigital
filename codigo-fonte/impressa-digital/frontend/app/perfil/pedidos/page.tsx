@@ -9,7 +9,7 @@ const pedidosData = [
     description:
       "Inclui personalização com o nome e a idade da aniversariante no painel. Clique em “ver coleção” no link amarelo acima da página para consultar ou encomendar individualmente os artigos deste tema encantado.",
     quantity: 1,
-    productImage: "/convite.png",
+    productImage: "/images/cvtAlicePaisMaravilhas.png",
   },
   {
     date: "22 de agosto de 2025",
@@ -17,7 +17,7 @@ const pedidosData = [
     description:
       "Inclui personalização com o nome e a idade da aniversariante no painel. Clique em “ver coleção” no link amarelo acima da página para consultar ou encomendar individualmente os artigos deste tema encantado.",
     quantity: 1,
-    productImage: "/convite.png",
+    productImage: "/images/cvtAlicePaisMaravilhas.png",
   },
   {
     date: "22 de agosto de 2025",
@@ -25,7 +25,7 @@ const pedidosData = [
     description:
       "Inclui personalização com o nome e a idade da aniversariante no painel. Clique em “ver coleção” no link amarelo acima da página para consultar ou encomendar individualmente os artigos deste tema encantado.",
     quantity: 1,
-    productImage: "/convite.png",
+    productImage: "/images/cvtAlicePaisMaravilhas.png",
   },
 ];
 
@@ -33,7 +33,7 @@ const PedidosPage: React.FC = () => {
   return (
     <div className="flex min-h-screen ">
       
-          <div className="flex flex-col flex-1">
+          <div className="flex flex-col items-center flex-1">
               <h2 className="text-2xl self-center font-bold text-gray-700 mb-6">Seus Pedidos</h2>
               <main className="flex-1 p-10">
 

@@ -78,7 +78,9 @@ const Sidebar: React.FC<SidebarProps> = ({ username }) => {
         <p className="text-white">SAIR</p>
       </div>
       </aside>
-      
+      <main style={{ flex: 1, backgroundColor: '#fff', padding: '30px', overflowY: 'auto' }}>
+        {renderizarConteudo()}
+      </main>
             
     </div>
   );

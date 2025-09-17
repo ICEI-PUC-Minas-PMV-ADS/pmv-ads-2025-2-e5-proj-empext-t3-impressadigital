@@ -6,6 +6,14 @@ import Carrinho from './carrinho/page';
 import PedidosPage from './pedidos/page';
 import EditarPerfil from './editarPerfil/page';
 
+const menuItems = [
+  { label: "Perfil", path: "/perfil/" },
+  { label: "Carrinho", path: "/perfil/carrinho" },
+  { label: "Pedidos", path: "/perfil/pedidos" },
+  { label: "EditarPerfil", path: "/perfil/editar-perfil" },
+
+];
+
 interface SidebarProps {
   username: string;
 }
@@ -53,18 +61,38 @@ const Perfil: React.FC<SidebarProps> = ({ username }) => {
         </div>
 
         <nav className="flex flex-col gap-1 text-lg w-full">
-                  <button className=" w-full text-left px-3 py-2 bg-[#1C1C1C] hover:bg-white hover:text-black rounded transition"
+            <button className={` w-full text-left px-3 py-2 bg-[#1C1C1C]  rounded transition
+                  ${
+                    paginaAtiva === "carrinho"
+                      ? "bg-white text-black"
+                      : ""}
+                  `
+                    
+                  }
                   onClick={() => setPaginaAtiva("carrinho")}
                   >
             Carrinho &gt;
           </button>
-                  <button className="text-left px-3 py-2 bg-[#1C1C1C] hover:bg-white hover:text-black rounded transition"
+                  <button className={` w-full text-left px-3 py-2 bg-[#1C1C1C]  rounded transition
+                  ${
+                    paginaAtiva === "pedidos"
+                      ? "bg-white text-black"
+                      : ""}
+                  `
+                    
+                  }
                   onClick={() => setPaginaAtiva("pedidos")}
                   >
             Pedidos &gt;
           </button>
-                        <button className="text-left px-3 py-2 bg-[#1C1C1C] hover:bg-white
-                   hover:text-black rounded transition "
+                        <button className={` w-full text-left px-3 py-2 bg-[#1C1C1C] rounded transition
+                  ${
+                    paginaAtiva === "editarPerfil"
+                      ? "bg-white text-black"
+                      : ""}
+                  `
+                    
+                  }
                       onClick={() => setPaginaAtiva("editarPerfil")}
                       
                   >

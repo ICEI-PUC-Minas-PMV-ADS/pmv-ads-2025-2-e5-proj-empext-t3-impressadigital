@@ -16,12 +16,12 @@ const OrderCard: React.FC<OrderCardProps> = ({
   productImage,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
-      <div className="bg-green-600 text-white rounded-t-lg px-4 py-2 font-bold uppercase text-sm">
+    <div className="bg-white w-3xl  rounded-b-lg shadow-lg/30 overflow-hidden mb-6">
+      <div className="bg-[#38ac1b] text-white rounded-2xl px-4 py-2 font-bold uppercase text-sm">
         PEDIDO REALIZADO
-        <div className="text-xs font-normal">{date}</div>
+        <div className="text-[13px] font-normal">{date}</div>
       </div>
-      <div className="flex p-4 gap-4">
+      <div className="flex p-4 gap-4 " >
         <img
           src={productImage}
           alt={title}
@@ -33,11 +33,11 @@ const OrderCard: React.FC<OrderCardProps> = ({
             <p className="text-gray-500 text-sm mt-1">{description}</p>
           </div>
 
-          <div className="flex items-center gap-4 mt-4">
-            <span className="bg-green-600 text-white rounded-full px-3 py-1 text-xs font-semibold">
+          <div className="flex items-center justify-between gap-4 mt-4">
+            <span className="bg-[#38ac1b] text-white rounded-full px-3 py-1 text-[13px] font-semibold">
               Quantidade: {quantity < 10 ? `0${quantity}` : quantity}
             </span>
-            <button className="bg-green-600 text-white text-xs font-semibold px-4 py-1 rounded hover:bg-green-700 transition">
+            <button className="bg-[#38ac1b] text-white text-[13px] font-semibold px-4 py-1 rounded-full hover:bg-green-700 transition">
               Avaliar o produto
             </button>
           </div>
