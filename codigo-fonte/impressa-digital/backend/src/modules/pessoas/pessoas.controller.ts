@@ -2,7 +2,20 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { PessoasService } from './pessoas.service';
+import { Pessoas } from 'src/core/database/entities/pessoas.entity';
 
-@Controller()
-export class PessoasController {}
+@Controller("pessoas")
+export class PessoasController {
+
+    constructor(private readonly pessoasService: PessoasService) { }
+    
+    @Get(":id")
+    async findAll(): Promise<Pessoas[]> {
+        return this.pessoasService.findAll();
+    }
+
+
+
+}
