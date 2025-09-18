@@ -29,7 +29,7 @@ import { AuthdbModule } from '../database/authdb.module';
     CatalogModule,
     AdmModule,
     VendasModule,
-    PessoasModule,
+    PessoasModule, // <-- já importa o módulo que tem o PessoasService + Repository
     MidiasModule,
     Customer_addressModule,
     CarrinhoModule,
@@ -38,17 +38,15 @@ import { AuthdbModule } from '../database/authdb.module';
   ],
   controllers: [
     CatalogController,
-    PessoasController,
     MidiaController,
     Customer_addressController,
-    AppController
+    AppController,
   ],
   providers: [
     CatalogService,
     AdmService,
-    PessoasService,
     MidiaService,
-    AppService
+    AppService,
   ],
 })
 export class AppModule {}

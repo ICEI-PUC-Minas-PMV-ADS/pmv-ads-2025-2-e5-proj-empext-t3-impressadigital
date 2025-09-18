@@ -1,11 +1,9 @@
+// src/core/database/authdb.module.ts
 import { Module } from "@nestjs/common";
 import { authdbProviders } from "./authdb.provider";
 
-
 @Module({
-  imports: [],
-  controllers: [],
   providers: [...authdbProviders],
-  exports: [...authdbProviders],
+  exports: [...authdbProviders], // 👈 exporta para outros módulos
 })
 export class AuthdbModule {}
