@@ -16,7 +16,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
   productImage,
 }) => {
   return (
-    <div className="bg-white w-3xl  rounded-b-lg shadow-lg/30 overflow-hidden mb-6">
+    <div className="bg-white w-[75%]  rounded-b-lg shadow-lg/30 overflow-hidden mb-6">
       <div className="bg-[#38ac1b] text-white rounded-2xl px-4 py-2 font-bold uppercase text-sm">
         PEDIDO REALIZADO
         <div className="text-[13px] font-normal">{date}</div>
@@ -34,7 +34,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
           </div>
 
           <div className="flex items-center justify-between gap-4 mt-4">
-            <span className="bg-[#38ac1b] text-white rounded-full px-3 py-1 text-[13px] font-semibold">
+            <span className="bg-[#38ac1b] text-white text-center  rounded-full px-3 py-1 text-[13px] font-semibold">
               Quantidade: {quantity < 10 ? `0${quantity}` : quantity}
             </span>
             <button className="bg-[#38ac1b] text-white text-[13px] font-semibold px-4 py-1 rounded-full hover:bg-green-700 transition">
