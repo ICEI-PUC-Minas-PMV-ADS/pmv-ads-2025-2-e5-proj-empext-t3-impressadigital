@@ -79,8 +79,7 @@ Enumere as restrições à sua solução. Lembre-se de que as restrições geral
 
 ## Diagrama de Caso de Uso
 
-<img width="4657" height="2810" alt="diagrama de caso de uso impressa" src="https://github.com/user-attachments/assets/ca2d1c79-e29e-41a6-8506-ceecacb0cfe5" />
-
+![Backup_of_Backup_of_diagrama de caso de uso impressa](https://github.com/user-attachments/assets/8e0a0db0-5b3e-4c44-abde-829071901aa6)
 
 > **Links Úteis**:
 > - [Criando Casos de Uso](https://www.ibm.com/docs/pt-br/elm/6.0?topic=requirements-creating-use-cases)
