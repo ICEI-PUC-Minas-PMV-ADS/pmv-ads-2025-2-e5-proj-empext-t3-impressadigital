@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Pessoas } from './pessoas.entity';
+import { OneToOne } from 'typeorm';
 
 
 @Entity('customer_address')
@@ -10,7 +11,7 @@ export class CustomerAddress {
   @Column({ nullable: false })
   pessoa_id: number;
 
-  @ManyToOne(() => Pessoas, (pessoa) => pessoa.enderecos, { onDelete: 'CASCADE' })
+  @OneToOne(() => Pessoas, (pessoa) => pessoa.enderecos, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'pessoa_id' })
   pessoa: Pessoas;
 
