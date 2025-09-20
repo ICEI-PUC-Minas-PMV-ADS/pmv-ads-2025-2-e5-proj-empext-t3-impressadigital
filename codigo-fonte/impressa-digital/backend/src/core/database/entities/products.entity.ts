@@ -26,8 +26,6 @@ export class Produtos {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   preco: number;
 
-  @Column({ type: 'int', default: 0 })
-  estoque: number;
 
   @OneToMany(() => Midias, (midia) => midia.produto)
   midias: Midias[];
