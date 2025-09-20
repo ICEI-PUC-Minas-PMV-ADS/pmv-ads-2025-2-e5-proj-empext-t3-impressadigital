@@ -118,7 +118,7 @@ Casos de testes utilizados na realização da verificação e validação da apl
   </tr> 
   <tr>
     <td><strong>Requisitos associados</strong></td>
-    <td>RF-001: O funcionário não conseguirá logar no aplicativo</td>
+    <td>RF-013: O funcionário não conseguirá logar no aplicativo</td>
   </tr>
   <tr>
     <td><strong>Passos</strong></td>
