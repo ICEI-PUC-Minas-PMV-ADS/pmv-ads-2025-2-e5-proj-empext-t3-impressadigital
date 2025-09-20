@@ -1,13 +1,12 @@
 # Planos de Testes de Software
 
-Apresente os casos de testes utilizados na realização da verificação e validação da aplicação. Escolha cenários de testes que demonstrem os requisitos sendo satisfeitos bem como o tratamento de erros (robustez da aplicação).
+Casos de testes utilizados na realização da verificação e validação da aplicação.
 
 ### Tipo de Teste
 - **Sucesso**: Tem o objetivo de verificar se as funcionalidades funcionam corretamente.
 - **Insucesso**: Tem o objetivo de verificar se o sistema trata erros de maneira correta.
 
-#### Exemplo de Caso de Teste de Sucesso
-O caso de teste de sucesso deve ser identificado por CT - xxx - S
+### Casos de Teste de Sucesso
 
 <table>
   <tr>
@@ -19,7 +18,7 @@ O caso de teste de sucesso deve ser identificado por CT - xxx - S
   </tr>
   <tr>
     <td><strong>Responsável Caso de Teste </strong></td>
-    <td width="430">José da Silva</td>
+    <td width="430">Brian Múcio Duarte</td>
   </tr>
  <tr>
     <td><strong>Tipo do Teste</strong></td>
@@ -27,21 +26,21 @@ O caso de teste de sucesso deve ser identificado por CT - xxx - S
   </tr> 
   <tr>
     <td><strong>Requisitos associados</strong></td>
-    <td>RF-001: O funcionário deve conseguir logar no aplicativo</td>
+    <td>RF-013: Permitir o login do usuário cadastrado.</td>
   </tr>
   <tr>
     <td><strong>Passos</strong></td>
     <td>
-      1. Abrir o aplicativo.<br>
-      2. Inserir o CPF válido.<br>
-      3. Inserir a senha válida.<br>
+      1. Abrir a aplicação.<br>
+      2. Inserir um email válido.<br>
+      3. Inserir uma senha válida.<br>
       4. Clicar no botão "Entrar".
       </td>
   </tr>
     <tr>
     <td><strong>Dados de teste</strong></td>
     <td>
-      - <strong>CPF:</strong> Colocar CPF cadastrado na base<br>
+      - <strong>Email:</strong> Colocar um email cadastrado<br>
       - <strong>Senha:</strong> Colocar valor de senha válida
   </tr>
     <tr>
@@ -50,9 +49,56 @@ O caso de teste de sucesso deve ser identificado por CT - xxx - S
   </tr>
 </table>
 
-#### Exemplo de Caso de Teste de Insucesso
-Os casos de testes de insucesso devem ser identificados por CT - xxx - I + sequencial de insucesso.
-Para cada etapa do projeto, criar uma seção com o nome da Etapa do projeto: Etapa 2, Etapa 3 e Etapa 4
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-002 - S<br>Cadastrar Usuário</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Este caso de teste verifica se um usuário pode fazer cadastro com sucesso.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Brian Múcio Duarte</td>
+  </tr>
+ <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr> 
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-001: Permitir o cadastro do usuário.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Abrir a aplicaçãoo.<br>
+      2. Clicar em "Quero fazer parte".<br>
+      3. Inserir um nome de usuário.<br>
+      4. Inserir a data de nascimento.<br>
+      4. Inserir um CPF válido.<br>
+      4. Inserir um email.<br>
+      4. Inserir uma senha.<br>
+      5. Clicar no botão "Cadastre-se".
+      </td>
+  </tr>
+    <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - <strong>Nome de usuário:</strong> Inserir um nome de usuário<br>
+      - <strong>Data de nascimento:</strong> Inserir uma data de nascimento<br>
+      - <strong>CPF:</strong> Inserir um CPF válido<br>
+      - <strong>Email:</strong> Inserir um email ainda não cadastrado<br>
+      - <strong>Senha:</strong> Inserir uma senha
+  </tr>
+    <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve redirecionar o usuário para o login do aplicativo após o cadastro bem-sucedido.</td>
+  </tr>
+</table>
+
+### Casos de Teste de Insucesso
+
 ### ETAPA 2  
 <table>
   <tr>
@@ -64,7 +110,7 @@ Para cada etapa do projeto, criar uma seção com o nome da Etapa do projeto: Et
   </tr>
   <tr>
     <td><strong>Responsável Caso de Teste </strong></td>
-    <td width="430">José da Silva</td>
+    <td width="430">Brian Múcio Duarte</td>
   </tr>
  <tr>
     <td><strong>Tipo do Teste</strong></td>
@@ -77,16 +123,16 @@ Para cada etapa do projeto, criar uma seção com o nome da Etapa do projeto: Et
   <tr>
     <td><strong>Passos</strong></td>
     <td>
-      1. Abrir o aplicativo.<br>
-      2. Inserir o CPF válido.<br>
+      1. Abrir a aplicação.<br>
+      2. Inserir o email inválido.<br>
       3. Inserir a senha inválida.<br>
-      4. Clicar no botão "Entrar".
+      4. Clicar no botão "Login".
       </td>
   </tr>
     <tr>
     <td><strong>Dados de teste</strong></td>
     <td>
-      - <strong>CPF:</strong> Colocar CPF cadastrado na base<br>
+      - <strong>Email:</strong> Colocar email não cadastrado<br>
       - <strong>Senha:</strong> Colocar senha inválida
   </tr>
     <tr>
