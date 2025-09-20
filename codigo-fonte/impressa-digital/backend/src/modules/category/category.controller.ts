@@ -1,8 +1,33 @@
-/*
-https://docs.nestjs.com/controllers#controllers
-*/
+import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { CategoryService } from './category.service';
+import { Categorias } from '../../core/database/entities/category.entity';
 
-import { Controller } from '@nestjs/common';
+@Controller('categories')
+export class CategoryController {
+  constructor(private readonly categoryService: CategoryService) {}
 
-@Controller()
-export class CategoryController {}
+  @Get()
+  findAll(): Promise<Categorias[]> {
+    return this.categoryService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number): Promise<Categorias> {
+    return this.categoryService.findOne(+id);
+  }
+
+  @Post()
+  create(@Body() data: Partial<Categorias>): Promise<Categorias> {
+    return this.categoryService.create(data);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: number, @Body() data: Partial<Categorias>): Promise<Categorias> {
+    return this.categoryService.update(+id, data);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: number): Promise<void> {
+    return this.categoryService.remove(+id);
+  }
+}

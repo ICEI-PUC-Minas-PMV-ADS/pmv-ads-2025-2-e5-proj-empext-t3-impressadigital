@@ -2,34 +2,99 @@
 
 import React, { useState, useEffect } from "react";
 
+const categories = [
+  { id: 1, nome: "Casamento" },
+  { id: 2, nome: "Festa Infantil" },
+  { id: 3, nome: "Aniversário Adulto" },
+  { id: 4, nome: "Eventos Corporativos" },
+  { id: 5, nome: "Formatura" },
+  { id: 6, nome: "Chá de Bebê" },
+  { id: 7, nome: "Eventos Esportivos" },
+];
+
 const DashboardCategory: React.FC = () => {
+  const [categoriaId, setCategoriaId] = useState<number | null>(null);
+  const [nome, setNome] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [preco, setPreco] = useState("");
   const [previews, setPreviews] = useState<string[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const newPreviews = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
-      );
+    const selectedFiles = e.target.files;
+    if (selectedFiles) {
+      const newFiles = Array.from(selectedFiles);
+      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+      setFiles((prev) => [...prev, ...newFiles]);
       setPreviews((prev) => [...prev, ...newPreviews]);
     }
   };
 
   const removeImage = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
     setPreviews((prev) => {
-      const updated = [...prev];
-      const removed = updated.splice(index, 1)[0];
-      URL.revokeObjectURL(removed); // libera a URL removida
-      return updated;
+      const removed = prev[index];
+      URL.revokeObjectURL(removed);
+      return prev.filter((_, i) => i !== index);
     });
   };
 
-  // limpa URLs quando o componente desmontar
   useEffect(() => {
-    return () => {
-      previews.forEach((url) => URL.revokeObjectURL(url));
-    };
+    return () => previews.forEach((url) => URL.revokeObjectURL(url));
   }, [previews]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!categoriaId) {
+      alert("Selecione uma categoria.");
+      return;
+    }
+
+    try {
+      // 1️⃣ Cria o produto
+      const produtoRes = await fetch("http://localhost:3000/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome,
+          descricao,
+          preco: parseFloat(preco),
+          categoria_id: categoriaId,
+        }),
+      });
+
+      if (!produtoRes.ok) throw new Error("Erro ao salvar produto");
+
+      const produtoData = await produtoRes.json();
+      const produtoId = produtoData.id;
+
+      // 2️⃣ Envia as imagens se houver
+      if (files.length > 0) {
+        const formData = new FormData();
+        files.forEach((file) => formData.append("files", file));
+        formData.append("produto_id", produtoId.toString());
+
+        const midiasRes = await fetch("http://localhost:3000/midias", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!midiasRes.ok) throw new Error("Erro ao salvar imagens");
+      }
+
+      alert("Produto e imagens salvos com sucesso!");
+      setNome("");
+      setDescricao("");
+      setPreco("");
+      setCategoriaId(null);
+      setFiles([]);
+      setPreviews([]);
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao salvar produto ou imagens.");
+    }
+  };
 
   return (
     <>
@@ -40,18 +105,30 @@ const DashboardCategory: React.FC = () => {
           Adicionar produto
         </p>
 
-        <form className="flex flex-col gap-4 text-black font-sans">
+        <form
+          className="flex flex-col gap-4 text-black font-sans"
+          onSubmit={handleSubmit}
+        >
           {/* Categoria */}
-          <input
-            type="text"
-            placeholder="Selecione a categoria"
+          <select
+            value={categoriaId ?? ""}
+            onChange={(e) => setCategoriaId(Number(e.target.value))}
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
-          />
+          >
+            <option value="">Selecione a categoria</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.nome}
+              </option>
+            ))}
+          </select>
 
           {/* Nome do produto */}
           <input
             type="text"
             placeholder="Nome do produto"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
           />
 
@@ -75,9 +152,7 @@ const DashboardCategory: React.FC = () => {
             {/* Preview das imagens */}
             {previews.length > 0 && (
               <div className="mt-4">
-                <p className="text-sm text-gray-600 mb-2">
-                  Pré-visualizações:
-                </p>
+                <p className="text-sm text-gray-600 mb-2">Pré-visualizações:</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {previews.map((src, index) => (
                     <div key={index} className="relative w-32 h-32 group">
@@ -103,6 +178,8 @@ const DashboardCategory: React.FC = () => {
           {/* Descrição */}
           <textarea
             placeholder="Descrição"
+            value={descricao}
+            onChange={(e) => setDescricao(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
             rows={4}
           />
@@ -112,13 +189,31 @@ const DashboardCategory: React.FC = () => {
             type="text"
             inputMode="decimal"
             placeholder="Valor"
+            value={preco}
+            onChange={(e) => setPreco(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
             onInput={(e) => {
               const target = e.target as HTMLInputElement;
-              target.value = target.value.replace(/[^0-9.,]/g, "");
-              target.value = target.value
-                .replace(/,/g, ".")
-                .replace(/(\..*)\./g, "$1");
+
+              // Substituir pontos por vírgula automaticamente
+              let value = target.value.replace(/\./g, ",");
+
+              // Remover tudo que não seja número ou vírgula
+              value = value.replace(/[^0-9,]/g, "");
+
+              // Só ser possível digitar uma vírgula
+              const parts = value.split(",");
+              if (parts.length > 2) {
+                value = parts[0] + "," + parts[1];
+              }
+
+              // 2 casas decimais após a vírgula
+              if (parts[1]?.length > 2) {
+                value = parts[0] + "," + parts[1].slice(0, 2);
+              }
+
+              target.value = value;
+              setPreco(value);
             }}
           />
 

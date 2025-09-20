@@ -1,16 +1,13 @@
+import { Module } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CategoryController } from './category.controller';
-/*
-https://docs.nestjs.com/modules
-*/
-
-import { Module } from '@nestjs/common';
-import { ProductsModule } from '../products/products.module';
+import { categoryProviders } from './repository/category.provider';
+import { AuthdbModule } from '../../core/database/authdb.module';
 
 @Module({
-    imports: [ProductsModule],
-    controllers: [CategoryController],
-    providers: [CategoryService],
-    exports: [CategoryService]
+  imports: [AuthdbModule],
+  providers: [...categoryProviders, CategoryService],
+  controllers: [CategoryController],
+  exports: [...categoryProviders],
 })
-export class CategoryModule { }
+export class CategoryModule {}

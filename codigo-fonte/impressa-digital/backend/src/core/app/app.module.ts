@@ -10,8 +10,8 @@ import { VendasModule } from './../../modules/vendas/vendas.module';
 import { PessoasModule } from './../../modules/pessoas/pessoas.module';
 import { PessoasService } from './../../modules/pessoas/pessoas.service';
 import { PessoasController } from './../../modules/pessoas/pessoas.controller';
-import { MidiaService } from './../../modules/midias/midia.service';
-import { MidiaController } from './../../modules/midias/midia.controller';
+import { MidiasService } from './../../modules/midias/midia.service';
+import { MidiasController } from './../../modules/midias/midia.controller';
 import { MidiasModule } from './../../modules/midias/midias.module';
 import { Customer_addressModule } from './../../modules/customer_address/customer_address.module';
 import { Customer_addressController } from './../../modules/customer_address/customer_address.controller';
@@ -38,14 +38,14 @@ import { AuthdbModule } from '../database/authdb.module';
   ],
   controllers: [
     CatalogController,
-    MidiaController,
+    MidiasController,
     Customer_addressController,
     AppController,
   ],
   providers: [
     CatalogService,
     AdmService,
-    MidiaService,
+    MidiasService,
     AppService,
   ],
 })
