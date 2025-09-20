@@ -38,7 +38,7 @@ const Perfil: React.FC<SidebarProps> = ({ username }) => {
   return (
     <div style={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif' }}>
       {/* Sidebar */}
-      <aside className="bg-[#222421] text-white w-48 min-h-screen flex flex-col justify-between p-6">
+      <aside className="bg-[#222421] text-white w-75 min-h-screen flex flex-col justify-between p-6">
       <div className="flex flex-col gap-15 items-center mt-8">
         <div className="flex flex-col items-center gap-5 mb-8">
           <div className="bg-white rounded-full w-16 h-16 flex items-center justify-center mb-2">
@@ -61,42 +61,31 @@ const Perfil: React.FC<SidebarProps> = ({ username }) => {
         </div>
 
         <nav className="flex flex-col gap-1 text-lg w-full">
-            <button className={` w-full text-left px-3 py-2 bg-[#1C1C1C]  rounded transition
-                  ${
-                    paginaAtiva === "carrinho"
-                      ? "bg-white text-black"
-                      : ""}
-                  `
-                    
-                  }
-                  onClick={() => setPaginaAtiva("carrinho")}
-                  >
-            Carrinho &gt;
+          <button
+            className={`w-full flex justify-between items-center px-4 py-3 bg-[#1C1C1C] rounded transition
+              ${paginaAtiva === "carrinho" ? "bg-white text-black" : "text-white"}`}
+            onClick={() => setPaginaAtiva("carrinho")}
+          >
+            <span className="flex-1 text-center">Carrinho</span>
+            <span>&gt;</span>
           </button>
-                  <button className={` w-full text-left px-3 py-2 bg-[#1C1C1C]  rounded transition
-                  ${
-                    paginaAtiva === "pedidos"
-                      ? "bg-white text-black"
-                      : ""}
-                  `
-                    
-                  }
-                  onClick={() => setPaginaAtiva("pedidos")}
-                  >
-            Pedidos &gt;
+
+          <button
+            className={`w-full flex justify-between items-center px-4 py-3 bg-[#1C1C1C] rounded transition
+              ${paginaAtiva === "pedidos" ? "bg-white text-black" : "text-white"}`}
+            onClick={() => setPaginaAtiva("pedidos")}
+          >
+            <span className="flex-1 text-center">Pedidos</span>
+            <span>&gt;</span>
           </button>
-                        <button className={` w-full text-left px-3 py-2 bg-[#1C1C1C] rounded transition
-                  ${
-                    paginaAtiva === "editarPerfil"
-                      ? "bg-white text-black"
-                      : ""}
-                  `
-                    
-                  }
-                      onClick={() => setPaginaAtiva("editarPerfil")}
-                      
-                  >
-            Editar perfil &gt;
+
+          <button
+            className={`w-full flex justify-between items-center px-4 py-3 bg-[#1C1C1C] rounded transition
+              ${paginaAtiva === "editarPerfil" ? "bg-white text-black" : "text-white"}`}
+            onClick={() => setPaginaAtiva("editarPerfil")}
+          >
+            <span className="flex-1 text-center">Editar perfil</span>
+            <span>&gt;</span>
           </button>
         </nav>
       </div>
@@ -110,7 +99,7 @@ const Perfil: React.FC<SidebarProps> = ({ username }) => {
       </aside>
 
       {/* Conteúdo da página */}
-      <main style={{ flex: 1, backgroundColor: '#fff', padding: '30px', overflowY: 'auto' }}>
+      <main style={{ flex: 1, backgroundColor: '#fff', padding: '65px', overflowY: 'auto' }}>
         {renderizarConteudo()}
       </main>
     </div>
