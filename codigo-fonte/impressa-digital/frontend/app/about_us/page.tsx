@@ -10,8 +10,8 @@ export default function AboutUs() {
   return (
     <div>
       <HeaderMain />
-      <div className="flex flex-row justify-between gap-10 px-10 mt-15 mb-30">
-        <div className="flex flex-col gap-5 text-justify w-1/2 ml-10">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-10 px-10 mt-15 mb-30">
+        <div className="flex flex-col gap-5 text-justify w-full md:w-1/2 pr-10 md:mx-0 ml-10">
           <h2 className="text-3xl font-bold mb-3 text-[#2c2a2a]">Sobre nós</h2>
           <p >
             A Gráfica Impressa nasceu no início da pandemia, em um momento de
@@ -48,7 +48,8 @@ export default function AboutUs() {
       </div>
       <div className="flex-col px-20 pt-10 mt-10 bg-gray-100 ">
         <h2 className="text-3xl text-[#A1A1A1] text-center font-bold mb-4">Avaliação geral</h2>
-        <GeneralReviews /></div>
+        <GeneralReviews />
+      </div>
       
     </div>
   );

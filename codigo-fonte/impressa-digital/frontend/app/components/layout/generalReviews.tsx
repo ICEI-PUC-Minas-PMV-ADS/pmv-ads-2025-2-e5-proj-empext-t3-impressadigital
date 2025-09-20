@@ -11,10 +11,10 @@ export default function GeneralReviews() {
   });
 
   return (
-    <section className="p-6 ">
+    <section className="p-6  grid grid-cols-1 md:grid-cols-3 gap-2  ">
       
       {reviews.map((r, i) => (
-        <div key={i} className="border rounded-lg p-4 mb-4 bg-white shadow">
+        <div key={i} className=" border rounded-lg p-4 mb-4 bg-white shadow">
           <p className="font-semibold">{r.user}</p>
           <p className="text-[#45A62D] text-xl">
             {"★".repeat(r.stars)}{"☆".repeat(5 - r.stars)}
