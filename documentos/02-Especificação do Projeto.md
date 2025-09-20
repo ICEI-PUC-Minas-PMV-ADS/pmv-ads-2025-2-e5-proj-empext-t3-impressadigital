@@ -45,7 +45,7 @@ Descreva brevemente a arquitetura definida para o projeto e as tecnologias a ser
 |RF-010| O sistema deve exibir detalhes do produto, incluindo imagens, descrições e preços. | ALTA | Mateus Salomé Rocha Silva |
 |RF-011| O sistema deve permitir que os administradores adicionem, editem e removam produtos do catálogo | MÉDIA | Marcelly Giovanna De Souza e Maia |
 |RF-012| O sistema deve permitir que os administradores gerenciem categorias de produtos. | MÉDIA | Erick Cambraia Nunes |
-|RF-013| O sistema deve permitir que os usuários realizem logout com segurança. | ALTA | Brian Mucio Duarte |
+|RF-013| O sistema deve permitir que os usuários cadastrados realizem o login. | ALTA | Brian Mucio Duarte |
 |RF-014| O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos. | MÉDIA | Douglas Henrique de Sousa e Silva |
 
 
