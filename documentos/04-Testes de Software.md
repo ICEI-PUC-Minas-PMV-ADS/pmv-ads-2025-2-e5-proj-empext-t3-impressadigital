@@ -95,6 +95,18 @@ Casos de testes utilizados na realização da verificação e validação da apl
     <td><strong>Critérios de êxito</strong></td>
     <td>O sistema deve redirecionar o usuário para o login do aplicativo após o cadastro bem-sucedido.</td>
   </tr>
+<tr>
+  <td colspan="6" align="center"><strong>Evidência</strong></td>
+</tr>
+<tr>
+  <td colspan="6" align="center">
+    <video src="https://github.com/user-attachments/assets/a5b8d123-b979-4d8a-950f-ea16bfd4b3eb" width="600" controls>
+      Seu navegador não suporta a tag de vídeo.
+    </video>
+  </td>
+</tr>
+
+
 </table>
 
 ### Casos de Teste de Insucesso
