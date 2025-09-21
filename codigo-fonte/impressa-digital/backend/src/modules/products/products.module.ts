@@ -3,11 +3,11 @@ import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { productsProviders } from './repository/products.provider';
-import { AuthdbModule } from '../../core/database/authdb.module';
+import { AuthDbModule } from '../../core/database/authdb.module';
 import { MidiasModule } from '../midias/midias.module'; 
 
 @Module({
-  imports: [AuthdbModule],
+  imports: [AuthDbModule],
   providers: [...productsProviders, ProductsService],
   controllers: [ProductsController],
   exports: [...productsProviders],

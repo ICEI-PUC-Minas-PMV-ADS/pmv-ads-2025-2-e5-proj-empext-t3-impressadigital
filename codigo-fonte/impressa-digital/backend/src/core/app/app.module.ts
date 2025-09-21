@@ -1,52 +1,51 @@
+// app.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
+import { AuthDbModule } from '../database/authdb.module';
 import { CatalogModule } from './../../modules/catalog/catalog.module';
-import { CatalogService } from './../../modules/catalog/catalog.service';
-import { CatalogController } from './../../modules/catalog/catalog.controller';
 import { AdmModule } from './../../modules/adm/adm.module';
-import { AdmService } from './../../modules/adm/adm.service';
 import { VendasModule } from './../../modules/vendas/vendas.module';
 import { PessoasModule } from './../../modules/pessoas/pessoas.module';
-import { PessoasService } from './../../modules/pessoas/pessoas.service';
-import { PessoasController } from './../../modules/pessoas/pessoas.controller';
-import { MidiasService } from './../../modules/midias/midia.service';
-import { MidiasController } from './../../modules/midias/midia.controller';
 import { MidiasModule } from './../../modules/midias/midias.module';
 import { Customer_addressModule } from './../../modules/customer_address/customer_address.module';
-import { Customer_addressController } from './../../modules/customer_address/customer_address.controller';
 import { CarrinhoModule } from './../../modules/carrinho/carrinho.module';
 import { CategoryModule } from './../../modules/category/category.module';
 import { ProductsModule } from '../../modules/products/products.module';
+import { UsersModule } from '../../modules/users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthdbModule } from '../database/authdb.module';
+import { AuthModule } from '../../modules/auth/auth.module';
 
 
 @Module({
   imports: [
-    AuthdbModule,
+    AuthModule,
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DATABASE_HOST,
+      port: parseInt(process.env.DATABASE_PORT!),
+      username: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
+      autoLoadEntities: true,
+      synchronize: true, // apenas em DEV
+    }),
+    AuthDbModule, // já importa User, Repository, Service, Controller
     CatalogModule,
     AdmModule,
     VendasModule,
-    PessoasModule, // <-- já importa o módulo que tem o PessoasService + Repository
+    PessoasModule,
     MidiasModule,
     Customer_addressModule,
     CarrinhoModule,
     CategoryModule,
     ProductsModule,
+    UsersModule,
   ],
-  controllers: [
-    CatalogController,
-    MidiasController,
-    Customer_addressController,
-    AppController,
-  ],
-  providers: [
-    CatalogService,
-    AdmService,
-    MidiasService,
-    AppService,
-  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
