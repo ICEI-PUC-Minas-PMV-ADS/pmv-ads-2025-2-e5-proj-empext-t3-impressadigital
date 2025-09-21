@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Cadastro() {
   const [form, setForm] = useState({
@@ -15,12 +16,13 @@ export default function Cadastro() {
   const [msg, setMsg] = useState("");
   const [cpfError, setCpfError] = useState("");
 
+  const router = useRouter();
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     let newValue = value;
     if (name === "cpf") {
       newValue = formatCPF(value);
-      // Validação: CPF deve ter 14 caracteres formatados (xxx.xxx.xxx-xx)
       if (newValue.length < 14) {
         setCpfError("Preencha o CPF completo (11 dígitos).");
       } else {
@@ -30,12 +32,11 @@ export default function Cadastro() {
     setForm({ ...form, [name]: newValue });
   }
 
-async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setMsg("");
 
-    // Validação extra antes de enviar
     if (form.cpf.replace(/\D/g, "").length !== 11) {
       setCpfError("Preencha o CPF completo (11 dígitos).");
       setLoading(false);
@@ -54,6 +55,7 @@ async function handleSubmit(e: React.FormEvent) {
 
       if (res.ok) {
         setMsg("Cadastro realizado com sucesso!");
+
         setForm({
           name: "",
           birthDate: "",
@@ -61,6 +63,10 @@ async function handleSubmit(e: React.FormEvent) {
           email: "",
           password: "",
         });
+
+        setTimeout(() => {
+          router.push("/login"); 
+        }, 1500);
       } else {
         const error = await res.json();
         setMsg(error.message || "Erro ao cadastrar.");
@@ -72,13 +78,13 @@ async function handleSubmit(e: React.FormEvent) {
   }
 
   function formatCPF(value: string) {
-        value = value.replace(/\D/g, "");
-        value = value.slice(0, 11);
-        value = value.replace(/(\d{3})(\d)/, "$1.$2");
-        value = value.replace(/(\d{3})(\d)/, "$1.$2");
-        value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-        return value;
-}
+    value = value.replace(/\D/g, "");
+    value = value.slice(0, 11);
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+    value = value.replace(/(\d{3})(\d)/, "$1.$2");
+    value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    return value;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -92,7 +98,9 @@ async function handleSubmit(e: React.FormEvent) {
             height={80}
             className="mb-4"
           />
-          <h1 className="text-2xl font-semibold text-gray-800">Criar uma conta</h1>
+          <h1 className="text-2xl font-semibold text-gray-800">
+            Criar uma conta
+          </h1>
           <p className="text-gray-500 text-sm mt-1">É rápido e fácil!</p>
         </div>
 

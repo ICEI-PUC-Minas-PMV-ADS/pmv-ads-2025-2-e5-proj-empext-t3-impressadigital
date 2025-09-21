@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../users/repositories/user.repository';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -14,8 +15,10 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Usuário não encontrado.');
     }
-    
-    if (user.password !== password) {
+
+    // Comparação da senha em texto com o hash do banco
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       throw new UnauthorizedException('E-mail ou senha inválidos.');
     }
 
