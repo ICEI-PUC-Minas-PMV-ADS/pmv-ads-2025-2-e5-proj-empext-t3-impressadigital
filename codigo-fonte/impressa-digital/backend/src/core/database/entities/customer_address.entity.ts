@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Pessoas } from './pessoas.entity';
+import { User } from './user.entity';
 import { OneToOne } from 'typeorm';
 
 
@@ -11,9 +11,9 @@ export class CustomerAddress {
   @Column({ nullable: false })
   pessoa_id: number;
 
-  @OneToOne(() => Pessoas, (pessoa) => pessoa.enderecos, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'pessoa_id' })
-  pessoa: Pessoas;
+  @OneToOne(() => User, (users) => users.enderecos, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @Column({ nullable: true })
   logradouro: string;

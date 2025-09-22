@@ -7,7 +7,6 @@ import { AuthDbModule } from '../database/authdb.module';
 import { CatalogModule } from './../../modules/catalog/catalog.module';
 import { AdmModule } from './../../modules/adm/adm.module';
 import { VendasModule } from './../../modules/vendas/vendas.module';
-import { PessoasModule } from './../../modules/pessoas/pessoas.module';
 import { MidiasModule } from './../../modules/midias/midias.module';
 import { Customer_addressModule } from './../../modules/customer_address/customer_address.module';
 import { CarrinhoModule } from './../../modules/carrinho/carrinho.module';
@@ -31,13 +30,12 @@ import { AuthModule } from '../../modules/auth/auth.module';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
-      synchronize: true, // apenas em DEV
+      synchronize: false, // apenas em DEV
     }),
     AuthDbModule, // já importa User, Repository, Service, Controller
     CatalogModule,
     AdmModule,
     VendasModule,
-    PessoasModule,
     MidiasModule,
     Customer_addressModule,
     CarrinhoModule,

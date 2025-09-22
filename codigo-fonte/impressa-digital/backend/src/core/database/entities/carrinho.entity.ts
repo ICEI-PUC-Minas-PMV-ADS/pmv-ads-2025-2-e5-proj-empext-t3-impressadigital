@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, JoinColumn } from 'typeorm';
-import { Pessoas } from './pessoas.entity';
+import { User } from './user.entity';
 import { CarrinhoProdutos } from './carrinho_produto.entity';
 
 @Entity('carrinho')
@@ -13,9 +13,9 @@ export class Carrinho {
   @CreateDateColumn()
   criado_em: Date;
   
-  @ManyToOne(() => Pessoas, (pessoa) => pessoa.carrinhos)
-  @JoinColumn({ name: 'pessoa_id' })
-  pessoa: Pessoas;
+  @ManyToOne(() => User, (user) => user.carrinhos)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
 
   @OneToMany(() => CarrinhoProdutos, (cp) => cp.carrinho)

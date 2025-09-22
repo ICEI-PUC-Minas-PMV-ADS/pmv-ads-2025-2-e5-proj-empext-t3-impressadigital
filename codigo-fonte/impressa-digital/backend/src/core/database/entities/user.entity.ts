@@ -3,10 +3,9 @@ import { Carrinho } from './carrinho.entity';
 import { CustomerAddress } from './customer_address.entity';
 import { Vendas } from './vendas.entity';
 
-@Entity('pessoas')
-export class Pessoas {
+@Entity('users')
+export class User {
   @PrimaryGeneratedColumn()
-
   id: number;
 
   @Column()
@@ -24,12 +23,12 @@ export class Pessoas {
   @CreateDateColumn()
   criado_em: Date;
 
-  @OneToOne(() => CustomerAddress, (address) => address.pessoa, { cascade:true, onDelete: 'CASCADE' })
+  @OneToOne(() => CustomerAddress, (address) => address.user, { cascade:true, onDelete: 'CASCADE' })
   enderecos: CustomerAddress;
 
-  @OneToMany(() => Carrinho, (carrinho) => carrinho.pessoa,{ cascade:true,onDelete: 'CASCADE' })
+  @OneToMany(() => Carrinho, (carrinho) => carrinho.user,{ cascade:true,onDelete: 'CASCADE' })
   carrinhos: Carrinho[];
 
-  @OneToMany(() => Vendas, (venda) => venda.pessoa,{ cascade:true,onDelete: 'CASCADE' })
+  @OneToMany(() => Vendas, (venda) => venda.user,{ cascade:true,onDelete: 'CASCADE' })
   vendas: Vendas[];
 }
