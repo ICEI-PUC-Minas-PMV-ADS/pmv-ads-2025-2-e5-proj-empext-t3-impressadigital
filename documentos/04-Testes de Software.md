@@ -105,11 +105,9 @@ Casos de testes utilizados na realização da verificação e validação da apl
     </video>
   </td>
 </tr>
-
-
 </table>
 
-### Casos de Teste de Insucesso
+### SUCESSO
 
 ### ETAPA 2  
 <table>
@@ -152,8 +150,9 @@ Casos de testes utilizados na realização da verificação e validação da apl
     <td>O sistema deve apresentar a mensagem de login inválido.</td>
   </tr>
 </table>
-**SUCESSO**
-[login_invalido.webm](https://github.com/user-attachments/assets/4050203f-b936-4a28-9b28-72894f5afc1e)
+
+### SUCESSO
+ <video src="https://github.com/user-attachments/assets/017b5017-8164-4887-8bdd-785413ad27f1" width="600" controls>
 
 
 ### ETAPA 3
