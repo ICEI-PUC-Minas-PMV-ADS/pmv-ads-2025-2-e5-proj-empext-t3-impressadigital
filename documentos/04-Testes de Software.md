@@ -152,6 +152,9 @@ Casos de testes utilizados na realização da verificação e validação da apl
     <td>O sistema deve apresentar a mensagem de login inválido.</td>
   </tr>
 </table>
+**SUCESSO**
+[login_invalido.webm](https://github.com/user-attachments/assets/4050203f-b936-4a28-9b28-72894f5afc1e)
+
 
 ### ETAPA 3
 Criar casos de teste da etapa 3
