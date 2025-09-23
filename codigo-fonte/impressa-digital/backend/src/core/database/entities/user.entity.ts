@@ -42,6 +42,9 @@ export class User {
   @OneToMany(() => Vendas, (venda) => venda.user, { cascade: true, onDelete: 'CASCADE' })
   vendas: Vendas[];
 
+  @Column()
+  avaliacoes:string;
+
 
 
 }

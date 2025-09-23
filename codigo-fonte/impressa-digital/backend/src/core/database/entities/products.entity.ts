@@ -12,7 +12,6 @@ export class Produtos {
   @Column({nullable: false})
   categoria_id: number;
 
-
   @ManyToOne(() => Categorias, (categoria) => categoria.produtos)
   @JoinColumn({ name: 'categoria_id' })
   categoria: Categorias;
@@ -26,6 +25,8 @@ export class Produtos {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   preco: number;
 
+   @Column ()
+   status_produto : boolean
 
   @OneToMany(() => Midias, (midia) => midia.produto)
   midias: Midias[];
@@ -35,5 +36,7 @@ export class Produtos {
 
   @OneToMany(() => CarrinhoProdutos, (cp) => cp.produto)
   carrinho_produtos: CarrinhoProdutos[];
+
+ 
   
 }

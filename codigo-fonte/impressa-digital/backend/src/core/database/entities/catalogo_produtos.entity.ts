@@ -3,6 +3,7 @@ import { Catalogos } from './catalogo.entity';
 import { Produtos } from './products.entity';
 
 
+
 @Entity('catalogo_produtos')
 export class CatalogoProdutos {
     @PrimaryGeneratedColumn()
