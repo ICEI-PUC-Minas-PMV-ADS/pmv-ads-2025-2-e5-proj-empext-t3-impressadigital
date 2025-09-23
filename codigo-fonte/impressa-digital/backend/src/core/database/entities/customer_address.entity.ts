@@ -9,9 +9,9 @@ export class CustomerAddress {
   id: number;
 
   @Column({ nullable: false })
-  pessoa_id: number;
+  user_id: number;
 
-  @OneToOne(() => User, (users) => users.enderecos, { onDelete: 'CASCADE' })
+  @OneToOne(() => User, (users) => users.endereco, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

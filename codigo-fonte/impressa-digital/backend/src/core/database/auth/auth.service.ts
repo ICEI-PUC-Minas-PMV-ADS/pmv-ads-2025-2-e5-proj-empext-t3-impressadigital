@@ -1,17 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserRepository } from '../users/repositories/user.repository';
 import * as bcrypt from 'bcrypt';
+import { UserService } from 'src/modules/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
 
   async login(email: string, password: string) {
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Usuário não encontrado.');
     }

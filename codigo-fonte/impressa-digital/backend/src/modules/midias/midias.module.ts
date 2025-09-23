@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { MidiasService } from './midia.service';
 import { MidiasController } from './midia.controller';
 import { midiasProviders } from './repository/midias.provider';
-import { AuthDbModule } from '../../core/database/authdb.module';
+import { AuthdbModule } from 'src/core/database/authdb.module';
+
 
 @Module({
-  imports: [AuthDbModule],
+  imports: [AuthdbModule],
   providers: [...midiasProviders, MidiasService],
   controllers: [MidiasController],
   exports: [...midiasProviders],

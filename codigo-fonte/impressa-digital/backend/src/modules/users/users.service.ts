@@ -1,32 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { User, UserRole } from './user.entity';
-import { UserRepository } from './repositories/user.repository';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { User } from 'src/core/database/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    @Inject('USER_REPOSITORY')
+    private userRepository: Repository<User>,
+  ) { }
 
-  async createUser(data: {
-    name: string;
-    email: string;
-    password: string;
-    role?: UserRole;
-    birthDate?: Date;
-    cpf?: string;
-    endereco?: string;
-  }): Promise<User> {
-    const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    const user = await this.userRepository.createUser({
-      name: data.name,
-      email: data.email,
-      password: hashedPassword,
-      role: data.role ?? UserRole.CLIENT,
-      birthDate: data.birthDate,
-      cpf: data.cpf,
-    });
+  async createUser(user: User): Promise<User> {
+    user.password = await bcrypt.hash(user.password, 10);
 
+    await this.userRepository.save(user);
+    user.password = "";
     return user;
   }
 
@@ -37,6 +26,12 @@ export class UserService {
   async findById(id: number): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) throw new NotFoundException(`Usuário com id ${id} não encontrado`);
+    return user;
+  }
+
+   async findByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email:email } });
+    if (!user) throw new NotFoundException(`Usuário com e-mail: ${email} não encontrado`);
     return user;
   }
 
@@ -58,4 +53,6 @@ export class UserService {
   async deleteUser(id: number): Promise<void> {
     await this.userRepository.delete(id);
   }
+
+
 }
