@@ -1,3 +1,8 @@
+import { Comentario_produtosModule } from './../../modules/comentario_produtos/comentario_produtos.module';
+import { Comentario_produtosController } from './../../modules/comentario_produtos/comentario_produtos.controller';
+import { Avaliacoes_produtosModule } from './../../modules/avaliacoes_produtos/avaliacoes_produtos.module';
+import { Avaliacoes_produtosService } from './../../modules/avaliacoes_produtos/avaliacoes_produtos.service';
+import { Avaliacoes_produtosController } from './../../modules/avaliacoes_produtos/avaliacoes_produtos.controller';
 // app.module.ts
 import { Module } from '@nestjs/common';
 
@@ -20,6 +25,8 @@ import { AuthdbModule } from '../database/authdb.module';
 
 @Module({
   imports: [
+    Comentario_produtosModule,
+    Avaliacoes_produtosModule,
     AuthModule,
     AuthdbModule,
     CatalogModule,
@@ -30,10 +37,13 @@ import { AuthdbModule } from '../database/authdb.module';
     CarrinhoModule,
     CategoryModule,
     ProductsModule
-    
-    
+
+
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [
+    Comentario_produtosController,
+    Avaliacoes_produtosController, AppController],
+  providers: [
+    Avaliacoes_produtosService, AppService],
 })
-export class AppModule {}
+export class AppModule { }
