@@ -3,8 +3,10 @@ import { Carrinho } from './carrinho.entity';
 import { CustomerAddress } from './customer_address.entity';
 import { Vendas } from './vendas.entity';
 import { UserRole } from './enum/userRole.enum';
+import { ComentarioProduto } from './comentario_produtos.entity';
+import { Avaliacoes_Produto } from './avaliacoes_produtos.entity';
 
-@Entity('users')
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -42,9 +44,14 @@ export class User {
   @OneToMany(() => Vendas, (venda) => venda.user, { cascade: true, onDelete: 'CASCADE' })
   vendas: Vendas[];
 
-  @Column()
-  avaliacoes:string;
+  @OneToMany(() => ComentarioProduto, (comentario) => comentario.user)
+  comentarios: ComentarioProduto[];
+
+  @OneToMany(() => Avaliacoes_Produto, (avaliacoes) => avaliacoes.produto)
+  avaliacoes: Avaliacoes_Produto[];
 
 
 
 }
+
+

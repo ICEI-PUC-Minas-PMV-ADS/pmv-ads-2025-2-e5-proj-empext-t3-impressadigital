@@ -5,7 +5,7 @@ import { JoinColumn } from 'typeorm';
 
 @Entity('vendas')
 export class Vendas {
-    @PrimaryGeneratedColumn()
+   @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ nullable: false })
