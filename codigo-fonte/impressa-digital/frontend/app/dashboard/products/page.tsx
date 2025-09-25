@@ -34,6 +34,7 @@ const DashboardProducts: React.FC = () => {
     preco: "",
     categoria_id: "",
     descricao: "",
+    status: "",
   });
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const DashboardProducts: React.FC = () => {
         categoria_nome: categoriesData.find(
           (cat: Category) => cat.id === product.categoria_id
         )?.nome,
-        status: "Ativo",
+        status: product.status === "inativo" ? "Inativo" : "Ativo",
       }));
 
       setProducts(enrichedProducts);
@@ -105,6 +106,7 @@ const DashboardProducts: React.FC = () => {
       preco: product.preco.toString(),
       categoria_id: product.categoria_id.toString(),
       descricao: product.descricao || "",
+      status: product.status || "ativo",
     });
     setIsEditModalOpen(true);
   };
@@ -117,6 +119,7 @@ const DashboardProducts: React.FC = () => {
       preco: "",
       categoria_id: "",
       descricao: "",
+      status: "",
     });
   };
 
@@ -172,6 +175,7 @@ const DashboardProducts: React.FC = () => {
             preco: precoNumerico,
             categoria_id: parseInt(formData.categoria_id),
             descricao: formData.descricao,
+            status: formData.status,
           }),
         }
       );
@@ -403,6 +407,21 @@ const DashboardProducts: React.FC = () => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
                   rows={4}
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Status</label>
+                <select
+                  name="status"
+                  value={formData.status}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+                  required
+                >
+                  <option value="">Selecione o status</option>
+                  <option value="ativo">Ativo</option>
+                  <option value="inativo">Inativo</option>
+                </select>
               </div>
 
               <div className="flex justify-center gap-3 pt-4">

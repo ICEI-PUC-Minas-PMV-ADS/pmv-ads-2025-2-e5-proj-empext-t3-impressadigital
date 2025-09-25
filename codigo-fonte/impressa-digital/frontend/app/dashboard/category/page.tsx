@@ -194,7 +194,7 @@ const DashboardCategory: React.FC = () => {
           >
             <option value="">Selecione o status</option>
             <option value="ativo">Ativo</option>
-            <option value="desativado">Inativo</option>
+            <option value="inativo">Inativo</option>
           </select>
 
           {/* Valor */}
