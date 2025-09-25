@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { Midias } from './midias.entity';
 import { CarrinhoProdutos } from './carrinho_produto.entity';
 import { CatalogoProdutos } from './catalogo_produtos.entity';
@@ -39,12 +46,9 @@ export class Produtos {
   @OneToMany(() => CarrinhoProdutos, (cp) => cp.produto)
   carrinho_produtos: CarrinhoProdutos[];
 
-
   @OneToMany(() => ComentarioProduto, (comentario) => comentario.produto)
   comentarios: ComentarioProduto[];
 
   @OneToMany(() => Avaliacoes_Produto, (avaliacoes) => avaliacoes.produto)
   avaliacoes: Avaliacoes_Produto[];
-
-
 }
