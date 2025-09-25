@@ -12,7 +12,7 @@ const categories = [
   { id: 7, nome: "Eventos Esportivos" },
 ];
 
-const DashboardCategory: React.FC = () => {
+const DashboardAddProduct: React.FC = () => {
   const [categoriaId, setCategoriaId] = useState<number | null>(null);
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -20,6 +20,8 @@ const DashboardCategory: React.FC = () => {
   const [previews, setPreviews] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [status, setStatus] = useState("");
+  const [successMessage, setSuccessMessage] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState(""); // 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
@@ -47,20 +49,23 @@ const DashboardCategory: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setSuccessMessage("");
+    setErrorMessage("");
+
     if (!categoriaId) {
-      alert("Selecione uma categoria.");
+      setErrorMessage("Selecione uma categoria.");
       return;
     }
 
     try {
-      // 1️⃣ Cria o produto
+      // Chamada de api para criar o produto
       const produtoRes = await fetch("http://localhost:3000/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome,
           descricao,
-          preco: parseFloat(preco),
+          preco: parseFloat(preco.replace(",", ".")),
           categoria_id: categoriaId,
           status,
         }),
@@ -71,7 +76,7 @@ const DashboardCategory: React.FC = () => {
       const produtoData = await produtoRes.json();
       const produtoId = produtoData.id;
 
-      // 2️⃣ Envia as imagens se houver
+      // Enviar imagens
       if (files.length > 0) {
         const formData = new FormData();
         files.forEach((file) => formData.append("files", file));
@@ -85,26 +90,31 @@ const DashboardCategory: React.FC = () => {
         if (!midiasRes.ok) throw new Error("Erro ao salvar imagens");
       }
 
-      alert("Produto e imagens salvos com sucesso!");
+      setSuccessMessage("Produto adicionado com sucesso!");
+      setErrorMessage("");
+
       setNome("");
       setDescricao("");
       setPreco("");
       setCategoriaId(null);
       setFiles([]);
       setPreviews([]);
+
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
       console.error(err);
-      alert("Erro ao salvar produto ou imagens.");
+      setErrorMessage("❌ Erro ao salvar produto ou imagens.");
+      setTimeout(() => setErrorMessage(""), 4000);
     }
   };
 
   return (
     <>
-      <p className="text-black text-4xl font-bold mb-6">Categoria</p>
+      <p className="text-black text-4xl font-bold mb-6">Adicionar produto</p>
 
       <div className="border-2 border-gray-200 rounded-2xl p-6 shadow-sm">
         <p className="text-black font-sans font-bold mb-4 text-2xl">
-          Adicionar produto
+          Informe os detalhes do produto
         </p>
 
         <form
@@ -208,19 +218,14 @@ const DashboardCategory: React.FC = () => {
             onInput={(e) => {
               const target = e.target as HTMLInputElement;
 
-              // Substituir pontos por vírgula automaticamente
               let value = target.value.replace(/\./g, ",");
-
-              // Remover tudo que não seja número ou vírgula
               value = value.replace(/[^0-9,]/g, "");
 
-              // Só ser possível digitar uma vírgula
               const parts = value.split(",");
               if (parts.length > 2) {
                 value = parts[0] + "," + parts[1];
               }
 
-              // 2 casas decimais após a vírgula
               if (parts[1]?.length > 2) {
                 value = parts[0] + "," + parts[1].slice(0, 2);
               }
@@ -236,10 +241,17 @@ const DashboardCategory: React.FC = () => {
           >
             Salvar produto
           </button>
+
+          {successMessage && (
+            <p className="mt-2 text-[#45A62D] font-semibold">{successMessage}</p>
+          )}
+          {errorMessage && (
+            <p className="mt-2 text-red-600 font-semibold">{errorMessage}</p>
+          )}
         </form>
       </div>
     </>
   );
 };
 
-export default DashboardCategory;
+export default DashboardAddProduct;

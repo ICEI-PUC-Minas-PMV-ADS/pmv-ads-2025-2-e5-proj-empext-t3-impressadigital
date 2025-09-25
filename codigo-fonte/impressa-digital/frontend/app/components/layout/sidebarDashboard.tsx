@@ -7,7 +7,7 @@ import { useSidebar } from "../../contexts/sidebarContext";
 const menuItems = [
   { label: "Dashboard", path: "/dashboard/" },
   { label: "Produtos", path: "/dashboard/products" },
-  { label: "Categorias", path: "/dashboard/category" },
+  { label: "Adicionar produto", path: "/dashboard/add_product" },
   { label: "Clientes", path: "/dashboard/clients" },
   { label: "Configurações", path: "/configuracoes" },
 ];

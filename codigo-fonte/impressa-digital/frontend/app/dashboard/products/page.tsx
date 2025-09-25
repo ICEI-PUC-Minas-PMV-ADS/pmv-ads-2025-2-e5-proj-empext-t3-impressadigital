@@ -10,10 +10,7 @@ interface Product {
   categoria_id: number;
   descricao?: string;
   categoria_nome?: string;
-  midias?: Array<{
-    id: number;
-    url: string;
-  }>;
+  midias?: Array<{ id: number; url: string }>;
   status?: string;
 }
 
@@ -22,13 +19,39 @@ interface Category {
   nome: string;
 }
 
+// Componente Toast
+interface ToastProps {
+  message: string;
+  type?: "success" | "error";
+  onClose: () => void;
+}
+const Toast: React.FC<ToastProps> = ({ message, type = "success", onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div
+      className={`fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 text-white ${
+        type === "success" ? "bg-green-600" : "bg-red-600"
+      }`}
+    >
+      {message}
+    </div>
+  );
+};
+
 const DashboardProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
+
   const [formData, setFormData] = useState({
     nome: "",
     preco: "",
@@ -36,6 +59,14 @@ const DashboardProducts: React.FC = () => {
     descricao: "",
     status: "",
   });
+
+  // Toast
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToastMessage(message);
+    setToastType(type);
+  };
 
   useEffect(() => {
     fetchData();
@@ -55,7 +86,6 @@ const DashboardProducts: React.FC = () => {
       const productsData = await productsRes.json();
       const categoriesData = await categoriesRes.json();
 
-      // Enriquecer produtos com nomes de categoria
       const enrichedProducts = productsData.map((product: Product) => ({
         ...product,
         categoria_nome: categoriesData.find(
@@ -67,34 +97,38 @@ const DashboardProducts: React.FC = () => {
       setProducts(enrichedProducts);
       setCategories(categoriesData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro desconhecido");
+      showToast(err instanceof Error ? err.message : "Erro desconhecido", "error");
       console.error("Erro:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(price);
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price);
+
+  const confirmDelete = (product: Product) => {
+    setDeletingProduct(product);
+    setIsDeleteModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Tem certeza que deseja excluir este produto?")) return;
+  const handleDelete = async () => {
+    if (!deletingProduct) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/products/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3000/products/${deletingProduct.id}`,
+        { method: "DELETE" }
+      );
 
       if (!response.ok) throw new Error("Erro ao excluir produto");
 
-      alert("Produto excluído com sucesso!");
-      fetchData(); // Recarregar a lista
+      showToast("Produto excluído com sucesso!", "success");
+      setIsDeleteModalOpen(false);
+      setDeletingProduct(null);
+      fetchData();
     } catch (err) {
-      alert("Erro ao excluir produto");
+      showToast("Erro ao excluir produto", "error");
       console.error("Erro:", err);
     }
   };
@@ -114,62 +148,35 @@ const DashboardProducts: React.FC = () => {
   const closeEditModal = () => {
     setIsEditModalOpen(false);
     setEditingProduct(null);
-    setFormData({
-      nome: "",
-      preco: "",
-      categoria_id: "",
-      descricao: "",
-      status: "",
-    });
+    setFormData({ nome: "", preco: "", categoria_id: "", descricao: "", status: "" });
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\./g, ",");
-    value = value.replace(/[^0-9,]/g, "");
-
+    let value = e.target.value.replace(/\./g, ",").replace(/[^0-9,]/g, "");
     const parts = value.split(",");
-    if (parts.length > 2) {
-      value = parts[0] + "," + parts[1];
-    }
-
-    if (parts[1]?.length > 2) {
-      value = parts[0] + "," + parts[1].slice(0, 2);
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      preco: value,
-    }));
+    if (parts.length > 2) value = parts[0] + "," + parts[1];
+    if (parts[1]?.length > 2) value = parts[0] + "," + parts[1].slice(0, 2);
+    setFormData((prev) => ({ ...prev, preco: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!editingProduct) return;
 
     try {
-      // Converter preço de string para número
       const precoNumerico = parseFloat(formData.preco.replace(",", "."));
-
       const response = await fetch(
         `http://localhost:3000/products/${editingProduct.id}`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             nome: formData.nome,
             preco: precoNumerico,
@@ -181,56 +188,36 @@ const DashboardProducts: React.FC = () => {
       );
 
       if (!response.ok) throw new Error("Erro ao atualizar produto");
-
-      alert("Produto atualizado com sucesso!");
+      showToast("Produto atualizado com sucesso!", "success");
       closeEditModal();
-      fetchData(); // Recarregar a lista
+      fetchData();
     } catch (err) {
-      alert("Erro ao atualizar produto");
+      showToast("Erro ao atualizar produto", "error");
       console.error("Erro:", err);
     }
   };
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-64">Carregando...</div>
-    );
-  if (error) return <div className="text-red-500 p-4">Erro: {error}</div>;
+  if (loading) return <div className="flex justify-center items-center h-64">Carregando...</div>;
 
   return (
     <div className="w-full bg-white p-6">
       <p className="text-black text-3xl lg:text-4xl font-bold">Produtos</p>
 
-      <Link href="/dashboard/category" passHref>
-        <button
-          className="text-base font-sans font-extrabold text-white mt-4 px-4 py-2 bg-[#45A62D] 
-                           rounded-2xl h-13 w-full md:w-60 cursor-pointer transform transition-all duration-200 
-                           hover:scale-101"
-        >
-          + ADICIONAR PRODUTO
-        </button>
-      </Link>
-
       <div className="mt-8 w-full text-black">
-        {/* Cabeçalho - Desktop */}
         <div className="bg-white rounded-lg shadow p-4 items-center font-semibold hidden md:flex">
-          <div className="flex items-center gap-4 w-2/5">Nome / Imagem</div>
+          <div className="flex items-center gap-4 w-3/5">Nome / Imagem</div>
           <div className="w-1/5">Categoria</div>
           <div className="w-1/6">Preço</div>
           <div className="w-1/6">Status</div>
           <div className="flex justify-end gap-3 w-1/12">Ações</div>
         </div>
 
-        {/* Lista de produtos */}
         <ul className="space-y-4 mt-2">
           {products.map((product) => (
-            <li
-              key={product.id}
-              className="bg-white rounded-lg shadow p-4 flex flex-col md:flex-row md:items-center md:justify-between"
-            >
-              {/* Desktop layout */}
+            <li key={product.id} className="bg-white rounded-lg shadow p-4 flex flex-col md:flex-row md:items-center md:justify-between">
+              {/* Desktop */}
               <div className="hidden md:flex w-full items-center justify-between">
-                <div className="flex items-center gap-4 w-2/5">
+                <div className="flex items-center gap-4 w-3/5">
                   <img
                     src={product.midias?.[0]?.url || "/images/placeholder.png"}
                     alt={product.nome}
@@ -238,36 +225,20 @@ const DashboardProducts: React.FC = () => {
                   />
                   <span className="font-semibold">{product.nome}</span>
                 </div>
-                <div className="w-1/5">
-                  {product.categoria_nome || "Sem categoria"}
-                </div>
+                <div className="w-1/5">{product.categoria_nome || "Sem categoria"}</div>
                 <div className="w-1/6">{formatPrice(product.preco)}</div>
                 <div className="w-1/6">{product.status || "Ativo"}</div>
                 <div className="flex justify-end gap-3 w-1/12">
-                  <button
-                    className="hover:scale-110 transition-transform"
-                    onClick={() => openEditModal(product)}
-                  >
-                    <img
-                      src="/images/edit_icon.png"
-                      alt="Editar"
-                      className="w-6 h-6"
-                    />
+                  <button className="hover:scale-110 transition-transform" onClick={() => openEditModal(product)}>
+                    <img src="/images/edit_icon.png" alt="Editar" className="w-6 h-6" />
                   </button>
-                  <button
-                    className="hover:scale-110 transition-transform"
-                    onClick={() => handleDelete(product.id)}
-                  >
-                    <img
-                      src="/images/delete_icon.png"
-                      alt="Excluir"
-                      className="w-6 h-6"
-                    />
+                  <button className="hover:scale-110 transition-transform" onClick={() => confirmDelete(product)}>
+                    <img src="/images/delete_icon.png" alt="Excluir" className="w-6 h-6" />
                   </button>
                 </div>
               </div>
 
-              {/* Mobile layout */}
+              {/* Mobile */}
               <div className="flex flex-col md:hidden w-full">
                 <div className="flex justify-between">
                   <div className="flex flex-col flex-1 gap-2">
@@ -284,44 +255,20 @@ const DashboardProducts: React.FC = () => {
                       <span>{formatPrice(product.preco)}</span>
                     </div>
                   </div>
-
                   <div className="w-24 h-24 flex-shrink-0 ml-4">
-                    <img
-                      src={
-                        product.midias?.[0]?.url || "/images/placeholder.png"
-                      }
-                      alt={product.nome}
-                      className="w-full h-full object-cover rounded"
-                    />
+                    <img src={product.midias?.[0]?.url || "/images/placeholder.png"} alt={product.nome} className="w-full h-full object-cover rounded" />
                   </div>
                 </div>
-
-                {/* Status e Ações */}
                 <div className="flex justify-between mt-4 items-center">
                   <div>
-                    <span className="font-semibold">Status:</span>{" "}
-                    {product.status || "Ativo"}
+                    <span className="font-semibold">Status:</span> {product.status || "Ativo"}
                   </div>
                   <div className="flex gap-2">
-                    <button
-                      className="hover:scale-110 transition-transform"
-                      onClick={() => openEditModal(product)}
-                    >
-                      <img
-                        src="/images/edit_icon.png"
-                        alt="Editar"
-                        className="w-6 h-6"
-                      />
+                    <button className="hover:scale-110 transition-transform" onClick={() => openEditModal(product)}>
+                      <img src="/images/edit_icon.png" alt="Editar" className="w-6 h-6" />
                     </button>
-                    <button
-                      className="hover:scale-110 transition-transform"
-                      onClick={() => handleDelete(product.id)}
-                    >
-                      <img
-                        src="/images/delete_icon.png"
-                        alt="Excluir"
-                        className="w-6 h-6 cursor-pointer"
-                      />
+                    <button className="hover:scale-110 transition-transform" onClick={() => confirmDelete(product)}>
+                      <img src="/images/delete_icon.png" alt="Excluir" className="w-6 h-6 cursor-pointer" />
                     </button>
                   </div>
                 </div>
@@ -331,26 +278,31 @@ const DashboardProducts: React.FC = () => {
         </ul>
       </div>
 
-      {products.length === 0 && (
-        <p className="mt-4 text-gray-500 text-center py-8">
-          Nenhum produto cadastrado ainda.
-        </p>
+      {products.length === 0 && <p className="mt-4 text-gray-500 text-center py-8">Nenhum produto cadastrado ainda.</p>}
+
+      {/* Modais */}
+      {isDeleteModalOpen && deletingProduct && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50 p-4 text-black">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+            <h2 className="text-lg font-bold mb-4">Confirmar Exclusão</h2>
+            <p>
+              Tem certeza que deseja excluir o produto <span className="font-semibold">{deletingProduct.nome}</span>?
+            </p>
+            <div className="flex justify-end gap-3 mt-6">
+              <button onClick={() => setIsDeleteModalOpen(false)} className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100 cursor-pointer hover:scale-102">Cancelar</button>
+              <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded-2xl hover:bg-red-700 cursor-pointer hover:scale-102">Excluir</button>
+            </div>
+          </div>
+        </div>
       )}
 
-      {/* Modal de Edição */}
       {isEditModalOpen && (
         <div className="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50 p-4 text-black">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Editar Produto</h2>
-              <button
-                onClick={closeEditModal}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
+              <button onClick={closeEditModal} className="text-gray-500 hover:text-[#45A62D] hover:scale-105 cursor-pointer">✕</button>
             </div>
-
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Nome</label>
@@ -443,6 +395,9 @@ const DashboardProducts: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Toast */}
+      {toastMessage && <Toast message={toastMessage} type={toastType} onClose={() => setToastMessage(null)} />}
     </div>
   );
 };
