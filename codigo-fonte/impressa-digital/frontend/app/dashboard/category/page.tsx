@@ -19,6 +19,7 @@ const DashboardCategory: React.FC = () => {
   const [preco, setPreco] = useState("");
   const [previews, setPreviews] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
+  const [status, setStatus] = useState("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
@@ -61,6 +62,7 @@ const DashboardCategory: React.FC = () => {
           descricao,
           preco: parseFloat(preco),
           categoria_id: categoriaId,
+          status,
         }),
       });
 
@@ -183,6 +185,17 @@ const DashboardCategory: React.FC = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
             rows={4}
           />
+
+          {/* Status do Produto */}
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+          >
+            <option value="">Selecione o status</option>
+            <option value="ativo">Ativo</option>
+            <option value="desativado">Inativo</option>
+          </select>
 
           {/* Valor */}
           <input
