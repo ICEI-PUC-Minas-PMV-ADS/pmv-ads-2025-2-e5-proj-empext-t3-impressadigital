@@ -24,16 +24,18 @@ export class ProductsController {
     return this.productsService.findOne(+id);
   }
 
+  @Get('slug/:slug')
+  findBySlug(@Param('slug') slug: string): Promise<Produtos> {
+    return this.productsService.findBySlug(slug);
+  }
+
   @Post()
   create(@Body() data: Partial<Produtos>): Promise<Produtos> {
     return this.productsService.create(data);
   }
 
   @Put(':id')
-  update(
-    @Param('id') id: number,
-    @Body() data: Partial<Produtos>,
-  ): Promise<Produtos> {
+  update(@Param('id') id: number, @Body() data: Partial<Produtos>): Promise<Produtos> {
     return this.productsService.update(+id, data);
   }
 

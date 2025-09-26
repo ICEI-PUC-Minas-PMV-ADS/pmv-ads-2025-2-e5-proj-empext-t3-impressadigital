@@ -47,66 +47,70 @@ const DashboardAddProduct: React.FC = () => {
   }, [previews]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setSuccessMessage("");
-    setErrorMessage("");
+  setSuccessMessage("");
+  setErrorMessage("");
 
-    if (!categoriaId) {
-      setErrorMessage("Selecione uma categoria.");
-      return;
-    }
+  if (!categoriaId) {
+    setErrorMessage("Selecione uma categoria.");
+    return;
+  }
 
-    try {
-      // Chamada de api para criar o produto
-      const produtoRes = await fetch("http://localhost:3000/products", {
+  if (!nome.trim()) {
+    setErrorMessage("O nome do produto é obrigatório.");
+    return;
+  }
+
+  try {
+    // Criar o produto
+    const produtoRes = await fetch("http://localhost:3000/products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nome,
+        descricao,
+        preco: parseFloat(preco.replace(",", ".")),
+        categoria_id: categoriaId,
+        status,
+      }),
+    });
+
+    if (!produtoRes.ok) throw new Error("Erro ao salvar produto");
+
+    const produtoData = await produtoRes.json();
+    const produtoId = produtoData.id;
+
+    if (files.length > 0) {
+      const formData = new FormData();
+      files.forEach((file) => formData.append("files", file));
+      formData.append("produto_id", produtoId.toString());
+
+      const midiasRes = await fetch("http://localhost:3000/midias", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nome,
-          descricao,
-          preco: parseFloat(preco.replace(",", ".")),
-          categoria_id: categoriaId,
-          status,
-        }),
+        body: formData,
       });
 
-      if (!produtoRes.ok) throw new Error("Erro ao salvar produto");
-
-      const produtoData = await produtoRes.json();
-      const produtoId = produtoData.id;
-
-      // Enviar imagens
-      if (files.length > 0) {
-        const formData = new FormData();
-        files.forEach((file) => formData.append("files", file));
-        formData.append("produto_id", produtoId.toString());
-
-        const midiasRes = await fetch("http://localhost:3000/midias", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!midiasRes.ok) throw new Error("Erro ao salvar imagens");
-      }
-
-      setSuccessMessage("Produto adicionado com sucesso!");
-      setErrorMessage("");
-
-      setNome("");
-      setDescricao("");
-      setPreco("");
-      setCategoriaId(null);
-      setFiles([]);
-      setPreviews([]);
-
-      setTimeout(() => setSuccessMessage(""), 3000);
-    } catch (err) {
-      console.error(err);
-      setErrorMessage("❌ Erro ao salvar produto ou imagens.");
-      setTimeout(() => setErrorMessage(""), 4000);
+      if (!midiasRes.ok) throw new Error("Erro ao salvar imagens");
     }
-  };
+
+    setSuccessMessage("Produto adicionado com sucesso!");
+    setErrorMessage("");
+
+    setNome("");
+    setDescricao("");
+    setPreco("");
+    setCategoriaId(null);
+    setFiles([]);
+    setPreviews([]);
+
+    setTimeout(() => setSuccessMessage(""), 3000);
+  } catch (err) {
+    console.error(err);
+    setErrorMessage("Erro ao salvar produto ou imagens.");
+    setTimeout(() => setErrorMessage(""), 4000);
+  }
+};
 
   return (
     <>

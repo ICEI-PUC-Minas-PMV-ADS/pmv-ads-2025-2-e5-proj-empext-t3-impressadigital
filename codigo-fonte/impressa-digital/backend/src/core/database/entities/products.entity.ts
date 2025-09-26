@@ -24,6 +24,9 @@ export class Produtos {
   @Column()
   status: string;
 
+  @Column({ unique: true })
+  slug: string;
+
   @ManyToOne(() => Categorias, (categoria) => categoria.produtos)
   @JoinColumn({ name: 'categoria_id' })
   categoria: Categorias;
