@@ -31,13 +31,30 @@ export class ProductsService {
   }
 
   async findBySlug(slug: string): Promise<Produtos> {
-    const produto = await this.produtosRepository.findOne({
-      where: { slug },
-      relations: ['categoria', 'midias'],
-    });
-    if (!produto) throw new NotFoundException(`Produto com slug "${slug}" não encontrado`);
-    return produto;
-  }
+  const produto = await this.produtosRepository
+    .createQueryBuilder('produto')
+    .leftJoinAndSelect('produto.categoria', 'categoria')
+    .leftJoinAndSelect('produto.midias', 'midias')
+    .where('produto.slug = :slug', { slug })
+    .select([
+      'produto.id',
+      'produto.nome',
+      'produto.descricao',
+      'produto.preco',
+      'produto.slug',
+      'produto.status',
+      'categoria.id',
+      'categoria.nome',
+      'midias.id',
+      'midias.url',
+    ])
+    .getOne();
+
+  if (!produto)
+    throw new NotFoundException(`Produto com slug "${slug}" não encontrado`);
+
+  return produto;
+}
 
  async create(data: Partial<Produtos>): Promise<Produtos> {
   if (!data.categoria_id || isNaN(Number(data.categoria_id))) {
