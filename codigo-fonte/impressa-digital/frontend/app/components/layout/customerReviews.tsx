@@ -10,26 +10,40 @@ interface Review {
     stars: number;
 }
 
-interface CustomerReviewsProps {
-    productId: string | string[] | undefined;
+interface ProductInfo {
+    id: number;
+    // Outras propriedades não são relevantes para este fetch
 }
 
-export default function CustomerReviews({ productId }: CustomerReviewsProps) {
+interface CustomerReviewsProps {
+    productIdentifier: string | string[] | undefined;
+}
+
+export default function CustomerReviews({ productIdentifier }: CustomerReviewsProps) {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!productId) {
-            setError("ID do produto não fornecido.");
+        if (!productIdentifier) {
+            setError("Identificador do produto não fornecido.");
             setLoading(false);
             return;
         }
 
+        const slug = Array.isArray(productIdentifier) ? productIdentifier[0] : productIdentifier;
+
         const fetchReviews = async () => {
             try {
                 setLoading(true);
-                // Adapte esta URL para o seu endpoint de avaliações, se diferente
+
+                // 1. Buscar o produto principal pelo SLUG para obter o ID
+                const mainProductRes = await fetch(`http://localhost:3000/products/slug/${slug}`);
+                if (!mainProductRes.ok) throw new Error("Erro ao buscar informações do produto principal.");
+                const mainProduct = (await mainProductRes.json()) as ProductInfo;
+                const productId = mainProduct.id;
+                
+                // 2. Usar o ID retornado para buscar as avaliações
                 const res = await fetch(`http://localhost:3000/reviews?productId=${productId}`);
                 if (!res.ok) throw new Error("Erro ao buscar avaliações.");
                 const data = (await res.json()) as Review[];
@@ -42,7 +56,7 @@ export default function CustomerReviews({ productId }: CustomerReviewsProps) {
         };
 
         fetchReviews();
-    }, [productId]);
+    }, [productIdentifier]);
 
     if (loading) return <div>Carregando avaliações...</div>;
     if (error) return <div className="text-red-500">Erro: {error}</div>;

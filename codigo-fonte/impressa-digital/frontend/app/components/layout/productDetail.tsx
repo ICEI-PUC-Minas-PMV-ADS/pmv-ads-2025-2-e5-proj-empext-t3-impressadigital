@@ -3,62 +3,59 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import ProdutosGrid from "./ProdutosGrid";
-
-interface Product {
-  id: number;
-  nome: string;
-  preco: number;
-  categoria_id: number;
-  descricao?: string;
-  categoria_nome?: string;
-  midias?: Array<{
-    id: number;
-    url: string;
-  }>;
-  status?: string;
-}
 
 interface Category {
   id: number;
   nome: string;
 }
 
-interface ProductDetailsProps {
-    productId: string | string[] | undefined;
+// A entidade Produtos do backend inclui a categoria e mídias
+interface Product {
+  id: number;
+  nome: string;
+  preco: number;
+  descricao?: string;
+  slug: string; // Adicionado para garantir tipagem
+  status?: string;
+  categoria: Category; // Categoria completa vem da busca por slug no backend
+  midias?: Array<{
+    id: number;
+    url: string;
+  }>;
 }
 
-export default function ProductDetails({ productId }: ProductDetailsProps) {
+interface ProductDetailsProps {
+    // Renomeado para ser mais genérico
+    productIdentifier: string | string[] | undefined; 
+}
+
+export default function ProductDetails({ productIdentifier }: ProductDetailsProps) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!productId) {
-        setError("ID do produto não fornecido.");
+    if (!productIdentifier) {
+        setError("Identificador do produto não fornecido.");
         setLoading(false);
         return;
     }
+    
+    // Garantir que seja uma string se for um array de um elemento
+    const slug = Array.isArray(productIdentifier) ? productIdentifier[0] : productIdentifier;
 
     const fetchProduct = async () => {
       try {
         setLoading(true);
 
-        // Buscar produto com o ID da rota
-        const res = await fetch(`http://localhost:3000/products/${productId}`);
+        // *** MUDANÇA PRINCIPAL: Buscar produto usando o endpoint de SLUG ***
+        const res = await fetch(`http://localhost:3000/products/slug/${slug}`);
         if (!res.ok) throw new Error("Erro ao buscar produto");
         const data = (await res.json()) as Product;
 
-        // Buscar categorias (tipado)
-        const catRes = await fetch("http://localhost:3000/categories");
-        if (!catRes.ok) throw new Error("Erro ao buscar categorias");
-        const cats = (await catRes.json()) as Category[];
-
-        const categoriaNome = cats.find((c) => c.id === data.categoria_id)?.nome;
-
+        // O backend já retorna 'categoria' com 'nome', simplificando
         setProduct({
           ...data,
-          categoria_nome: categoriaNome,
           status: data.status === "inativo" ? "Inativo" : "Ativo",
         });
       } catch (err) {
@@ -68,7 +65,7 @@ export default function ProductDetails({ productId }: ProductDetailsProps) {
       }
     };
     fetchProduct();
-  }, [productId]);
+  }, [productIdentifier]);
 
   const formatPrice = (price?: number) => {
     if (typeof price !== "number") return "";
@@ -102,12 +99,15 @@ export default function ProductDetails({ productId }: ProductDetailsProps) {
           className="text-black font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
           style={{ background: "#3DF034" }}
         >
-          {product.categoria_nome || "Sem categoria"}
+          {/* Acessamos o nome da categoria que veio na busca */}
+          {product.categoria?.nome || "Sem categoria"} 
         </span>
 
         <p className="text-[32px] font-sans font-[inter] font-bold mt-2">
           {formatPrice(product.preco)}
         </p>
+        
+        <p className="mt-4 text-gray-700">{product.descricao}</p>
 
         <input
           type="text"
