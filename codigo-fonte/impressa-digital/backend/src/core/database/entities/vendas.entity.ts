@@ -1,11 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, OneToMany } from 'typeorm';
 import { User } from './user.entity';
 import { JoinColumn } from 'typeorm';
+import { Produtos } from './products.entity';
 
 
 @Entity('vendas')
 export class Vendas {
-   @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ nullable: false })
@@ -26,4 +27,5 @@ export class Vendas {
 
     @Column({ type: 'text', nullable: true })
     observacoes: string;
+
 }

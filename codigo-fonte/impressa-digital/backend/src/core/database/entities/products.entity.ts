@@ -12,6 +12,7 @@ import { CatalogoProdutos } from './catalogo_produtos.entity';
 import { Categorias } from './category.entity';
 import { ComentarioProduto } from './comentario_produtos.entity';
 import { Avaliacoes_Produto } from './avaliacoes_produtos.entity';
+import { Vendas } from './vendas.entity';
 
 @Entity('produtos')
 export class Produtos {
@@ -54,4 +55,7 @@ export class Produtos {
 
   @OneToMany(() => Avaliacoes_Produto, (avaliacoes) => avaliacoes.produto)
   avaliacoes: Avaliacoes_Produto[];
+
+
+  
 }
