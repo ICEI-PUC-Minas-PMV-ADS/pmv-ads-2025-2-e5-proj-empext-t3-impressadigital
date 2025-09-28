@@ -24,7 +24,7 @@ export class Produtos {
   @Column()
   status: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', length: 255, unique: true, nullable: false })
   slug: string;
 
   @ManyToOne(() => Categorias, (categoria) => categoria.produtos)
