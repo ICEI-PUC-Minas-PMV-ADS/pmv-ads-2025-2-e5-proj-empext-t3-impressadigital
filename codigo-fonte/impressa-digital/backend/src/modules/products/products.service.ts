@@ -1,5 +1,10 @@
-import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { FindManyOptions, Repository } from 'typeorm';
 import { Produtos } from '../../core/database/entities/products.entity';
 
 @Injectable()
@@ -9,8 +14,25 @@ export class ProductsService {
     private produtosRepository: Repository<Produtos>,
   ) {}
 
-  findAll(): Promise<Produtos[]> {
-    return this.produtosRepository.find({ relations: ['categoria', 'midias'] });
+  private generateSlug(name: string): string {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
+  }
+
+  findAll(categoria_id?: number): Promise<Produtos[]> {
+    const findOptions: FindManyOptions<Produtos> = {
+      relations: ['categoria', 'midias'],
+    };
+
+    if (categoria_id !== undefined) {
+      // Aplica o filtro na coluna categoria_id da entidade
+      findOptions.where = { categoria_id };
+    }
+
+    return this.produtosRepository.find(findOptions);
   }
 
   async findOne(id: number): Promise<Produtos> {
@@ -22,15 +44,57 @@ export class ProductsService {
     return produto;
   }
 
-  async create(data: Partial<Produtos>): Promise<Produtos> {
+  async findBySlug(slug: string): Promise<Produtos> {
+    const produto = await this.produtosRepository
+      .createQueryBuilder('produto')
+      .leftJoinAndSelect('produto.categoria', 'categoria')
+      .leftJoinAndSelect('produto.midias', 'midias')
+      .where('produto.slug = :slug', { slug })
+      .select([
+        'produto.id',
+        'produto.nome',
+        'produto.descricao',
+        'produto.preco',
+        'produto.slug',
+        'produto.status',
+        'categoria.id',
+        'categoria.nome',
+        'midias.id',
+        'midias.url',
+      ])
+      .getOne();
 
+    if (!produto)
+      throw new NotFoundException(`Produto com slug "${slug}" não encontrado`);
+
+    return produto;
+  }
+
+  async create(data: Partial<Produtos>): Promise<Produtos> {
     if (!data.categoria_id || isNaN(Number(data.categoria_id))) {
-      throw new BadRequestException('categoria_id é obrigatório e deve ser um número');
+      throw new BadRequestException(
+        'categoria_id é obrigatório e deve ser um número',
+      );
+    }
+
+    if (!data.nome) {
+      throw new BadRequestException('O nome do produto é obrigatório');
+    }
+
+    let slug = this.generateSlug(data.nome);
+
+    let counter = 1;
+    let slugExists = await this.produtosRepository.findOneBy({ slug });
+    while (slugExists) {
+      slug = `${slug}-${counter}`;
+      counter++;
+      slugExists = await this.produtosRepository.findOneBy({ slug });
     }
 
     const produto = this.produtosRepository.create({
       ...data,
       categoria_id: Number(data.categoria_id),
+      slug,
     });
 
     return this.produtosRepository.save(produto);
@@ -39,7 +103,8 @@ export class ProductsService {
   async update(id: number, data: Partial<Produtos>): Promise<Produtos> {
     await this.produtosRepository.update(id, {
       ...data,
-      categoria_id: data.categoria_id !== undefined ? Number(data.categoria_id) : undefined,
+      categoria_id:
+        data.categoria_id !== undefined ? Number(data.categoria_id) : undefined,
     });
     return this.findOne(id);
   }
