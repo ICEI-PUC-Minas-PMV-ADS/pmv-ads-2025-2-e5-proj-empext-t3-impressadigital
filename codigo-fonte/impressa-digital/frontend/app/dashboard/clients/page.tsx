@@ -1,3 +1,4 @@
+// page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -7,55 +8,82 @@ interface Client {
   name: string;
   cpf: string;
   email: string;
-  endereco: string;
+  phone: string;
 }
-
-const mockClients: Client[] = [
-  {
-    id: 1,
-    name: "Ana Castro de Souza",
-    cpf: "000.000.000-00",
-    email: "anacastro123@gmail.com",
-    endereco: "Rua 1, casa 2",
-  },
-  {
-    id: 2,
-    name: "João Pereira",
-    cpf: "111.222.333-44",
-    email: "joaopereira@gmail.com",
-    endereco: "Rua 1, casa 2",
-  },
-  {
-    id: 3,
-    name: "Maria Silva",
-    cpf: "222.333.444-55",
-    email: "mariasilva@gmail.com",
-    endereco: "Rua 1, casa 2",
-  },
-];
 
 const DashboardClients: React.FC = () => {
   const [search, setSearch] = useState("");
+  const [clients, setClients] = useState<Client[]>([]);
   const [filteredClients, setFilteredClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
+  const fetchClients = async () => {
     if (search.length === 0) {
       setFilteredClients([]);
+      setHasSearched(false);
       return;
     }
 
-    const results = mockClients.filter(
-      (client) =>
-        client.name.toLowerCase().includes(search.toLowerCase()) ||
-        client.cpf.includes(search) ||
-        client.email.toLowerCase().includes(search.toLowerCase())
-    );
-    setFilteredClients(results);
-  }, [search]);
+    setLoading(true);
+    setHasSearched(true);
+    try {
+      const response = await fetch('http://localhost:3000/users');
+      if (!response.ok) {
+        throw new Error('Erro ao carregar clientes');
+      }
+      const users: any[] = await response.json();
+      
+      const clientUsers = users
+        .filter(user => user.role === 'cliente')
+        .map(user => ({
+          id: user.id,
+          name: user.name,
+          cpf: user.cpf || 'Não informado',
+          email: user.email,
+          phone: user.phone || 'Não informado',
+        }));
 
-  const handleRemove = (id: number) => {
+      const results = clientUsers.filter(
+        (client) =>
+          client.name.toLowerCase().includes(search.toLowerCase()) ||
+          client.cpf.includes(search) ||
+          client.email.toLowerCase().includes(search.toLowerCase())
+      );
+
+      setClients(clientUsers);
+      setFilteredClients(results);
+    } catch (err) {
+      console.error('Erro ao carregar clientes:', err);
+      setClients([]);
+      setFilteredClients([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const timeoutId = setTimeout(fetchClients, 500);
+  return () => clearTimeout(timeoutId);
+}, [search]);
+
+  const handleRemove = async (id: number) => {
     if (confirm("Tem certeza que deseja remover este cliente?")) {
-      setFilteredClients((prev) => prev.filter((client) => client.id !== id));
+      try {
+        const response = await fetch(`http://localhost:3000/users/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          setClients(prev => prev.filter(client => client.id !== id));
+          setFilteredClients(prev => prev.filter(client => client.id !== id));
+        } else {
+          throw new Error('Erro ao remover cliente');
+        }
+      } catch (err) {
+        console.error('Erro ao remover cliente:', err);
+        alert('Erro ao remover cliente');
+      }
     }
   };
 
@@ -72,9 +100,29 @@ const DashboardClients: React.FC = () => {
         className="w-full px-4 py-2 mb-6 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
       />
 
+      {!hasSearched && search.length === 0 && (
+        <div className="text-center py-12">
+          <div className="bg-gray-50 rounded-2xl p-8 max-w-md mx-auto">
+            <p className="text-gray-600 text-lg mb-4">
+              🔍 Pesquise por clientes
+            </p>
+            <p className="text-gray-500 text-sm">
+              Digite o nome, CPF ou e-mail do cliente na barra de pesquisa acima para visualizar os resultados.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Loading */}
+      {loading && (
+        <div className="text-center py-8">
+          <p className="text-gray-600">Carregando clientes...</p>
+        </div>
+      )}
+
       {/* Lista dos clientes */}
       <div className="flex flex-col gap-4">
-        {filteredClients.length > 0 ? (
+        {hasSearched && !loading && filteredClients.length > 0 ? (
           filteredClients.map((client) => (
             <div
               key={client.id}
@@ -100,9 +148,9 @@ const DashboardClients: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm mb-4">Endereço</p>
-                  <p className="font-semibold text-[#4B4B4B] text-sm  truncate">
-                    {client.endereco}
+                  <p className="text-gray-400 text-sm mb-4">Telefone</p>
+                  <p className="font-semibold text-[#4B4B4B] text-sm ">
+                    {client.phone}
                   </p>
                 </div>
               </div>
@@ -115,8 +163,10 @@ const DashboardClients: React.FC = () => {
               </button>
             </div>
           ))
-        ) : search.length > 0 ? (
-          <p className="text-gray-600">Nenhum cliente encontrado.</p>
+        ) : hasSearched && !loading && search.length > 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-600">Nenhum cliente encontrado para "{search}".</p>
+          </div>
         ) : null}
       </div>
     </div>
