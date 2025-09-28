@@ -1,8 +1,36 @@
-/*
-https://docs.nestjs.com/controllers#controllers
-*/
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
+import { CarrinhoService } from './carrinho.service';
+import { Carrinho } from 'src/core/database/entities/carrinho.entity';
 
-import { Controller } from '@nestjs/common';
+@Controller('carrinho')
+export class CarrinhoController {
+  constructor(private readonly carrinhoService: CarrinhoService) {}
 
-@Controller()
-export class CarrinhoController {}
+  @Get()
+  async findAll(): Promise<Carrinho[]> {
+    return this.carrinhoService.findAll();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Carrinho> {
+    return this.carrinhoService.findById(id);
+  }
+
+  @Post()
+  async create(@Body() data: Partial<Carrinho>): Promise<Carrinho> {
+    return this.carrinhoService.create(data);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: Partial<Carrinho>,
+  ): Promise<Carrinho> {
+    return this.carrinhoService.update(id, data);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.carrinhoService.remove(id);
+  }
+}

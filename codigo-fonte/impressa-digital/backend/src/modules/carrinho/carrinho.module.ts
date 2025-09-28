@@ -5,12 +5,13 @@ https://docs.nestjs.com/modules
 */
 
 import { Module } from '@nestjs/common';
+import { AuthdbModule } from 'src/core/database/authdb.module';
+import { carrinhoProviders } from './repository/carrinho.provider';
 
 @Module({
-    imports: [],
-    controllers: [
-        CarrinhoController,],
-    providers: [
-        CarrinhoService,],
+    imports: [AuthdbModule],
+    providers: [...carrinhoProviders,CarrinhoService,],
+    controllers: [CarrinhoController,],
+    exports:[...carrinhoProviders],
 })
 export class CarrinhoModule { }
