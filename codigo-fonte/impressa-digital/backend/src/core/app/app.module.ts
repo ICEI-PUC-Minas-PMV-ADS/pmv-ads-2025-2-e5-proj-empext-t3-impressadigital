@@ -7,7 +7,7 @@ import { Avaliacoes_produtosController } from './../../modules/avaliacoes_produt
 import { Module } from '@nestjs/common';
 
 
-import { CatalogModule } from './../../modules/catalog/catalog.module';
+import { CatalogModule } from '../../modules/catalogo/catalog.module';
 import { AdmModule } from './../../modules/adm/adm.module';
 import { VendasModule } from './../../modules/vendas/vendas.module';
 import { MidiasModule } from './../../modules/midias/midias.module';
