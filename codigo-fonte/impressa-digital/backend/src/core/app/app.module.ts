@@ -1,5 +1,5 @@
-import { Comentario_produtosModule } from './../../modules/comentario_produtos/comentario_produtos.module';
-import { Comentario_produtosController } from './../../modules/comentario_produtos/comentario_produtos.controller';
+import { ComentarioProdutosModule } from './../../modules/comentario_produtos/comentario_produtos.module';
+
 import { Avaliacoes_produtosModule } from './../../modules/avaliacoes_produtos/avaliacoes_produtos.module';
 import { Avaliacoes_produtosService } from './../../modules/avaliacoes_produtos/avaliacoes_produtos.service';
 import { Avaliacoes_produtosController } from './../../modules/avaliacoes_produtos/avaliacoes_produtos.controller';
@@ -16,6 +16,7 @@ import { CarrinhoModule } from './../../modules/carrinho/carrinho.module';
 import { CategoryModule } from './../../modules/category/category.module';
 import { ProductsModule } from '../../modules/products/products.module';
 
+import { ComentarioProdutoController } from 'src/modules/comentario_produtos/comentario_produtos.controller';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from '../database/auth/auth.module';
@@ -25,7 +26,7 @@ import { AuthdbModule } from '../database/authdb.module';
 
 @Module({
   imports: [
-    Comentario_produtosModule,
+    ComentarioProdutosModule,
     Avaliacoes_produtosModule,
     AuthModule,
     AuthdbModule,
@@ -41,7 +42,7 @@ import { AuthdbModule } from '../database/authdb.module';
 
   ],
   controllers: [
-    Comentario_produtosController,
+    ComentarioProdutoController,
     Avaliacoes_produtosController, AppController],
   providers: [
     Avaliacoes_produtosService, AppService],
