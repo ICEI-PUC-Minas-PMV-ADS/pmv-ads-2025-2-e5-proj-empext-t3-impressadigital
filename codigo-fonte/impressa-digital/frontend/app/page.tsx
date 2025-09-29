@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import HeaderDashboard from "../app/components/layout/headerDashboard";
 import Navbar from "../app/components/layout/navbar";
 import Carrossel from "./components/layout/Carrossel";
+import CardSimples from "./components/layout/catalogo";
 
 
 export default function Home({ children }: { children: ReactNode }) {
@@ -10,6 +11,8 @@ export default function Home({ children }: { children: ReactNode }) {
       <HeaderDashboard />
       <Navbar/>
       <Carrossel/>
+      <CardSimples/>
+      
   
       
     </div>
