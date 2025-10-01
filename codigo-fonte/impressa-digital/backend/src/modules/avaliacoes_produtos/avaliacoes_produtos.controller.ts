@@ -1,4 +1,4 @@
-import { 
+import {
   Controller,
   Get,
   Post,
@@ -6,7 +6,7 @@ import {
   Delete,
   Param,
   Body,
-  ParseIntPipe 
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Avaliacoes_produtosService } from './avaliacoes_produtos.service';
 import { Avaliacoes_Produto } from 'src/core/database/entities/avaliacoes_produtos.entity';
@@ -21,12 +21,16 @@ export class Avaliacoes_produtosController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Avaliacoes_Produto> {
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Avaliacoes_Produto> {
     return this.avaliacoesService.findById(id);
   }
 
   @Post()
-  async create(@Body() data: Partial<Avaliacoes_Produto>): Promise<Avaliacoes_Produto> {
+  async create(
+    @Body() data: Partial<Avaliacoes_Produto>,
+  ): Promise<Avaliacoes_Produto> {
     return this.avaliacoesService.create(data);
   }
 
