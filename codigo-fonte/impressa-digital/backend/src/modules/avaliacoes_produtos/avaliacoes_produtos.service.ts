@@ -24,12 +24,22 @@ export class Avaliacoes_produtosService {
   }
 
   async findAll(): Promise<Avaliacoes_Produto[]> {
-    return await this.avaliacoesRepository.find();
+    return await this.avaliacoesRepository.find({
+      relations: ['produto', 'user'], 
+    });
+  }
+
+  async findByProdutoId(produtoId: number): Promise<Avaliacoes_Produto[]> {
+    return await this.avaliacoesRepository.find({
+      where: { produto: { id: produtoId } },
+      relations: ['produto', 'user'],
+    });
   }
 
   async findById(id: number): Promise<Avaliacoes_Produto> {
     const avaliacao = await this.avaliacoesRepository.findOne({
       where: { id },
+      relations: ['produto', 'user'],
     });
     if (!avaliacao) {
       throw new NotFoundException(`Avaliação com ID ${id} não encontrada`);

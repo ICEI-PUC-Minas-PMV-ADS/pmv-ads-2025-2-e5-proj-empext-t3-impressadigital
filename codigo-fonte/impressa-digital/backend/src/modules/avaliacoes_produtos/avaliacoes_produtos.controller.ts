@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { Avaliacoes_produtosService } from './avaliacoes_produtos.service';
 import { Avaliacoes_Produto } from 'src/core/database/entities/avaliacoes_produtos.entity';
@@ -18,6 +19,20 @@ export class Avaliacoes_produtosController {
   @Get()
   async findAll(): Promise<Avaliacoes_Produto[]> {
     return this.avaliacoesService.findAll();
+  }
+
+  @Get('produto/:produtoId')
+  async findByProdutoId(
+    @Param('produtoId', ParseIntPipe) produtoId: number,
+  ): Promise<Avaliacoes_Produto[]> {
+    return this.avaliacoesService.findByProdutoId(produtoId);
+  }
+
+  @Get('search')
+  async findByProdutoQuery(
+    @Query('produtoId', ParseIntPipe) produtoId: number,
+  ): Promise<Avaliacoes_Produto[]> {
+    return this.avaliacoesService.findByProdutoId(produtoId);
   }
 
   @Get(':id')

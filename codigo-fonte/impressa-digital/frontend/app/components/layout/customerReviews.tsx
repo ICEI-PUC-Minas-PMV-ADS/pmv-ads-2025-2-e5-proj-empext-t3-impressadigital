@@ -9,6 +9,7 @@ interface Review {
   avaliacoes: string;
   rating: number;
   midias?: { url: string }[];
+  produto: { id: number };
 }
 
 interface ProductInfo {
@@ -36,25 +37,29 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
 
     const slug = Array.isArray(productIdentifier) ? productIdentifier[0] : productIdentifier;
 
-    const fetchReviews = async () => {
-      try {
-        setLoading(true);
-        // 1. Busca o produto principal pelo slug para obter o ID
-        const mainProductRes = await fetch(`http://localhost:3000/products/slug/${slug}`);
-        if (!mainProductRes.ok) throw new Error("Erro ao buscar produto.");
-        const mainProduct = (await mainProductRes.json()) as ProductInfo;
+const fetchReviews = async () => {
+  try {
+    setLoading(true);
+    // 1. Busca o produto principal pelo slug para obter o ID
+    const mainProductRes = await fetch(`http://localhost:3000/products/slug/${slug}`);
+    if (!mainProductRes.ok) throw new Error("Erro ao buscar produto.");
+    const mainProduct = (await mainProductRes.json()) as ProductInfo;
 
-        // 2. MODIFICADO: Usa o ID do produto para buscar avaliações (com filtro)
-        const res = await fetch(`http://localhost:3000/avaliacoes_produto?productId=${mainProduct.id}`);
-        if (!res.ok) throw new Error("Erro ao buscar avaliações.");
-        const data = (await res.json()) as Review[];
-        setReviews(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Erro desconhecido");
-      } finally {
-        setLoading(false);
-      }
-    };
+    // 2. Busca de avaliações do produto específico
+    const res = await fetch(`http://localhost:3000/avaliacoes_produto/produto/${mainProduct.id}`);
+    if (!res.ok) throw new Error("Erro ao buscar avaliações.");
+    const productReviews = (await res.json()) as Review[];
+
+    console.log('Produto ID:', mainProduct.id);
+    console.log('Avaliações do produto:', productReviews.length);
+    
+    setReviews(productReviews);
+  } catch (err) {
+    setError(err instanceof Error ? err.message : "Erro desconhecido");
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchReviews();
   }, [productIdentifier]);
