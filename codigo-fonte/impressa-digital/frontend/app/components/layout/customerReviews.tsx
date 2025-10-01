@@ -49,9 +49,6 @@ const fetchReviews = async () => {
     const res = await fetch(`http://localhost:3000/avaliacoes_produto/produto/${mainProduct.id}`);
     if (!res.ok) throw new Error("Erro ao buscar avaliações.");
     const productReviews = (await res.json()) as Review[];
-
-    console.log('Produto ID:', mainProduct.id);
-    console.log('Avaliações do produto:', productReviews.length);
     
     setReviews(productReviews);
   } catch (err) {
