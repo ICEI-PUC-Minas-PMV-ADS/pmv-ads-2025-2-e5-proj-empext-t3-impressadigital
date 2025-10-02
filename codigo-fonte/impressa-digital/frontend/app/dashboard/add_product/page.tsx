@@ -2,17 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 
-const categories = [
-  { id: 1, nome: "Casamento" },
-  { id: 2, nome: "Festa Infantil" },
-  { id: 3, nome: "Aniversário Adulto" },
-  { id: 4, nome: "Eventos Corporativos" },
-  { id: 5, nome: "Formatura" },
-  { id: 6, nome: "Chá de Bebê" },
-  { id: 7, nome: "Eventos Esportivos" },
-];
+interface Categoria {
+  id: number;
+  nome: string;
+}
 
 const DashboardAddProduct: React.FC = () => {
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [categoriaId, setCategoriaId] = useState<number | null>(null);
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -23,6 +19,30 @@ const DashboardAddProduct: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState(""); 
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingCategorias, setLoadingCategorias] = useState(true);
+
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        setLoadingCategorias(true);
+        const response = await fetch("http://localhost:3000/categories");
+        
+        if (!response.ok) {
+          throw new Error("Erro ao carregar categorias");
+        }
+        
+        const categoriasData = await response.json();
+        setCategorias(categoriasData);
+      } catch (err) {
+        console.error("Erro ao carregar categorias:", err);
+        setErrorMessage("Erro ao carregar categorias. Tente novamente.");
+      } finally {
+        setLoadingCategorias(false);
+      }
+    };
+
+    fetchCategorias();
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
@@ -110,7 +130,6 @@ const DashboardAddProduct: React.FC = () => {
 
       setSuccessMessage("Produto adicionado com sucesso!");
       
-      // Limpar o formulário
       setNome("");
       setDescricao("");
       setPreco("");
@@ -148,9 +167,12 @@ const DashboardAddProduct: React.FC = () => {
             onChange={(e) => setCategoriaId(Number(e.target.value))}
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
             required
+            disabled={loadingCategorias}
           >
-            <option value="">Selecione a categoria</option>
-            {categories.map((cat) => (
+            <option value="">
+              {loadingCategorias ? "Carregando categorias..." : "Selecione a categoria"}
+            </option>
+            {categorias.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.nome}
               </option>
@@ -262,9 +284,9 @@ const DashboardAddProduct: React.FC = () => {
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || loadingCategorias}
             className={`mt-4 px-6 py-2 bg-[#45A62D] text-white font-semibold rounded-2xl transition w-50 cursor-pointer ${
-              isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#3a8a24]'
+              isLoading || loadingCategorias ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#3a8a24]'
             }`}
           >
             {isLoading ? 'Salvando...' : 'Salvar produto'}
