@@ -10,10 +10,14 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Produtos } from '../../core/database/entities/products.entity';
+import { MidiasService } from '../midias/midia.service';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly midiasService: MidiasService, 
+  ) {}
 
   @Get()
   findAll(@Query('categoria_id') categoria_id?: string): Promise<Produtos[]> {
@@ -46,7 +50,11 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  async remove(@Param('id') id: number): Promise<void> {
+    // Primeiro exclui todas as mídias associadas
+    await this.midiasService.removeByProdutoId(+id);
+    
+    // Depois exclui o produto
     return this.productsService.remove(+id);
   }
 }

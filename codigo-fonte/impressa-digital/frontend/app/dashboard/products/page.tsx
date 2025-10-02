@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 
 interface Product {
   id: number;
@@ -24,6 +23,7 @@ interface ToastProps {
   type?: "success" | "error";
   onClose: () => void;
 }
+
 const Toast: React.FC<ToastProps> = ({
   message,
   type = "success",
@@ -59,8 +59,8 @@ const DashboardProducts: React.FC = () => {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -69,6 +69,9 @@ const DashboardProducts: React.FC = () => {
     descricao: "",
     status: "",
   });
+
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
@@ -126,7 +129,6 @@ const DashboardProducts: React.FC = () => {
 
   const aplicarFiltros = () => {
     let filtrados = [...products];
-
     if (statusFiltro !== "todos")
       filtrados = filtrados.filter((p) => p.status === statusFiltro);
     if (categoriaFiltro !== "todos")
@@ -148,26 +150,56 @@ const DashboardProducts: React.FC = () => {
       currency: "BRL",
     }).format(price);
 
-  const confirmDelete = (product: Product) => {
-    setDeletingProduct(product);
-    setIsDeleteModalOpen(true);
-  };
+  const confirmDeleteProduct = (product: Product) =>
+    setProductToDelete(product);
 
-  const handleDelete = async () => {
-    if (!deletingProduct) return;
+  const handleDeleteConfirmed = async () => {
+    if (!productToDelete) return;
     try {
       const response = await fetch(
-        `http://localhost:3000/products/${deletingProduct.id}`,
+        `http://localhost:3000/products/${productToDelete.id}`,
         { method: "DELETE" }
       );
       if (!response.ok) throw new Error("Erro ao excluir produto");
       showToast("Produto excluído com sucesso!", "success");
-      setIsDeleteModalOpen(false);
-      setDeletingProduct(null);
       fetchData();
     } catch (err) {
       showToast("Erro ao excluir produto", "error");
       console.error(err);
+    } finally {
+      setProductToDelete(null);
+    }
+  };
+
+  const reloadProductData = async (productId: number) => {
+    try {
+      console.log(`Recarregando produto ID: ${productId}`);
+      const response = await fetch(
+        `http://localhost:3000/products/${productId}`
+      );
+
+      if (response.ok) {
+        const updatedProduct = await response.json();
+
+        const enrichedProduct = {
+          ...updatedProduct,
+          categoria_nome: categories.find(
+            (cat: Category) => cat.id === updatedProduct.categoria_id
+          )?.nome,
+          status: updatedProduct.status === "inativo" ? "Inativo" : "Ativo",
+        };
+
+        setEditingProduct(enrichedProduct);
+        setPreviews(enrichedProduct.midias?.map((m: any) => m.url) || []);
+        return enrichedProduct;
+      } else {
+        const errorText = await response.text();
+        console.error("Erro ao recarregar produto:", errorText);
+        throw new Error(`Erro ${response.status}: ${errorText}`);
+      }
+    } catch (error) {
+      console.error("Erro ao recarregar dados do produto:", error);
+      throw error;
     }
   };
 
@@ -180,6 +212,9 @@ const DashboardProducts: React.FC = () => {
       descricao: product.descricao || "",
       status: product.status || "Ativo",
     });
+    setPreviews(product.midias?.map((m) => m.url) || []);
+    setFiles([]);
+    setSelectedImageIndex(0);
     setIsEditModalOpen(true);
   };
 
@@ -193,6 +228,9 @@ const DashboardProducts: React.FC = () => {
       descricao: "",
       status: "",
     });
+    setPreviews([]);
+    setFiles([]);
+    setSelectedImageIndex(0);
   };
 
   const handleInputChange = (
@@ -212,7 +250,58 @@ const DashboardProducts: React.FC = () => {
     setFormData((prev) => ({ ...prev, preco: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files;
+    if (!selectedFiles) return;
+    const newFiles = Array.from(selectedFiles);
+    const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+    setFiles((prev) => [...prev, ...newFiles]);
+    setPreviews((prev) => [...prev, ...newPreviews]);
+  };
+
+  const removeImage = async (index: number) => {
+    if (editingProduct?.midias?.[index]?.id) {
+      const mediaId = editingProduct.midias[index].id;
+
+      try {
+        const res = await fetch(`http://localhost:3000/midias/${mediaId}`, {
+          method: "DELETE",
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error("❌ Erro na resposta:", errorText);
+          throw new Error(
+            `Erro ao excluir imagem: ${res.status} ${res.statusText}`
+          );
+        }
+
+        showToast("Imagem excluída com sucesso", "success");
+
+        if (editingProduct) {
+          await reloadProductData(editingProduct.id);
+        }
+      } catch (err) {
+        console.error("💥 Erro detalhado:", err);
+        showToast("Erro ao excluir imagem", "error");
+        return;
+      }
+    } else {
+      // Remover imagens do estado local que não estão salvas no banco
+      setFiles((prev) => prev.filter((_, i) => i !== index));
+      setPreviews((prev) => {
+        const removed = prev[index];
+        URL.revokeObjectURL(removed);
+        return prev.filter((_, i) => i !== index);
+      });
+
+      if (selectedImageIndex >= previews.length - 1) {
+        setSelectedImageIndex(0);
+      }
+    }
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingProduct) return;
     try {
@@ -227,16 +316,31 @@ const DashboardProducts: React.FC = () => {
             preco: precoNumerico,
             categoria_id: parseInt(formData.categoria_id),
             descricao: formData.descricao,
-            status: formData.status,
+            status: formData.status.toLowerCase(),
           }),
         }
       );
       if (!response.ok) throw new Error("Erro ao atualizar produto");
+
+      if (files.length > 0) {
+        const formDataUpload = new FormData();
+        files.forEach((file) => formDataUpload.append("files", file));
+        formDataUpload.append("produto_id", editingProduct.id.toString());
+        const uploadRes = await fetch("http://localhost:3000/midias/upload", {
+          method: "POST",
+          body: formDataUpload,
+        });
+        if (!uploadRes.ok) throw new Error("Erro ao enviar imagens");
+      }
+
       showToast("Produto atualizado com sucesso!", "success");
       closeEditModal();
       fetchData();
     } catch (err) {
-      showToast("Erro ao atualizar produto", "error");
+      showToast(
+        err instanceof Error ? err.message : "Erro ao atualizar produto",
+        "error"
+      );
       console.error(err);
     }
   };
@@ -266,11 +370,12 @@ const DashboardProducts: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white p-6">
-      <p className="text-black text-xl lg:text-2xl font-bold">Produtos</p>
+    <div className="w-full bg-white p-6 text-black">
+      <p className="text-xl lg:text-2xl font-bold">Produtos</p>
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-4 mt-4 bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 items-end">
+        {/* Status */}
         <div>
           <label className="block text-sm text-gray-600 mb-1">Status</label>
           <select
@@ -284,6 +389,7 @@ const DashboardProducts: React.FC = () => {
           </select>
         </div>
 
+        {/* Categoria */}
         <div>
           <label className="block text-sm text-gray-600 mb-1">Categoria</label>
           <select
@@ -300,6 +406,7 @@ const DashboardProducts: React.FC = () => {
           </select>
         </div>
 
+        {/* Nome */}
         <div>
           <label className="block text-sm text-gray-600 mb-1">Nome</label>
           <input
@@ -311,6 +418,7 @@ const DashboardProducts: React.FC = () => {
           />
         </div>
 
+        {/* Itens por página */}
         <div>
           <label className="block text-sm text-gray-600 mb-1">
             Itens por página
@@ -330,7 +438,7 @@ const DashboardProducts: React.FC = () => {
       </div>
 
       {/* Lista de produtos */}
-      <div className="mt-6 w-full text-black">
+      <div className="mt-6 w-full">
         <div className="bg-white rounded-lg shadow p-4 items-center font-semibold hidden md:flex">
           <div className="flex items-center gap-4 w-3/5">Nome / Imagem</div>
           <div className="w-1/5">Categoria</div>
@@ -362,8 +470,8 @@ const DashboardProducts: React.FC = () => {
                 <div className="w-1/6">{product.status || "Ativo"}</div>
                 <div className="flex justify-end gap-3 w-1/12">
                   <button
-                    className="hover:scale-110 transition-transform"
                     onClick={() => openEditModal(product)}
+                    className="hover:scale-110 transition-transform"
                   >
                     <img
                       src="/images/edit_icon.png"
@@ -372,8 +480,8 @@ const DashboardProducts: React.FC = () => {
                     />
                   </button>
                   <button
+                    onClick={() => confirmDeleteProduct(product)}
                     className="hover:scale-110 transition-transform"
-                    onClick={() => confirmDelete(product)}
                   >
                     <img
                       src="/images/delete_icon.png"
@@ -389,15 +497,15 @@ const DashboardProducts: React.FC = () => {
                 <div className="flex justify-between">
                   <div className="flex flex-col flex-1 gap-2">
                     <div className="flex gap-x-1">
-                      <span className="font-semibold">Nome:</span>
+                      <span className="font-semibold">Nome:</span>{" "}
                       <span>{product.nome}</span>
                     </div>
                     <div className="flex gap-x-1">
-                      <span className="font-semibold">Categoria:</span>
+                      <span className="font-semibold">Categoria:</span>{" "}
                       <span>{product.categoria_nome || "Sem categoria"}</span>
                     </div>
                     <div className="flex gap-x-1">
-                      <span className="font-semibold">Preço:</span>
+                      <span className="font-semibold">Preço:</span>{" "}
                       <span>{formatPrice(product.preco)}</span>
                     </div>
                   </div>
@@ -418,8 +526,8 @@ const DashboardProducts: React.FC = () => {
                   </div>
                   <div className="flex gap-2">
                     <button
-                      className="hover:scale-110 transition-transform"
                       onClick={() => openEditModal(product)}
+                      className="hover:scale-110 transition-transform"
                     >
                       <img
                         src="/images/edit_icon.png"
@@ -428,8 +536,8 @@ const DashboardProducts: React.FC = () => {
                       />
                     </button>
                     <button
+                      onClick={() => confirmDeleteProduct(product)}
                       className="hover:scale-110 transition-transform"
-                      onClick={() => confirmDelete(product)}
                     >
                       <img
                         src="/images/delete_icon.png"
@@ -465,7 +573,6 @@ const DashboardProducts: React.FC = () => {
           >
             &lt;
           </button>
-
           {gerarNumerosPagina().map((num) => (
             <button
               key={num}
@@ -479,7 +586,6 @@ const DashboardProducts: React.FC = () => {
               {num}
             </button>
           ))}
-
           <button
             onClick={() =>
               setPaginaAtual((p) => Math.min(totalPaginas, paginaAtual + 1))
@@ -496,25 +602,185 @@ const DashboardProducts: React.FC = () => {
         </div>
       )}
 
-      {/* Modais e Toast */}
-      {isDeleteModalOpen && deletingProduct && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50 p-4 text-black">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
-            <h2 className="text-lg font-bold mb-4">Confirmar Exclusão</h2>
-            <p>
+      {/* MODAL DE EDIÇÃO */}
+      {isEditModalOpen && editingProduct && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-4 md:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:w-1/3 gap-4">
+              <h3 className="font-semibold">Imagens</h3>
+
+              {/* Imagem principal */}
+              {previews.length > 0 && (
+                <img
+                  src={previews[selectedImageIndex]}
+                  alt={`preview principal`}
+                  className="w-full h-64 object-cover rounded-lg mb-2"
+                />
+              )}
+
+              <div className="flex gap-2 overflow-x-auto">
+                {previews.map((url, idx) => (
+                  <div key={idx} className="relative flex-shrink-0">
+                    <img
+                      src={url}
+                      alt={`preview ${idx}`}
+                      onClick={() => setSelectedImageIndex(idx)}
+                      className={`w-20 h-20 object-cover rounded-lg cursor-pointer border-2 ${
+                        selectedImageIndex === idx
+                          ? "border-green-500"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-700 text-xs"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <label className="mt-2 px-4 py-2 bg-green-600 text-white rounded-2xl cursor-pointer hover:bg-green-700 text-center text-sm">
+                Adicionar imagens
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+            </div>
+
+            {/* FORMULÁRIO */}
+            <div className="flex-1">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Editar Produto</h2>
+                <button
+                  onClick={closeEditModal}
+                  className="text-gray-500 hover:text-[#45A62D] hover:scale-105 cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+              <form onSubmit={handleEditSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Nome</label>
+                  <input
+                    type="text"
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Categoria
+                  </label>
+                  <select
+                    name="categoria_id"
+                    value={formData.categoria_id}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+                    required
+                  >
+                    <option value="">Selecione uma categoria</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.nome}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Preço
+                  </label>
+                  <input
+                    type="text"
+                    name="preco"
+                    value={formData.preco}
+                    onChange={handlePriceChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Descrição
+                  </label>
+                  <textarea
+                    name="descricao"
+                    value={formData.descricao}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+                    rows={4}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+                    required
+                  >
+                    <option value="">Selecione o status</option>
+                    <option value="Ativo">Ativo</option>
+                    <option value="Inativo">Inativo</option>
+                  </select>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={closeEditModal}
+                    className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-[#45A62D] text-white rounded-2xl hover:bg-green-600"
+                  >
+                    Salvar Alterações
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE EXCLUSÃO */}
+      {productToDelete && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+            <h2 className="text-lg font-bold mb-4">Confirmar exclusão</h2>
+            <p className="mb-6">
               Tem certeza que deseja excluir o produto{" "}
-              <span className="font-semibold">{deletingProduct.nome}</span>?
+              <strong>{productToDelete.nome}</strong>?
             </p>
-            <div className="flex justify-end gap-3 mt-6">
+            <div className="flex justify-end gap-3">
               <button
-                onClick={() => setIsDeleteModalOpen(false)}
-                className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100 cursor-pointer hover:scale-102"
+                onClick={() => setProductToDelete(null)}
+                className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100"
               >
                 Cancelar
               </button>
               <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-2xl hover:bg-red-700 cursor-pointer hover:scale-102"
+                onClick={handleDeleteConfirmed}
+                className="px-4 py-2 bg-red-600 text-white rounded-2xl hover:bg-red-700"
               >
                 Excluir
               </button>
@@ -523,111 +789,7 @@ const DashboardProducts: React.FC = () => {
         </div>
       )}
 
-      {isEditModalOpen && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50 p-4 text-black">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Editar Produto</h2>
-              <button
-                onClick={closeEditModal}
-                className="text-gray-500 hover:text-[#45A62D] hover:scale-105 cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Nome</label>
-                <input
-                  type="text"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Categoria
-                </label>
-                <select
-                  name="categoria_id"
-                  value={formData.categoria_id}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
-                  required
-                >
-                  <option value="">Selecione uma categoria</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Preço</label>
-                <input
-                  type="text"
-                  name="preco"
-                  value={formData.preco}
-                  onChange={handlePriceChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Descrição
-                </label>
-                <textarea
-                  name="descricao"
-                  value={formData.descricao}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
-                  rows={4}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Status</label>
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
-                  required
-                >
-                  <option value="">Selecione o status</option>
-                  <option value="Ativo">Ativo</option>
-                  <option value="Inativo">Inativo</option>
-                </select>
-              </div>
-
-              <div className="flex justify-center gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={closeEditModal}
-                  className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100 cursor-pointer hover:scale-102 transition-transform duration-300 ease-in-out"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-[#45A62D] text-white rounded-2xl hover:bg-green-600 cursor-pointer hover:scale-102 transition-transform duration-300 ease-in-out"
-                >
-                  Salvar Alterações
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
+      {/* TOAST */}
       {toastMessage && (
         <Toast
           message={toastMessage}

@@ -10,6 +10,6 @@ import { CloudinaryModule } from './cloudinary.module';
   imports: [AuthdbModule, CloudinaryModule],
   providers: [...midiasProviders, MidiasService],
   controllers: [MidiasController],
-  exports: [...midiasProviders],
+  exports: [...midiasProviders, MidiasService],
 })
 export class MidiasModule {}

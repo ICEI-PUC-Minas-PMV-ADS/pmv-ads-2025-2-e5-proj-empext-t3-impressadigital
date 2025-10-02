@@ -1,3 +1,4 @@
+// midia.service.ts
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Midias } from '../../core/database/entities/midias.entity';
@@ -22,13 +23,18 @@ export class MidiasService {
   }
 
   async findOne(id: number): Promise<Midias> {
-    const midia = await this.midiasRepository.findOne({
-      where: { id },
-      relations: ['produto'],
-    });
-    if (!midia) throw new NotFoundException(`Mídia ${id} não encontrada`);
-    return midia;
+  const midia = await this.midiasRepository.findOne({
+    where: { id },
+    relations: ['produto'],
+  });
+  
+  if (!midia) {
+    console.log(`Mídia com ID ${id} não encontrada no banco de dados`);
+    throw new NotFoundException(`Mídia ${id} não encontrada`);
   }
+  
+  return midia;
+}
 
   create(data: Partial<Midias>): Promise<Midias> {
     const midia = this.midiasRepository.create(data);
@@ -40,11 +46,33 @@ export class MidiasService {
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.midiasRepository.delete(id);
+async remove(id: number): Promise<void> {
+  console.log(`🔍 Buscando mídia ${id} no banco...`);
+  const midia = await this.midiasRepository.findOne({ 
+    where: { id },
+    relations: ['produto'] 
+  });
+  
+  if (!midia) {
+    console.log(`❌ Mídia ${id} não encontrada no banco`);
+    throw new NotFoundException(`Mídia ${id} não encontrada`);
   }
 
-    async createWithUpload(files: any[], produtoId: number): Promise<Midias[]> {
+  // Exclui do Cloudinary se existir public_id
+  if (midia.public_id) {
+    try {
+      await this.cloudinaryService.deleteImage(midia.public_id);
+    } catch (error) {
+      console.error('❌ Erro ao excluir do Cloudinary:', error);
+    }
+  } else {
+    console.warn(`⚠️ Mídia ${id} não possui public_id`);
+  }
+
+  await this.midiasRepository.delete(id);
+}
+
+  async createWithUpload(files: any[], produtoId: number): Promise<Midias[]> {
     try {
       const uploadResults = await this.cloudinaryService.uploadMultipleImages(files);
       const savedMidias: Midias[] = [];
@@ -53,6 +81,7 @@ export class MidiasService {
         const midiaData = {
           url: result.secure_url,
           tipo: 'imagem',
+          public_id: result.public_id, 
           produto: { id: produtoId } as any,
         };
 
@@ -66,5 +95,22 @@ export class MidiasService {
       console.error('Error in createWithUpload:', error);
       throw new Error('Failed to upload images and create media records');
     }
+  }
+
+  async removeByProdutoId(produtoId: number): Promise<void> {
+    const midias = await this.midiasRepository.find({ 
+      where: { produto: { id: produtoId } } 
+    });
+
+    for (const midia of midias) {
+      await this.remove(midia.id);
+    }
+  }
+
+  async findByProdutoId(produtoId: number): Promise<Midias[]> {
+    return this.midiasRepository.find({
+      where: { produto: { id: produtoId } },
+      relations: ['produto'],
+    });
   }
 }

@@ -39,9 +39,18 @@ export class MidiasController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
-    return this.midiasService.remove(+id);
+async remove(@Param('id') id: number): Promise<void> {
+  
+  try {
+    const midia = await this.midiasService.findOne(+id);
+    
+    await this.midiasService.remove(+id);
+    
+  } catch (error) {
+    console.error(`❌ Erro ao excluir mídia ${id}:`, error);
+    throw error;
   }
+}
 
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files', 10))
