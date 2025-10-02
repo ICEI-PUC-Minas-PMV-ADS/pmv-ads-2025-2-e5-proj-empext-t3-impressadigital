@@ -114,10 +114,10 @@ const DashboardAddProduct: React.FC = () => {
 
   return (
     <>
-      <p className="text-black text-4xl font-bold mb-6">Adicionar produto</p>
+      <p className="text-black text-xl lg:text-2xl font-bold mb-6">Adicionar produto</p>
 
       <div className="border-2 border-gray-200 rounded-2xl p-6 shadow-sm">
-        <p className="text-black font-sans font-bold mb-4 text-2xl">
+        <p className="text-black font-sans font-bold mb-4 text-xl">
           Informe os detalhes do produto
         </p>
 

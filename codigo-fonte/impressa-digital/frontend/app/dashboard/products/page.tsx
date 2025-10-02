@@ -267,7 +267,7 @@ const DashboardProducts: React.FC = () => {
 
   return (
     <div className="w-full bg-white p-6">
-      <p className="text-black text-3xl lg:text-4xl font-bold">Produtos</p>
+      <p className="text-black text-xl lg:text-2xl font-bold">Produtos</p>
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-4 mt-4 bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 items-end">
