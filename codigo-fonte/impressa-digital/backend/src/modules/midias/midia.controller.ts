@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { 
+  Controller, 
+  Get, 
+  Post, 
+  Put, 
+  Delete, 
+  Body, 
+  Param, 
+  UseInterceptors, 
+  UploadedFiles,
+  BadRequestException 
+} from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { MidiasService } from './midia.service';
 import { Midias } from '../../core/database/entities/midias.entity';
 
@@ -29,5 +41,22 @@ export class MidiasController {
   @Delete(':id')
   remove(@Param('id') id: number): Promise<void> {
     return this.midiasService.remove(+id);
+  }
+
+  @Post('upload')
+  @UseInterceptors(FilesInterceptor('files', 10))
+  async uploadFiles(
+    @UploadedFiles() files: any[],
+    @Body('produto_id') produtoId: number,
+  ): Promise<Midias[]> {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('Nenhum arquivo enviado');
+    }
+
+    if (!produtoId) {
+      throw new BadRequestException('ID do produto é obrigatório');
+    }
+
+    return this.midiasService.createWithUpload(files, +produtoId);
   }
 }

@@ -21,7 +21,8 @@ const DashboardAddProduct: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [status, setStatus] = useState("");
   const [successMessage, setSuccessMessage] = useState(""); 
-  const [errorMessage, setErrorMessage] = useState(""); // 
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
@@ -47,70 +48,86 @@ const DashboardAddProduct: React.FC = () => {
   }, [previews]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  setSuccessMessage("");
-  setErrorMessage("");
+    setSuccessMessage("");
+    setErrorMessage("");
+    setIsLoading(true);
 
-  if (!categoriaId) {
-    setErrorMessage("Selecione uma categoria.");
-    return;
-  }
-
-  if (!nome.trim()) {
-    setErrorMessage("O nome do produto é obrigatório.");
-    return;
-  }
-
-  try {
-    // Criar o produto
-    const produtoRes = await fetch("http://localhost:3000/products", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nome,
-        descricao,
-        preco: parseFloat(preco.replace(",", ".")),
-        categoria_id: categoriaId,
-        status,
-      }),
-    });
-
-    if (!produtoRes.ok) throw new Error("Erro ao salvar produto");
-
-    const produtoData = await produtoRes.json();
-    const produtoId = produtoData.id;
-
-    if (files.length > 0) {
-      const formData = new FormData();
-      files.forEach((file) => formData.append("files", file));
-      formData.append("produto_id", produtoId.toString());
-
-      const midiasRes = await fetch("http://localhost:3000/midias", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!midiasRes.ok) throw new Error("Erro ao salvar imagens");
+    if (!categoriaId) {
+      setErrorMessage("Selecione uma categoria.");
+      setIsLoading(false);
+      return;
     }
 
-    setSuccessMessage("Produto adicionado com sucesso!");
-    setErrorMessage("");
+    if (!nome.trim()) {
+      setErrorMessage("O nome do produto é obrigatório.");
+      setIsLoading(false);
+      return;
+    }
 
-    setNome("");
-    setDescricao("");
-    setPreco("");
-    setCategoriaId(null);
-    setFiles([]);
-    setPreviews([]);
+    try {
+      // Criar o produto
+      const produtoRes = await fetch("http://localhost:3000/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome,
+          descricao,
+          preco: parseFloat(preco.replace(",", ".")),
+          categoria_id: categoriaId,
+          status,
+        }),
+      });
 
-    setTimeout(() => setSuccessMessage(""), 3000);
-  } catch (err) {
-    console.error(err);
-    setErrorMessage("Erro ao salvar produto ou imagens.");
-    setTimeout(() => setErrorMessage(""), 4000);
-  }
-};
+      if (!produtoRes.ok) {
+        const errorData = await produtoRes.json();
+        throw new Error(errorData.message || "Erro ao salvar produto");
+      }
+
+      const produtoData = await produtoRes.json();
+      const produtoId = produtoData.id;
+
+      // Upload das imagens para o Cloudinary
+      if (files.length > 0) {
+        const formData = new FormData();
+        files.forEach((file) => formData.append("files", file));
+        formData.append("produto_id", produtoId.toString());
+
+        const midiasRes = await fetch("http://localhost:3000/midias/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!midiasRes.ok) {
+          const errorData = await midiasRes.json();
+          throw new Error(errorData.message || "Erro ao fazer upload das imagens");
+        }
+
+        const midiasData = await midiasRes.json();
+        console.log("Mídias salvas:", midiasData);
+      }
+
+      setSuccessMessage("Produto adicionado com sucesso!");
+      
+      // Limpar o formulário
+      setNome("");
+      setDescricao("");
+      setPreco("");
+      setCategoriaId(null);
+      setStatus("");
+      setFiles([]);
+      setPreviews([]);
+
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err: any) {
+      console.error("Erro completo:", err);
+      setErrorMessage(err.message || "Erro ao salvar produto ou fazer upload das imagens.");
+      setTimeout(() => setErrorMessage(""), 4000);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -130,6 +147,7 @@ const DashboardAddProduct: React.FC = () => {
             value={categoriaId ?? ""}
             onChange={(e) => setCategoriaId(Number(e.target.value))}
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+            required
           >
             <option value="">Selecione a categoria</option>
             {categories.map((cat) => (
@@ -146,6 +164,7 @@ const DashboardAddProduct: React.FC = () => {
             value={nome}
             onChange={(e) => setNome(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+            required
           />
 
           {/* Upload de fotos */}
@@ -205,6 +224,7 @@ const DashboardAddProduct: React.FC = () => {
             value={status}
             onChange={(e) => setStatus(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+            required
           >
             <option value="">Selecione o status</option>
             <option value="ativo">Ativo</option>
@@ -219,6 +239,7 @@ const DashboardAddProduct: React.FC = () => {
             value={preco}
             onChange={(e) => setPreco(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+            required
             onInput={(e) => {
               const target = e.target as HTMLInputElement;
 
@@ -241,9 +262,12 @@ const DashboardAddProduct: React.FC = () => {
 
           <button
             type="submit"
-            className="mt-4 px-6 py-2 bg-[#45A62D] text-white font-semibold rounded-2xl transition w-50 cursor-pointer"
+            disabled={isLoading}
+            className={`mt-4 px-6 py-2 bg-[#45A62D] text-white font-semibold rounded-2xl transition w-50 cursor-pointer ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#3a8a24]'
+            }`}
           >
-            Salvar produto
+            {isLoading ? 'Salvando...' : 'Salvar produto'}
           </button>
 
           {successMessage && (
