@@ -20,24 +20,28 @@ export class VendasService {
     }
   }
 
-
-  async findAll(): Promise<Vendas[]> {
-  const rep = await this.vendasRepository.find();
-  return rep
-  }
+async findAll(): Promise<Vendas[]> {
+  const rep = await this.vendasRepository.find({
+    relations: ['user'],
+  });
+  return rep;
+}
 
  
-  async findById(id: number): Promise<Vendas> {
-    const venda = await this.vendasRepository.findOne({ where: { id } });
-    if (!venda) {
-      throw new NotFoundException(`Venda com ID ${id} não encontrada`);
-    }
-    return venda;
+async findById(id: number): Promise<Vendas> {
+  const venda = await this.vendasRepository.findOne({ 
+    where: { id },
+    relations: ['user'],
+  });
+  if (!venda) {
+    throw new NotFoundException(`Venda com ID ${id} não encontrada`);
   }
+  return venda;
+}
 
   async update(id: number, data: Partial<Vendas>): Promise<Vendas> {
-    const venda = await this.findById(id); // reaproveita o método
-    Object.assign(venda, data); // mistura os dados novos
+    const venda = await this.findById(id); 
+    Object.assign(venda, data); 
     return await this.vendasRepository.save(venda);
   }
 

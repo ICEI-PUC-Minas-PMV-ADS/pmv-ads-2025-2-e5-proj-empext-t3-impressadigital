@@ -19,13 +19,16 @@ interface Category {
   nome: string;
 }
 
-// Componente Toast
 interface ToastProps {
   message: string;
   type?: "success" | "error";
   onClose: () => void;
 }
-const Toast: React.FC<ToastProps> = ({ message, type = "success", onClose }) => {
+const Toast: React.FC<ToastProps> = ({
+  message,
+  type = "success",
+  onClose,
+}) => {
   useEffect(() => {
     const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);
@@ -47,6 +50,13 @@ const DashboardProducts: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [categoriaFiltro, setCategoriaFiltro] = useState<string>("todos");
+  const [nomeFiltro, setNomeFiltro] = useState<string>("");
+  const [itensPorPagina, setItensPorPagina] = useState<number>(10);
+  const [paginaAtual, setPaginaAtual] = useState<number>(1);
+  const [productsFiltrados, setProductsFiltrados] = useState<Product[]>([]);
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -60,10 +70,13 @@ const DashboardProducts: React.FC = () => {
     status: "",
   });
 
-  // Toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
-  const showToast = (message: string, type: "success" | "error" = "success") => {
+
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
     setToastMessage(message);
     setToastType(type);
   };
@@ -71,6 +84,10 @@ const DashboardProducts: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    aplicarFiltros();
+  }, [products, statusFiltro, categoriaFiltro, nomeFiltro]);
 
   const fetchData = async () => {
     try {
@@ -97,15 +114,39 @@ const DashboardProducts: React.FC = () => {
       setProducts(enrichedProducts);
       setCategories(categoriesData);
     } catch (err) {
-      showToast(err instanceof Error ? err.message : "Erro desconhecido", "error");
-      console.error("Erro:", err);
+      showToast(
+        err instanceof Error ? err.message : "Erro desconhecido",
+        "error"
+      );
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
+  const aplicarFiltros = () => {
+    let filtrados = [...products];
+
+    if (statusFiltro !== "todos")
+      filtrados = filtrados.filter((p) => p.status === statusFiltro);
+    if (categoriaFiltro !== "todos")
+      filtrados = filtrados.filter(
+        (p) => p.categoria_id === Number(categoriaFiltro)
+      );
+    if (nomeFiltro.trim() !== "")
+      filtrados = filtrados.filter((p) =>
+        p.nome.toLowerCase().includes(nomeFiltro.toLowerCase())
+      );
+
+    setProductsFiltrados(filtrados);
+    setPaginaAtual(1);
+  };
+
   const formatPrice = (price: number) =>
-    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price);
+    new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(price);
 
   const confirmDelete = (product: Product) => {
     setDeletingProduct(product);
@@ -114,22 +155,19 @@ const DashboardProducts: React.FC = () => {
 
   const handleDelete = async () => {
     if (!deletingProduct) return;
-
     try {
       const response = await fetch(
         `http://localhost:3000/products/${deletingProduct.id}`,
         { method: "DELETE" }
       );
-
       if (!response.ok) throw new Error("Erro ao excluir produto");
-
       showToast("Produto excluído com sucesso!", "success");
       setIsDeleteModalOpen(false);
       setDeletingProduct(null);
       fetchData();
     } catch (err) {
       showToast("Erro ao excluir produto", "error");
-      console.error("Erro:", err);
+      console.error(err);
     }
   };
 
@@ -140,7 +178,7 @@ const DashboardProducts: React.FC = () => {
       preco: product.preco.toString(),
       categoria_id: product.categoria_id.toString(),
       descricao: product.descricao || "",
-      status: product.status || "ativo",
+      status: product.status || "Ativo",
     });
     setIsEditModalOpen(true);
   };
@@ -148,11 +186,19 @@ const DashboardProducts: React.FC = () => {
   const closeEditModal = () => {
     setIsEditModalOpen(false);
     setEditingProduct(null);
-    setFormData({ nome: "", preco: "", categoria_id: "", descricao: "", status: "" });
+    setFormData({
+      nome: "",
+      preco: "",
+      categoria_id: "",
+      descricao: "",
+      status: "",
+    });
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -169,7 +215,6 @@ const DashboardProducts: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingProduct) return;
-
     try {
       const precoNumerico = parseFloat(formData.preco.replace(",", "."));
       const response = await fetch(
@@ -186,24 +231,106 @@ const DashboardProducts: React.FC = () => {
           }),
         }
       );
-
       if (!response.ok) throw new Error("Erro ao atualizar produto");
       showToast("Produto atualizado com sucesso!", "success");
       closeEditModal();
       fetchData();
     } catch (err) {
       showToast("Erro ao atualizar produto", "error");
-      console.error("Erro:", err);
+      console.error(err);
     }
   };
 
-  if (loading) return <div className="flex justify-center items-center h-64">Carregando...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-64">Carregando...</div>
+    );
+
+  // Paginação
+  const totalPaginas = Math.ceil(productsFiltrados.length / itensPorPagina);
+  const indiceInicio = (paginaAtual - 1) * itensPorPagina;
+  const produtosPagina = productsFiltrados.slice(
+    indiceInicio,
+    indiceInicio + itensPorPagina
+  );
+
+  const gerarNumerosPagina = () => {
+    const maxNumeros = 5;
+    let inicio = Math.max(1, paginaAtual - 2);
+    let fim = Math.min(totalPaginas, inicio + maxNumeros - 1);
+    if (fim - inicio < maxNumeros - 1)
+      inicio = Math.max(1, fim - maxNumeros + 1);
+    const numeros = [];
+    for (let i = inicio; i <= fim; i++) numeros.push(i);
+    return numeros;
+  };
 
   return (
     <div className="w-full bg-white p-6">
       <p className="text-black text-3xl lg:text-4xl font-bold">Produtos</p>
 
-      <div className="mt-8 w-full text-black">
+      {/* Filtros */}
+      <div className="flex flex-wrap gap-4 mt-4 bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 items-end">
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">Status</label>
+          <select
+            value={statusFiltro}
+            onChange={(e) => setStatusFiltro(e.target.value)}
+            className="border rounded px-3 py-1 text-sm text-black focus:border-green-500 cursor-pointer"
+          >
+            <option value="todos">Todos</option>
+            <option value="Ativo">Ativo</option>
+            <option value="Inativo">Inativo</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">Categoria</label>
+          <select
+            value={categoriaFiltro}
+            onChange={(e) => setCategoriaFiltro(e.target.value)}
+            className="border rounded px-3 py-1 text-sm text-black focus:border-green-500 cursor-pointer"
+          >
+            <option value="todos">Todas</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">Nome</label>
+          <input
+            type="text"
+            placeholder="Pesquisar produto"
+            value={nomeFiltro}
+            onChange={(e) => setNomeFiltro(e.target.value)}
+            className="border rounded px-3 py-1 text-sm text-black focus:border-green-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">
+            Itens por página
+          </label>
+          <select
+            value={itensPorPagina}
+            onChange={(e) => setItensPorPagina(Number(e.target.value))}
+            className="border rounded px-3 py-1 text-sm text-black focus:border-green-500 cursor-pointer"
+          >
+            {[5, 10, 20, 50, 100].map((num) => (
+              <option key={num} value={num}>
+                {num}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Lista de produtos */}
+      <div className="mt-6 w-full text-black">
         <div className="bg-white rounded-lg shadow p-4 items-center font-semibold hidden md:flex">
           <div className="flex items-center gap-4 w-3/5">Nome / Imagem</div>
           <div className="w-1/5">Categoria</div>
@@ -213,8 +340,11 @@ const DashboardProducts: React.FC = () => {
         </div>
 
         <ul className="space-y-4 mt-2">
-          {products.map((product) => (
-            <li key={product.id} className="bg-white rounded-lg shadow p-4 flex flex-col md:flex-row md:items-center md:justify-between">
+          {produtosPagina.map((product) => (
+            <li
+              key={product.id}
+              className="bg-white rounded-lg shadow p-4 flex flex-col md:flex-row md:items-center md:justify-between"
+            >
               {/* Desktop */}
               <div className="hidden md:flex w-full items-center justify-between">
                 <div className="flex items-center gap-4 w-3/5">
@@ -225,15 +355,31 @@ const DashboardProducts: React.FC = () => {
                   />
                   <span className="font-semibold">{product.nome}</span>
                 </div>
-                <div className="w-1/5">{product.categoria_nome || "Sem categoria"}</div>
+                <div className="w-1/5">
+                  {product.categoria_nome || "Sem categoria"}
+                </div>
                 <div className="w-1/6">{formatPrice(product.preco)}</div>
                 <div className="w-1/6">{product.status || "Ativo"}</div>
                 <div className="flex justify-end gap-3 w-1/12">
-                  <button className="hover:scale-110 transition-transform" onClick={() => openEditModal(product)}>
-                    <img src="/images/edit_icon.png" alt="Editar" className="w-6 h-6" />
+                  <button
+                    className="hover:scale-110 transition-transform"
+                    onClick={() => openEditModal(product)}
+                  >
+                    <img
+                      src="/images/edit_icon.png"
+                      alt="Editar"
+                      className="w-6 h-6"
+                    />
                   </button>
-                  <button className="hover:scale-110 transition-transform" onClick={() => confirmDelete(product)}>
-                    <img src="/images/delete_icon.png" alt="Excluir" className="w-6 h-6" />
+                  <button
+                    className="hover:scale-110 transition-transform"
+                    onClick={() => confirmDelete(product)}
+                  >
+                    <img
+                      src="/images/delete_icon.png"
+                      alt="Excluir"
+                      className="w-6 h-6"
+                    />
                   </button>
                 </div>
               </div>
@@ -256,19 +402,40 @@ const DashboardProducts: React.FC = () => {
                     </div>
                   </div>
                   <div className="w-24 h-24 flex-shrink-0 ml-4">
-                    <img src={product.midias?.[0]?.url || "/images/placeholder.png"} alt={product.nome} className="w-full h-full object-cover rounded" />
+                    <img
+                      src={
+                        product.midias?.[0]?.url || "/images/placeholder.png"
+                      }
+                      alt={product.nome}
+                      className="w-full h-full object-cover rounded"
+                    />
                   </div>
                 </div>
                 <div className="flex justify-between mt-4 items-center">
                   <div>
-                    <span className="font-semibold">Status:</span> {product.status || "Ativo"}
+                    <span className="font-semibold">Status:</span>{" "}
+                    {product.status || "Ativo"}
                   </div>
                   <div className="flex gap-2">
-                    <button className="hover:scale-110 transition-transform" onClick={() => openEditModal(product)}>
-                      <img src="/images/edit_icon.png" alt="Editar" className="w-6 h-6" />
+                    <button
+                      className="hover:scale-110 transition-transform"
+                      onClick={() => openEditModal(product)}
+                    >
+                      <img
+                        src="/images/edit_icon.png"
+                        alt="Editar"
+                        className="w-6 h-6"
+                      />
                     </button>
-                    <button className="hover:scale-110 transition-transform" onClick={() => confirmDelete(product)}>
-                      <img src="/images/delete_icon.png" alt="Excluir" className="w-6 h-6 cursor-pointer" />
+                    <button
+                      className="hover:scale-110 transition-transform"
+                      onClick={() => confirmDelete(product)}
+                    >
+                      <img
+                        src="/images/delete_icon.png"
+                        alt="Excluir"
+                        className="w-6 h-6 cursor-pointer"
+                      />
                     </button>
                   </div>
                 </div>
@@ -278,19 +445,79 @@ const DashboardProducts: React.FC = () => {
         </ul>
       </div>
 
-      {products.length === 0 && <p className="mt-4 text-gray-500 text-center py-8">Nenhum produto cadastrado ainda.</p>}
+      {productsFiltrados.length === 0 && (
+        <p className="mt-4 text-gray-500 text-center py-8">
+          Nenhum produto encontrado.
+        </p>
+      )}
 
-      {/* Modais */}
+      {/* Paginação */}
+      {totalPaginas > 1 && (
+        <div className="flex justify-center mt-4 gap-1 items-center flex-wrap text-black text-sm">
+          <button
+            onClick={() => setPaginaAtual((p) => Math.max(1, paginaAtual - 1))}
+            disabled={paginaAtual === 1}
+            className={`px-1.5 py-0.5 border rounded ${
+              paginaAtual === 1
+                ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                : "border-gray-300 hover:bg-gray-100 cursor-pointer"
+            }`}
+          >
+            &lt;
+          </button>
+
+          {gerarNumerosPagina().map((num) => (
+            <button
+              key={num}
+              onClick={() => setPaginaAtual(num)}
+              className={`px-2 py-0.5 border rounded ${
+                num === paginaAtual
+                  ? "bg-green-500 text-white border-gray-300 cursor-pointer"
+                  : "border-gray-300 hover:bg-gray-100 text-gray-700 cursor-pointer"
+              }`}
+            >
+              {num}
+            </button>
+          ))}
+
+          <button
+            onClick={() =>
+              setPaginaAtual((p) => Math.min(totalPaginas, paginaAtual + 1))
+            }
+            disabled={paginaAtual === totalPaginas}
+            className={`px-1.5 py-0.5 border rounded ${
+              paginaAtual === totalPaginas
+                ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                : "border-gray-300 hover:bg-gray-100 cursor-pointer"
+            }`}
+          >
+            &gt;
+          </button>
+        </div>
+      )}
+
+      {/* Modais e Toast */}
       {isDeleteModalOpen && deletingProduct && (
         <div className="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50 p-4 text-black">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md">
             <h2 className="text-lg font-bold mb-4">Confirmar Exclusão</h2>
             <p>
-              Tem certeza que deseja excluir o produto <span className="font-semibold">{deletingProduct.nome}</span>?
+              Tem certeza que deseja excluir o produto{" "}
+              <span className="font-semibold">{deletingProduct.nome}</span>?
             </p>
             <div className="flex justify-end gap-3 mt-6">
-              <button onClick={() => setIsDeleteModalOpen(false)} className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100 cursor-pointer hover:scale-102">Cancelar</button>
-              <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded-2xl hover:bg-red-700 cursor-pointer hover:scale-102">Excluir</button>
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100 cursor-pointer hover:scale-102"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-2xl hover:bg-red-700 cursor-pointer hover:scale-102"
+              >
+                Excluir
+              </button>
             </div>
           </div>
         </div>
@@ -301,7 +528,12 @@ const DashboardProducts: React.FC = () => {
           <div className="bg-white rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Editar Produto</h2>
-              <button onClick={closeEditModal} className="text-gray-500 hover:text-[#45A62D] hover:scale-105 cursor-pointer">✕</button>
+              <button
+                onClick={closeEditModal}
+                className="text-gray-500 hover:text-[#45A62D] hover:scale-105 cursor-pointer"
+              >
+                ✕
+              </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -371,8 +603,8 @@ const DashboardProducts: React.FC = () => {
                   required
                 >
                   <option value="">Selecione o status</option>
-                  <option value="ativo">Ativo</option>
-                  <option value="inativo">Inativo</option>
+                  <option value="Ativo">Ativo</option>
+                  <option value="Inativo">Inativo</option>
                 </select>
               </div>
 
@@ -396,8 +628,13 @@ const DashboardProducts: React.FC = () => {
         </div>
       )}
 
-      {/* Toast */}
-      {toastMessage && <Toast message={toastMessage} type={toastType} onClose={() => setToastMessage(null)} />}
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastMessage(null)}
+        />
+      )}
     </div>
   );
 };
