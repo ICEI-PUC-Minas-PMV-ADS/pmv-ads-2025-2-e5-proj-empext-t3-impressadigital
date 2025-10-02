@@ -7,6 +7,29 @@ interface Categoria {
   nome: string;
 }
 
+interface ToastProps {
+  message: string;
+  type?: "success" | "error";
+  onClose: () => void;
+}
+
+const Toast: React.FC<ToastProps> = ({ message, type = "success", onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div
+      className={`fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 text-white ${
+        type === "success" ? "bg-green-600" : "bg-red-600"
+      }`}
+    >
+      {message}
+    </div>
+  );
+};
+
 const DashboardAddProduct: React.FC = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [categoriaId, setCategoriaId] = useState<number | null>(null);
@@ -16,10 +39,16 @@ const DashboardAddProduct: React.FC = () => {
   const [previews, setPreviews] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [status, setStatus] = useState("");
-  const [successMessage, setSuccessMessage] = useState(""); 
-  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [loadingCategorias, setLoadingCategorias] = useState(true);
+
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToastMessage(message);
+    setToastType(type);
+  };
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -35,7 +64,7 @@ const DashboardAddProduct: React.FC = () => {
         setCategorias(categoriasData);
       } catch (err) {
         console.error("Erro ao carregar categorias:", err);
-        setErrorMessage("Erro ao carregar categorias. Tente novamente.");
+        showToast("Erro ao carregar categorias. Tente novamente.", "error");
       } finally {
         setLoadingCategorias(false);
       }
@@ -70,18 +99,16 @@ const DashboardAddProduct: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setSuccessMessage("");
-    setErrorMessage("");
     setIsLoading(true);
 
     if (!categoriaId) {
-      setErrorMessage("Selecione uma categoria.");
+      showToast("Selecione uma categoria.", "error");
       setIsLoading(false);
       return;
     }
 
     if (!nome.trim()) {
-      setErrorMessage("O nome do produto é obrigatório.");
+      showToast("O nome do produto é obrigatório.", "error");
       setIsLoading(false);
       return;
     }
@@ -128,8 +155,9 @@ const DashboardAddProduct: React.FC = () => {
         console.log("Mídias salvas:", midiasData);
       }
 
-      setSuccessMessage("Produto adicionado com sucesso!");
+      showToast("Produto adicionado com sucesso!", "success");
       
+      // Limpar o formulário
       setNome("");
       setDescricao("");
       setPreco("");
@@ -138,11 +166,9 @@ const DashboardAddProduct: React.FC = () => {
       setFiles([]);
       setPreviews([]);
 
-      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err: any) {
       console.error("Erro completo:", err);
-      setErrorMessage(err.message || "Erro ao salvar produto ou fazer upload das imagens.");
-      setTimeout(() => setErrorMessage(""), 4000);
+      showToast(err.message || "Erro ao salvar produto ou fazer upload das imagens.", "error");
     } finally {
       setIsLoading(false);
     }
@@ -291,15 +317,16 @@ const DashboardAddProduct: React.FC = () => {
           >
             {isLoading ? 'Salvando...' : 'Salvar produto'}
           </button>
-
-          {successMessage && (
-            <p className="mt-2 text-[#45A62D] font-semibold">{successMessage}</p>
-          )}
-          {errorMessage && (
-            <p className="mt-2 text-red-600 font-semibold">{errorMessage}</p>
-          )}
         </form>
       </div>
+
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastMessage(null)}
+        />
+      )}
     </>
   );
 };

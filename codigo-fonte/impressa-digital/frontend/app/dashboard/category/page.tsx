@@ -103,7 +103,7 @@ export default function CategoriasPage() {
     e.preventDefault();
     
     if (!formData.nome.trim()) {
-      alert("Nome da categoria é obrigatório");
+      showToast("Nome da categoria é obrigatório", "error");
       return;
     }
 
@@ -171,6 +171,16 @@ export default function CategoriasPage() {
 
   const handleDelete = async () => {
     if (!categoryToDelete) return;
+
+    const produtosCount = contarProdutos(categoryToDelete);
+    if (produtosCount > 0) {
+      showToast(
+        `Não é possível excluir a categoria "${categoryToDelete.nome}" porque ela possui ${produtosCount} produto(s) vinculado(s). Remova os produtos primeiro.`,
+        "error"
+      );
+      setCategoryToDelete(null);
+      return;
+    }
 
     try {
       const response = await fetch(`http://localhost:3000/categories/${categoryToDelete.id}`, {
@@ -431,6 +441,11 @@ export default function CategoriasPage() {
             <p className="mb-6">
               Tem certeza que deseja excluir a categoria{" "}
               <strong>{categoryToDelete.nome}</strong>?
+              {contarProdutos(categoryToDelete) > 0 && (
+                <span className="block mt-2 text-red-600 text-sm">
+                  ⚠️ Esta categoria possui {contarProdutos(categoryToDelete)} produto(s) vinculado(s).
+                </span>
+              )}
             </p>
             <div className="flex justify-end gap-3">
               <button
