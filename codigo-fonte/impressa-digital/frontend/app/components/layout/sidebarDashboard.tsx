@@ -10,6 +10,7 @@ const menuItems = [
   { label: "Clientes", path: "/dashboard/clients" },
   { label: "Produtos", path: "/dashboard/products" },
   { label: "Adicionar produto", path: "/dashboard/add_product" },
+  { label: "Categorias", path: "/dashboard/category" },
   { label: "Configurações", path: "/configuracoes" },
 ];
 
