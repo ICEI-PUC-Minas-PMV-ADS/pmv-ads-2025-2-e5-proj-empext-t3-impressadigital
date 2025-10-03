@@ -1,7 +1,7 @@
 // app/produtos/[slug]/page.tsx
 'use client'
 
-import React from 'react';
+import React, { useState, useCallback } from 'react'; // Adicionar useState e useCallback
 import { useParams } from 'next/navigation'; 
 import HeaderMain from '../../components/layout/headerMain';
 import ProductDetails from '../../components/layout/productDetail';
@@ -15,24 +15,40 @@ export default function Product() {
     // Garantimos que o identificador seja uma string simples (o slug)
     const productSlug = Array.isArray(params.slug) ? params.slug[0] : params.slug; 
 
+    // 1. Novo estado para rastrear se o produto está ativo/disponível. 
+    // Começa como 'true' para evitar piscar ao carregar.
+    const [isActive, setIsActive] = useState<boolean>(true); 
+
+    // 2. Callback para ser passado ao ProductDetails e atualizar o estado
+    const handleProductStatusChange = useCallback((status: boolean) => {
+        setIsActive(status);
+    }, []);
+
     return (
         <div>
             <HeaderMain />
             
-            {/* O uso do 'key' com o slug é o que força o React/Next.js a 
-               descartar o componente anterior e montar um novo, 
-               disparando um novo 'useEffect' para buscar os dados. */}
             <div className='flex-col px-20' key={productSlug}> 
                 <div className=' w-full '>
-                    <ProductDetails productIdentifier={productSlug} />
+                    {/* 3. Renderiza ProductDetails para iniciar a busca e notificar o status */}
+                    <ProductDetails 
+                        productIdentifier={productSlug} 
+                        onProductStatusChange={handleProductStatusChange} // Passa o callback
+                    />
                 </div>
-                <RelatedProducts productIdentifier={productSlug} />
             </div>
             
-            <div className='flex-col px-20 pt-10 mt-10 bg-gray-100 ' key={`reviews-${productSlug}`} > 
-                <h2 className="text-2xl text-[#A1A1A1] text-center font-bold mb-4">Avaliações de clientes</h2>
-                <CustomerReviews productIdentifier={productSlug} />
-            </div>
+            {/* 4. Renderização Condicional: Só renderiza o restante do conteúdo se o produto estiver ativo */}
+            {isActive ? (
+                <>
+                    <RelatedProducts productIdentifier={productSlug} />
+                
+                    <div className='flex-col px-20 pt-10 mt-10 bg-gray-100 ' key={`reviews-${productSlug}`} > 
+                        <h2 className="text-2xl text-[#A1A1A1] text-center font-bold mb-4">Avaliações de clientes</h2>
+                        <CustomerReviews productIdentifier={productSlug} />
+                    </div>
+                </>
+            ) : null}
         </div>
     )
 }

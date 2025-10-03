@@ -102,8 +102,11 @@ const fetchReviews = async () => {
 
   if (loading) return <div>Carregando avaliações...</div>;
   if (error) return <div className="text-red-500">Erro: {error}</div>;
-  if (reviews.length === 0)
-    return <div className="text-gray-500 text-center">Ainda não há avaliações para este produto.</div>;
+  
+  // REMOVIDO: A condição de retorno antecipado para reviews.length === 0 foi removida, 
+  // permitindo que o código continue e renderize o botão de avaliação.
+  // if (reviews.length === 0)
+  //   return <div className="text-gray-500 text-center">Ainda não há avaliações para este produto.</div>;
 
   const reviewsToShow = showAll ? reviews : reviews.slice(0, 3);
 
@@ -121,6 +124,7 @@ const fetchReviews = async () => {
 
         <div className="w-full md:w-2/3 space-y-2 mt-4 md:mt-0">
           {[5, 4, 3, 2, 1].map((star, i) => {
+            // A distribuição só aparecerá se houver reviews (reviews.length > 0)
             const count = distribution[star - 1];
             const percent = reviews.length ? (count / reviews.length) * 100 : 0;
             return (
@@ -139,34 +143,44 @@ const fetchReviews = async () => {
         </div>
       </div>
 
-      {/* Lista de avaliações */}
-      {reviewsToShow.map((r) => (
-        <div key={r.id} className="border rounded-lg p-4 mb-4 bg-white shadow">
-          <p className="font-semibold">{r.user?.nome || "Cliente"}</p>
-          <p className="text-[#45A62D] text-xl">
-            {"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}
-          </p>
-          <p className="text-gray-700 mt-2">{r.avaliacoes}</p>
-          {r.midias?.length ? (
-            <img
-              src={r.midias[0].url}
-              alt="foto-avaliacao"
-              className="mt-2 w-32 h-32 object-cover rounded"
-            />
-          ) : null}
+      {/* Lista de avaliações OU Mensagem "Ainda não há avaliações" */}
+      {reviews.length > 0 ? (
+        <>
+            {reviewsToShow.map((r) => (
+              <div key={r.id} className="border rounded-lg p-4 mb-4 bg-white shadow">
+                <p className="font-semibold">{r.user?.nome || "Cliente"}</p>
+                <p className="text-[#45A62D] text-xl">
+                  {"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}
+                </p>
+                <p className="text-gray-700 mt-2">{r.avaliacoes}</p>
+                {r.midias?.length ? (
+                  <img
+                    src={r.midias[0].url}
+                    alt="foto-avaliacao"
+                    className="mt-2 w-32 h-32 object-cover rounded"
+                  />
+                ) : null}
+              </div>
+            ))}
+            
+            {reviews.length > 3 && !showAll && (
+              <button
+                onClick={() => setShowAll(true)}
+                className="text-gray-600 hover:underline text-center w-full"
+              >
+                Ver mais
+              </button>
+            )}
+        </>
+      ) : (
+        // Renderiza a mensagem de não haver avaliações quando reviews.length é 0
+        <div className="text-gray-500 text-center py-8">
+            Ainda não há avaliações para este produto.
         </div>
-      ))}
-
-      {reviews.length > 3 && !showAll && (
-        <button
-          onClick={() => setShowAll(true)}
-          className="text-gray-600 hover:underline text-center w-full"
-        >
-          Ver mais
-        </button>
       )}
 
-      {/* Botão de avaliar */}
+
+      {/* Botão de avaliar - AGORA SEMPRE VISÍVEL */}
       <div className="mt-6 text-center">
         <button
           onClick={() => setIsOpen(true)}
