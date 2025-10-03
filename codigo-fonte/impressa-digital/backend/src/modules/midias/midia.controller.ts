@@ -1,14 +1,14 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Put, 
-  Delete, 
-  Body, 
-  Param, 
-  UseInterceptors, 
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseInterceptors,
   UploadedFiles,
-  BadRequestException 
+  BadRequestException,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { MidiasService } from './midia.service';
@@ -34,23 +34,24 @@ export class MidiasController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() data: Partial<Midias>): Promise<Midias> {
+  update(
+    @Param('id') id: number,
+    @Body() data: Partial<Midias>,
+  ): Promise<Midias> {
     return this.midiasService.update(+id, data);
   }
 
   @Delete(':id')
-async remove(@Param('id') id: number): Promise<void> {
-  
-  try {
-    const midia = await this.midiasService.findOne(+id);
-    
-    await this.midiasService.remove(+id);
-    
-  } catch (error) {
-    console.error(`❌ Erro ao excluir mídia ${id}:`, error);
-    throw error;
+  async remove(@Param('id') id: number): Promise<void> {
+    try {
+      const midia = await this.midiasService.findOne(+id);
+
+      await this.midiasService.remove(+id);
+    } catch (error) {
+      console.error(`❌ Erro ao excluir mídia ${id}:`, error);
+      throw error;
+    }
   }
-}
 
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files', 10))
