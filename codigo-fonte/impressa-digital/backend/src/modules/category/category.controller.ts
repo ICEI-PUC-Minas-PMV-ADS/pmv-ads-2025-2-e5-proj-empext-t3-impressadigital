@@ -16,6 +16,12 @@ export class CategoryController {
     return this.categoryService.findOne(+id);
   }
 
+
+  @Get('slug/:slug')
+  findBySlug(@Param('slug') slug: string): Promise<Categorias> {
+    return this.categoryService.findBySlug(slug);
+  }
+
   @Post()
   create(@Body() data: Partial<Categorias>): Promise<Categorias> {
     return this.categoryService.create(data);

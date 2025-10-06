@@ -1,4 +1,5 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+// category.service.ts
+import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Categorias } from '../../core/database/entities/category.entity';
 
@@ -8,6 +9,14 @@ export class CategoryService {
     @Inject('CATEGORY_REPOSITORY')
     private categoryRepository: Repository<Categorias>,
   ) {}
+
+  private generateSlug(name: string): string {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
+  }
 
   findAll(): Promise<Categorias[]> {
     return this.categoryRepository.find({ relations: ['produtos'] });
@@ -22,12 +31,44 @@ export class CategoryService {
     return categoria;
   }
 
-  create(data: Partial<Categorias>): Promise<Categorias> {
-    const categoria = this.categoryRepository.create(data);
+  async create(data: Partial<Categorias>): Promise<Categorias> {
+    if (!data.nome) {
+      throw new BadRequestException('O nome da categoria é obrigatório');
+    }
+
+    let slug = this.generateSlug(data.nome);
+
+    let counter = 1;
+    let slugExists = await this.categoryRepository.findOneBy({ slug });
+    while (slugExists) {
+      slug = `${slug}-${counter}`;
+      counter++;
+      slugExists = await this.categoryRepository.findOneBy({ slug });
+    }
+
+    const categoria = this.categoryRepository.create({
+      ...data,
+      slug,
+    });
+
     return this.categoryRepository.save(categoria);
   }
 
   async update(id: number, data: Partial<Categorias>): Promise<Categorias> {
+    if (data.nome) {
+      let slug = this.generateSlug(data.nome);
+
+      let counter = 1;
+      let slugExists = await this.categoryRepository.findOneBy({ slug });
+      while (slugExists && slugExists.id !== id) {
+        slug = `${slug}-${counter}`;
+        counter++;
+        slugExists = await this.categoryRepository.findOneBy({ slug });
+      }
+      
+      data.slug = slug;
+    }
+
     await this.categoryRepository.update(id, data);
     return this.findOne(id);
   }
@@ -35,4 +76,13 @@ export class CategoryService {
   async remove(id: number): Promise<void> {
     await this.categoryRepository.delete(id);
   }
+
+  async findBySlug(slug: string): Promise<Categorias> {
+  const categoria = await this.categoryRepository.findOne({
+    where: { slug },
+    relations: ['produtos'],
+  });
+  if (!categoria) throw new NotFoundException(`Categoria com slug "${slug}" não encontrada`);
+  return categoria;
+}
 }
