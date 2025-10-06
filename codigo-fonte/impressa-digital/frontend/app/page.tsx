@@ -1,57 +1,42 @@
-// app/produtos/[slug]/page.tsx
-'use client'
-
-import React, { useState, useCallback } from 'react'; // Adicionar useState e useCallback
-import { useParams } from 'next/navigation'; 
-import CustomerReviews from './components/layout/customerReviews';
-import HeaderMain from './components/layout/headerMain';
-import ProductDetails from './components/layout/productDetail';
-import RelatedProducts from './components/layout/relatedProducts';
-
-
-export default function Product() {
-    // useParams() retorna o nome da pasta dinâmica, que é 'slug'
-    const params = useParams();
-    
-    // Garantimos que o identificador seja uma string simples (o slug)
-    const productSlug = Array.isArray(params.slug) ? params.slug[0] : params.slug; 
-
-    // 1. Novo estado para rastrear se o produto está ativo/disponível. 
-    // Começa como 'true' para evitar piscar ao carregar.
-    const [isActive, setIsActive] = useState<boolean>(true); 
-
-    // 2. Callback para ser passado ao ProductDetails e atualizar o estado
-    const handleProductStatusChange = useCallback((status: boolean) => {
-        setIsActive(status);
-    }, []);
-
-    return (
-        <div>
-            <HeaderMain />
-            
-            <div className='flex-col px-20' key={productSlug}> 
-                <div className=' w-full '>
-                    {/* 3. Renderiza ProductDetails para iniciar a busca e notificar o status */}
-                    <ProductDetails 
-                        productIdentifier={productSlug} 
-                        onProductStatusChange={handleProductStatusChange} // Passa o callback
-                    />
-                </div>
-            </div>
-            
-            {/* 4. Renderização Condicional: Só renderiza o restante do conteúdo se o produto estiver ativo */}
-            {isActive ? (
-                <>
-                    <RelatedProducts productIdentifier={productSlug} />
-                
-                    <div className='flex-col px-20 pt-10 mt-10 bg-gray-100 ' key={`reviews-${productSlug}`} > 
-                        <h2 className="text-2xl text-[#A1A1A1] text-center font-bold mb-4">Avaliações de clientes</h2>
-                        <CustomerReviews productIdentifier={productSlug} />
-                    </div>
-                </>
-               
-            ) : null}
-        </div>
-         
-    )
+"use client";
+ 
+import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
+import HeaderDashboard from "../app/components/layout/headerDashboard";
+import Navbar from "../app/components/layout/navbar";
+import Carrossel from "./components/layout/Carrossel";
+import ProdutosGrid from "./components/layout/ProdutosGrid";
+ 
+interface Produto {
+  id: number;
+  nome: string;
+  preco?: number | string;
+  imagem?: string;
 }
+ 
+export default function Home({ children }: { children: ReactNode }) {
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+ 
+  useEffect(() => {
+    async function fetchProdutos() {
+      try {
+        const res = await fetch("http://localhost:3000/products");
+        const data: Produto[] = await res.json();
+        setProdutos(data);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+      }
+    }
+ 
+    fetchProdutos();
+  }, []);
+ 
+  return (
+    <div className="min-h-screen bg-white flex flex-col">
+      <HeaderDashboard/>
+      <Carrossel />
+      <ProdutosGrid titulo="Produtos em Destaque" produtos={produtos} produtosPorPagina={12} />
+    </div>
+  );
+}
+ 
