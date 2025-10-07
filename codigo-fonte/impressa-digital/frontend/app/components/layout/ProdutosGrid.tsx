@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 interface Imagem {
@@ -12,6 +13,7 @@ interface Imagem {
 interface Produto {
   id: number;
   nome: string;
+  slug: string;
   preco?: number | string;
   midias?: Imagem[];
 }
@@ -70,7 +72,9 @@ export default function ProdutosGrid({
           const imagemPrincipal = produto.midias?.find((m) => m.tipo === "imagem")?.url;
 
           return (
-            <div key={produto.id} className="flex flex-col items-center">
+            <Link key={produto.id}
+              href={`/product/${produto.slug}`}
+              className="flex flex-col items-center cursor-pointer">
               <div className="bg-white rounded-md shadow-lg overflow-hidden relative w-64">
                 <div className="p-2 pt-4 flex justify-center">
                   <img
@@ -89,7 +93,7 @@ export default function ProdutosGrid({
                   </button>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 // REMOVIDO: import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -78,7 +78,11 @@ export default function ProductDetails({ productIdentifier, onProductStatusChang
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   // NOVO ESTADO: Índice da mídia atualmente selecionada
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0); 
+const [selectedImageIndex, setSelectedImageIndex] = useState(0); 
+
+const [cep, setCep] = useState<string>(""); 
+
+
 
   useEffect(() => {
     if (!productIdentifier) {
@@ -150,6 +154,32 @@ export default function ProductDetails({ productIdentifier, onProductStatusChang
       prevIndex === product.midias!.length - 1 ? 0 : prevIndex + 1
     );
   };
+
+const handleChangeCep = (event: ChangeEvent<HTMLInputElement>) => {
+    const maskedValue = applyCepMask(event.target.value);
+    setCep(maskedValue);
+  };
+
+  // ----------------------------------------------------
+// LÓGICA MANUAL DE MÁSCARA DE CEP
+// ----------------------------------------------------
+
+/**
+ * Aplica a máscara de CEP (99999-999) a uma string, removendo caracteres não numéricos.
+ * @param value O valor atual do input.
+ * @returns O valor formatado.
+ */
+const applyCepMask = (value: string): string => {
+  // 1. Remove tudo que não é dígito (\D)
+  const numericValue = value.replace(/\D/g, ''); 
+  
+  // 2. Limita a 8 dígitos (máximo do CEP)
+  const limitedValue = numericValue.slice(0, 8); 
+
+  // 3. Aplica a máscara: 5 dígitos + hífen + 3 dígitos
+  // Se houver mais de 5 dígitos, adiciona o hífen.
+  return limitedValue.replace(/(\d{5})(\d)/, '$1-$2');
+};
 
 
    const [formData, setFormData] = useState({
@@ -261,14 +291,21 @@ export default function ProductDetails({ productIdentifier, onProductStatusChang
       {/* Informações (2/3) */}
       <div className="w-full md:w-2/3 flex flex-col">
         <h1 className="text-2xl font-bold">{product.nome}</h1>
-
+        <div className="flex flex-wrap flex-row gap-2">
+        <span
+          className="text-black font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
+          style={{ background: "#3DF034" }}
+        >
+          Personalizado
+        </span>
         <span
           className="text-black font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
           style={{ background: "#3DF034" }}
         >
           {/* Acessamos o nome da categoria que veio na busca */}
           {product.categoria?.nome || "Sem categoria"} 
-        </span>
+        </span>          
+</div>
 
         <p className="text-[32px] font-sans font-[inter] font-bold mt-2">
           {formatPrice(product.preco)}
@@ -286,7 +323,7 @@ export default function ProductDetails({ productIdentifier, onProductStatusChang
           {/* Seletor de Quantidade (Limitado a 10) */}
           <select
             defaultValue="1"
-            className="bg-[#e6e6e6] text-[#6B6B6B] text-lg pl-4 py-2 rounded-2xl w-1/4 text-center focus:outline-none focus:border-[#3DF034] focus:border-2 appearance-none cursor-pointer"
+            className="bg-[#e6e6e6] text-[#6B6B6B] text-lg  py-2 rounded-2xl w-1/4 text-center focus:outline-none focus:border-[#3DF034] focus:border-2 appearance-none cursor-pointer"
             aria-label="Quantidade do produto"
           >
             {/* Gera as opções de 1 a 10 */}
@@ -310,11 +347,19 @@ export default function ProductDetails({ productIdentifier, onProductStatusChang
           <p className="mt-4 text-gray-700">{product.descricao}</p>
         </div>
 
-        <div className="flex items-center self-end w-2/3 gap-2">
-          <input type="text" name="cep" id="cep" placeholder="Calcule o seu frete aqui" maxLength={9}
-            className="bg-[#e6e6e6] text-[#6B6B6B] text-sm font-bold font-sans rounded-2xl p-2 w-1/3 mt-4 focus:outline-none"
+        <div className="flex  w-2/3 flex-col  mt-2">
+        <span className=" self-start font-bold">Calcular frete:</span>
+          <div className="flex items-center  md:justify-normal  gap-2">
+          <input type="text" name="cep" id="cep"  maxLength={9}
+            value={cep}
+            onChange={handleChangeCep}
+              className="bg-[#e6e6e6] text-[#6B6B6B]  pl-2  text-sm font-bold font-sans rounded-2xl p-2 
+            w-[45%] md:w-[30%] mt-4 focus:outline-none"
           />
-          <button type="submit" className="bg-[#3DF034] text-white text-md font-semibold p-2 rounded-2xl p-2  mt-4 focus:outline-none">Buscar</button>
+            <button type="submit" className="bg-[#3DF034] text-white text-md font-semibold p-2 
+          rounded-2xl p-2  mt-4 focus:outline-none cursor-pointer">Buscar</button>
+            
+          </div>
         </div>
       </div>
     </div>
