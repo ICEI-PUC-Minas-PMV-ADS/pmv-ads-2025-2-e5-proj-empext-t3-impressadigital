@@ -9,39 +9,46 @@ export interface Produto {
   categoria_id: number;
 }
 
-export function useProdutos(categoriaId?: number) {
+export function useProdutos(slug?: string): { produtos: Produto[]; loading: boolean } {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchProdutos = async () => {
+    if (!slug) {
+      setProdutos([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/products");
+      // 🔹 Busca produtos diretamente pelo slug
+      const res = await fetch(`http://localhost:3000/products/categoria/${slug}`);
       if (!res.ok) throw new Error("Erro ao buscar produtos");
-      const data: Produto[] = await res.json();
 
-      let lista = data;
-      if (categoriaId) {
-        lista = data.filter((p) => Number(p.categoria_id) === categoriaId);
-      }
+      let data: Produto[] = await res.json();
 
-      lista = lista.map((p) => ({
+      // Adiciona placeholder de imagem
+      data = data.map((p) => ({
         ...p,
         imagem: p.imagem || "/images/placeholder.png",
       }));
 
-      setProdutos(lista);
+      setProdutos(data);
     } catch (err) {
-      console.error(err);
+      console.error("Erro ao carregar produtos:", err);
+      setProdutos([]);
     } finally {
       setLoading(false);
     }
   };
 
+  // 🔹 Recarrega produtos quando o slug muda
   useEffect(() => {
     fetchProdutos();
-  }, [categoriaId]);
+  }, [slug]);
 
-  // 🔄 Atualiza quando um produto novo é adicionado
+  // 🔹 Atualiza quando um produto novo é adicionado
   useEffect(() => {
     const reload = () => fetchProdutos();
     window.addEventListener("produto_adicionado", reload);

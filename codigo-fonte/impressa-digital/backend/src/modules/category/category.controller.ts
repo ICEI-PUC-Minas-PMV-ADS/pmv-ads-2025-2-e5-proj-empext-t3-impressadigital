@@ -11,15 +11,16 @@ export class CategoryController {
     return this.categoryService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number): Promise<Categorias> {
-    return this.categoryService.findOne(+id);
-  }
-
-
+  // 🔹 Coloca primeiro a rota mais específica (slug)
   @Get('slug/:slug')
   findBySlug(@Param('slug') slug: string): Promise<Categorias> {
     return this.categoryService.findBySlug(slug);
+  }
+
+  // 🔹 Depois a rota genérica (id)
+  @Get(':id')
+  findOne(@Param('id') id: number): Promise<Categorias> {
+    return this.categoryService.findOne(+id);
   }
 
   @Post()
@@ -37,3 +38,4 @@ export class CategoryController {
     return this.categoryService.remove(+id);
   }
 }
+
