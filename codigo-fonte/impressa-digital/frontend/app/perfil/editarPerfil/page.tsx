@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/Authprovider";
 
 const EditarPerfil: React.FC = () => {
+  const { user } = useAuth(); // 👈 pega o usuário do contexto
   const [form, setForm] = useState({
     name: "",
     birthDate: "",
@@ -14,33 +16,18 @@ const EditarPerfil: React.FC = () => {
   const [msg, setMsg] = useState("");
   const [cpfError, setCpfError] = useState("");
 
-  // Exemplo: recuperar o id do usuário logado (ajuste conforme sua lógica de autenticação)
-  const userId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
+  // Preenche o form com os dados do usuário ao carregar
   useEffect(() => {
-    if (userId && token) {
-      fetch(`http://localhost:3000/users/${userId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("Resposta API:", data);
-          setForm({
-            name: data.name || "",
-            birthDate: data.birthDate ? data.birthDate.slice(0, 10) : "",
-            cpf: data.cpf || "",
-            email: data.email || "",
-            password: "",
-          });
-        });
+    if (user) {
+      setForm({
+        name: user.name || "",
+        birthDate: (user as any).birthDate ? (user as any).birthDate.slice(0, 10) : "",
+        cpf: (user as any).cpf || "",
+        email: user.email || "",
+        password: "",
+      });
     }
-  }, [userId, token]);
+  }, [user]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -48,7 +35,6 @@ const EditarPerfil: React.FC = () => {
 
     if (name === "cpf") {
       newValue = formatCPF(value);
-      // Validação: CPF deve ter 14 caracteres formatados (xxx.xxx.xxx-xx)
       if (newValue.length < 14) {
         setCpfError("Preencha o CPF completo (11 dígitos).");
       } else {
@@ -64,13 +50,12 @@ const EditarPerfil: React.FC = () => {
     setLoading(true);
     setMsg("");
 
-    if (!userId || !token) {
+    if (!user) {
       setMsg("Usuário não autenticado.");
       setLoading(false);
       return;
     }
 
-    // Validação extra antes de enviar
     if (form.cpf.replace(/\D/g, "").length !== 11) {
       setCpfError("Preencha o CPF completo (11 dígitos).");
       setLoading(false);
@@ -83,12 +68,12 @@ const EditarPerfil: React.FC = () => {
         delete body.password;
       }
 
-      const res = await fetch(`http://localhost:3000/users/${userId}`, {
+      const res = await fetch(`http://localhost:3000/users/${user.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
+        credentials: "include", // 👈 envia cookie automaticamente
         body: JSON.stringify(body),
       });
 
@@ -109,8 +94,8 @@ const EditarPerfil: React.FC = () => {
   }
 
   function formatCPF(value: string) {
-    value = value.replace(/\D/g, ""); // remove não numéricos
-    value = value.slice(0, 11); // limita a 11 dígitos
+    value = value.replace(/\D/g, "");
+    value = value.slice(0, 11);
     value = value.replace(/(\d{3})(\d)/, "$1.$2");
     value = value.replace(/(\d{3})(\d)/, "$1.$2");
     value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");

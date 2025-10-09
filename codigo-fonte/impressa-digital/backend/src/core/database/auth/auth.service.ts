@@ -1,34 +1,40 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from '../../../modules/users/users.service';
 import * as bcrypt from 'bcrypt';
-import { UserService } from 'src/modules/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
-    private readonly jwtService: JwtService,
+    private userService: UserService,
+    private jwtService: JwtService,
   ) {}
 
-  async login(email: string, password: string) {
+  async validateUser(email: string, password: string) {
     const user = await this.userService.findByEmail(email);
     if (!user) {
-      throw new UnauthorizedException('Usuário não encontrado.');
+      throw new UnauthorizedException('Usuário não encontrado');
     }
 
-    // Comparação da senha em texto com o hash do banco
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('E-mail ou senha inválidos.');
+    const passwordValid = await bcrypt.compare(password, user.password);
+    if (!passwordValid) {
+      throw new UnauthorizedException('Senha inválida');
     }
 
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    const { password: _, ...result } = user;
+    return result;
+  }
+
+  async login(email: string, password: string): Promise<{ user: any; token: string }> {
+    const user = await this.validateUser(email, password);
+
+    const payload = { sub: user.id, email: user.email, name: user.name };
+
     const token = this.jwtService.sign(payload);
 
     return {
-      message: 'Login realizado com sucesso!',
-      token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user,  
+      token, 
     };
   }
 }
