@@ -12,7 +12,7 @@ import { CatalogoProdutos } from './catalogo_produtos.entity';
 import { Categorias } from './category.entity';
 import { ComentarioProduto } from './comentario_produtos.entity';
 import { Avaliacoes_Produto } from './avaliacoes_produtos.entity';
-import { Vendas } from './vendas.entity';
+import { VendasProdutos } from './vendas_produtos.entity';
 
 @Entity('produtos')
 export class Produtos {
@@ -21,6 +21,11 @@ export class Produtos {
 
   @Column({ nullable: false })
   categoria_id: number;
+
+
+  @OneToMany(() => VendasProdutos, (vp) => vp.produto)
+  vendas_produtos: VendasProdutos[];
+
 
   @Column()
   status: string;

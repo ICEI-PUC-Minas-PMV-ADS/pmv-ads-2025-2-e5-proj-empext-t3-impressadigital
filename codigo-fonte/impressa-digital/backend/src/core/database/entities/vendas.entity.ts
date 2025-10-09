@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, On
 import { User } from './user.entity';
 import { JoinColumn } from 'typeorm';
 import { Produtos } from './products.entity';
+import { VendasProdutos } from './vendas_produtos.entity';
 
 
 @Entity('vendas')
@@ -11,6 +12,12 @@ export class Vendas {
 
     @Column({ nullable: false })
     user_id: number;
+
+    @OneToMany(() => VendasProdutos, (vp) => vp.venda)
+    vendas_produtos: VendasProdutos[];
+
+
+  
 
     @ManyToOne(() => User, (users) => users.vendas)
     @JoinColumn({ name: 'user_id' })
