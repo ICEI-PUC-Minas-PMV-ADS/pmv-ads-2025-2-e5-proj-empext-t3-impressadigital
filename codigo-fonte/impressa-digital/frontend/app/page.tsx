@@ -6,12 +6,20 @@ import HeaderDashboard from "../app/components/layout/headerDashboard";
 import Navbar from "../app/components/layout/navbar";
 import Carrossel from "./components/layout/Carrossel";
 import ProdutosGrid from "./components/layout/ProdutosGrid";
- 
+
+interface Imagem {
+  id: number;
+  url: string;
+  tipo: "imagem" | "video";
+  produtoId: number;
+}
+
 interface Produto {
   id: number;
   nome: string;
+  slug: string;
   preco?: number | string;
-  imagem?: string;
+  midias?: Imagem[];
 }
  
 export default function Home({ children }: { children: ReactNode }) {
