@@ -1,3 +1,5 @@
+import { Vendas_produtosModule } from './../../modules/vendas_produtos/vendas_produtos.module';
+import { VendasProdutosController } from './../../modules/vendas_produtos/vendas_produtos.controller';
 import { ComentarioProdutosModule } from './../../modules/comentario_produtos/comentario_produtos.module';
 
 import { Avaliacoes_produtosModule } from './../../modules/avaliacoes_produtos/avaliacoes_produtos.module';
@@ -26,6 +28,7 @@ import { AuthdbModule } from '../database/authdb.module';
 
 @Module({
   imports: [
+    Vendas_produtosModule,
     ComentarioProdutosModule,
     Avaliacoes_produtosModule,
     AuthModule,
@@ -42,6 +45,7 @@ import { AuthdbModule } from '../database/authdb.module';
 
   ],
   controllers: [
+    VendasProdutosController,
     ComentarioProdutoController,
     Avaliacoes_produtosController, AppController],
   providers: [
