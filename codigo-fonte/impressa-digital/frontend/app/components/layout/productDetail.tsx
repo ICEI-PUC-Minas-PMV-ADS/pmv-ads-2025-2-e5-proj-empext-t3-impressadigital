@@ -2,7 +2,9 @@
 
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
-// REMOVIDO: import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCart } from "@/app/contexts/CartContext";
+import { ModalCart } from "./modalCart";
+
 
 interface Category {
   id: number;
@@ -81,7 +83,11 @@ export default function ProductDetails({ productIdentifier, onProductStatusChang
 const [selectedImageIndex, setSelectedImageIndex] = useState(0); 
 
 const [cep, setCep] = useState<string>(""); 
+// NOVOS ESTADOS ADICIONADOS
+const [quantity, setQuantity] = useState(1); 
+const [isModalOpen, setIsModalOpen] = useState(false);
 
+const { itemCount, addItemToCart } = useCart(); // Uso do contexto
 
 
   useEffect(() => {
@@ -159,6 +165,39 @@ const handleChangeCep = (event: ChangeEvent<HTMLInputElement>) => {
     const maskedValue = applyCepMask(event.target.value);
     setCep(maskedValue);
   };
+  
+const handleChangeQuantity = (event: ChangeEvent<HTMLSelectElement>) => {
+    setQuantity(Number(event.target.value));
+};
+
+
+// ----------------------------------------------------
+// FUNÇÃO ADICIONAR AO CARRINHO
+// ----------------------------------------------------
+const handleAddToCart = async () => {
+    if (!product || quantity < 1) return;
+
+    // 1. Monta o item mínimo para adicionar
+    const itemToAdd = {
+        id: product.id, 
+        produtoId: product.id,
+        title: product.nome,
+        price: product.preco,
+        quantity: quantity,
+        image: product.midias?.[selectedImageIndex]?.url || "/images/placeholder.png",
+    };
+
+    // 2. Chama a função de adicionar ao carrinho do contexto
+    const success = await addItemToCart(itemToAdd);
+
+    // 3. Se for bem-sucedido, abre o modal.
+    if (success) {
+        setIsModalOpen(true);
+    } else {
+        alert("Falha ao adicionar o produto ao carrinho. Tente novamente.");
+    }
+};
+
 
   // ----------------------------------------------------
 // LÓGICA MANUAL DE MÁSCARA DE CEP
@@ -214,6 +253,14 @@ const applyCepMask = (value: string): string => {
 
 
   return (
+    <>
+    {/* Adicionar ModalCart aqui */}
+    <ModalCart 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        itemCount={itemCount} 
+    />
+    
     <div className="flex flex-col md:flex-row p-6 items-start gap-4">
       
       {/* Container de Imagens (1/3) */}
@@ -322,7 +369,8 @@ const applyCepMask = (value: string): string => {
         <div className="flex items-center gap-4 mt-4 w-2/3">
           {/* Seletor de Quantidade (Limitado a 10) */}
           <select
-            defaultValue="1"
+            value={quantity}
+            onChange={handleChangeQuantity}
             className="bg-[#e6e6e6] text-[#6B6B6B] text-lg  py-2 rounded-2xl w-1/4 text-center focus:outline-none focus:border-[#3DF034] focus:border-2 appearance-none cursor-pointer"
             aria-label="Quantidade do produto"
           >
@@ -334,6 +382,7 @@ const applyCepMask = (value: string): string => {
           {/* Botão Adicionar ao Carrinho */}
           <button
             type="button"
+            onClick={handleAddToCart} // Adicionado onClick
             className="bg-[#3DF034] text-white text-lg font-semibold p-2 rounded-2xl  focus:outline-none hover:bg-green-600 transition"
           >
             Adicionar ao Carrinho
@@ -363,5 +412,6 @@ const applyCepMask = (value: string): string => {
         </div>
       </div>
     </div>
+    </>
   );
 }

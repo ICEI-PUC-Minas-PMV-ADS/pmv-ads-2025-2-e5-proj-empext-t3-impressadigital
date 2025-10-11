@@ -3,10 +3,13 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useCart } from "@/app/contexts/CartContext";
 
 export default function HeaderMain() {
   const [isOpen, setIsOpen] = useState(false);
   const [animateSearch, setAnimateSearch] = useState(false);
+  
+  const { itemCount } = useCart(); // Uso do contexto
 
   const categories = [
     "Temas infantis",
@@ -24,7 +27,7 @@ export default function HeaderMain() {
   return (
     <header className="w-full shadow-md">
       {/* Topo */}
-      <div className="flex items-center justify-between px-6 md:px-20 py-3 relative">
+      <div className="flex items-center justify-between gap-3 px-6 md:px-20 py-3 relative">
         {/* Hamburger mobile */}
         <button
           className="md:hidden text-3xl font-bold mr-4"
@@ -68,6 +71,27 @@ export default function HeaderMain() {
             </button>
           </div>
         </div>
+
+        {/* carrinho de compras - ATUALIZADO */}
+        <Link
+            href="/perfil/carrinho"
+            className="flex items-center cursor-pointer hover:background-[#1a9d20] border-green-500 rounded-full p-2 relative"
+        >
+            {itemCount > 0 && (
+            <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                {itemCount}
+            </span>
+            )}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#1a9d20"
+            >
+                <path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z" />
+            </svg>
+        </Link>
 
         {/* Login */}
         <div className="flex items-center gap-2 cursor-pointer hover:opacity-80">

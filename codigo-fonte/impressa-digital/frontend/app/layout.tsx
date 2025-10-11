@@ -5,6 +5,7 @@ import Navbar from "@/app/components/layout/navbar";
 import Footer from "@/app/components/layout/footer";
 import { SidebarProvider } from '../app/contexts/sidebarContext';
 import { AuthProvider } from "./contexts/Authprovider";
+import { CartProvider } from "./contexts/CartContext"; // Adicionar este import
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,10 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
           <SidebarProvider>
-            {children}
+            {/* ENVOLVER COM O CARTPROVIDER */}
+            <CartProvider> 
+              {children}
+            </CartProvider>
           </SidebarProvider>
         </AuthProvider>
       </body>
