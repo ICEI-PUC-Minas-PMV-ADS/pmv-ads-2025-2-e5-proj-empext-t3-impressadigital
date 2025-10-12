@@ -91,7 +91,8 @@ Enumere as restrições à sua solução. Lembre-se de que as restrições geral
 ## Modelo da Base de Dados
 
 # Para banco de dados relacional:
-<img width="1734" height="1248" alt="grafica 215" src="https://github.com/user-attachments/assets/03a31fef-ae39-40ad-b51b-a57af9e6803a" />
+<img width="1734" height="1248" alt="grafica 215" src="https://github.com/user-attachments/assets/0ae2807c-4951-4b74-9139-dee67026316b" 
+ />
 
 ## **Controle e segurança**
 
