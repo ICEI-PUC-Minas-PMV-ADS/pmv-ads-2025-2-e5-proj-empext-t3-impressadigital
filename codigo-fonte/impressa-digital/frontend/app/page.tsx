@@ -2,8 +2,7 @@
  
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import HeaderDashboard from "../app/components/layout/headerDashboard";
-import Navbar from "../app/components/layout/navbar";
+import HeaderDashboard from "@/app/components/layout/headerMain";
 import Carrossel from "./components/layout/Carrossel";
 import ProdutosGrid from "./components/layout/ProdutosGrid";
 

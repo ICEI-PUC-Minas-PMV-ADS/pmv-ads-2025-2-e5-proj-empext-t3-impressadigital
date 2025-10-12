@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function ContatoPage() {
   return (
-    <div className="bg-gray-100 relative">
+    <div className="bg-white-100 relative">
       {/* Header padrão do dashboard */}
       <HeaderDashboard />
 
