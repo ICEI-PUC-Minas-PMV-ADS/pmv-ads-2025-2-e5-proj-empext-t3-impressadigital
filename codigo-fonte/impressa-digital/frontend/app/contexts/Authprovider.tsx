@@ -24,30 +24,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   // Checa se já existe sessão ativa via cookie
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/auth/me", {
-          method: "GET",
-          credentials: "include", // 👈 importante
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
-      } catch (err) {
-        console.error("Erro ao recuperar sessão:", err);
+ useEffect(() => {
+  const checkSession = async () => {
+    try {
+      console.log('Verificando sessão...');
+      const res = await fetch("http://localhost:3000/auth/me", {
+        method: "GET",
+        credentials: "include",
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+      } else {
         setUser(null);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (err) {
+      console.error("Erro ao recuperar sessão:", err);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    checkSession();
-  }, []);
+  checkSession();
+}, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
