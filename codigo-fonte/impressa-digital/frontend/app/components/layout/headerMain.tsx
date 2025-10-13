@@ -1,9 +1,12 @@
+// headerMain.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/app/contexts/CartContext";
+// 1. Importar o hook useAuth
+import { useAuth } from "../../contexts/Authprovider"; // AJUSTE O CAMINHO CONFORME A ESTRUTURA REAL DO SEU PROJETO
 
 // Definição de tipos para as categorias
 interface Categoria {
@@ -19,6 +22,8 @@ export default function HeaderMain() {
   const [allCategories, setAllCategories] = useState<Categoria[]>([]); // Lista de categorias/produtos
   const { itemCount } = useCart(); // Uso do contexto
   const [loadingCategories, setLoadingCategories] = useState(false);
+  // 2. Obter o estado do usuário
+  const { user } = useAuth(); 
 
   const menuItems = [
     // Removemos "Categorias" daqui, pois será um botão dedicado
@@ -138,7 +143,7 @@ export default function HeaderMain() {
           </div>
         </div>
 
-        {/* Carrinho e Login (mantidos) */}
+        {/* Carrinho (mantido) */}
         <Link
           href="/perfil/carrinho"
           className="flex items-center cursor-pointer hover:background-[#1a9d20] border-green-500 rounded-full p-2 relative"
@@ -159,10 +164,10 @@ export default function HeaderMain() {
           </svg>
         </Link>
 
-        {/* Login (mantido) */}
-
-        <Link href="/login">
-          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80">
+        {/* Login/Perfil (MODIFICADO) */}
+        {user ? (
+          // Se houver usuário logado, mostre apenas o ícone de user com link para /perfil
+          <Link href="/perfil" className="flex items-center gap-2 cursor-pointer hover:opacity-80">
             <div className="flex items-center justify-center rounded-full bg-gray-200 p-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -174,11 +179,34 @@ export default function HeaderMain() {
                 <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" />
               </svg>
             </div>
-          </div>
-        </Link>
-        <a href="/login" className="text-gray-700 font-medium hidden md:block">
-          Iniciar sessão
-        </a>
+            {/* Opcional: Adicionar um nome de usuário, como está no headerDashboard, se desejar */}
+            {/* <span className="text-gray-700 font-medium hidden md:block">
+              {user.name.split(" ")[0]}
+            </span> */}
+          </Link>
+        ) : (
+          // Se não houver usuário logado, mostre a opção de Iniciar sessão/Login
+          <>
+            <Link href="/login">
+              <div className="flex items-center gap-2 cursor-pointer hover:opacity-80">
+                <div className="flex items-center justify-center rounded-full bg-gray-200 p-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24"
+                    viewBox="0 -960 960 960"
+                    width="24"
+                    fill="#555"
+                  >
+                    <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" />
+                  </svg>
+                </div>
+              </div>
+            </Link>
+            <a href="/login" className="text-gray-700 font-medium hidden md:block">
+              Iniciar sessão
+            </a>
+          </>
+        )}
       </div>
 
       {/* Barra de pesquisa - MOBILE (mantida) */}

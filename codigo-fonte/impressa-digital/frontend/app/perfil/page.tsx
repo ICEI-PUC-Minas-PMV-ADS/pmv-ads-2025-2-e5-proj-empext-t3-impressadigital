@@ -1,5 +1,7 @@
 'use client'
 import React, { useState } from 'react';
+// Importar o useAuth (Assumindo que está em um caminho acessível)
+import { useAuth } from '../contexts/Authprovider'; // AJUSTE O CAMINHO CONFORME A ESTRUTURA REAL DO SEU PROJETO
 
 // Importar os componentes das páginas filhas
 import Carrinho from './carrinho/page';
@@ -14,13 +16,18 @@ const menuItems = [
 
 ];
 
-interface SidebarProps {
-  username: string;
-}
 
-const Perfil: React.FC<SidebarProps> = ({ username }) => {
-  // Estado para controlas qual página está ativa
+
+const Perfil: React.FC = () => {
+  // Obter a função de logout
+  const { logout, user } = useAuth(); 
+  
+  // Estado para controlar qual página está ativa
   const [paginaAtiva, setPaginaAtiva] = useState('pedidos');
+  // Estado para controlar a visibilidade do modal de confirmação
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+    const usernameDisplay = user ? user.name.split(" ")[0] : "Visitante"; 
 
   const renderizarConteudo = () => {
     switch (paginaAtiva) {
@@ -34,9 +41,18 @@ const Perfil: React.FC<SidebarProps> = ({ username }) => {
         return <PedidosPage />;
     }
   };
+  
+  // Handler para confirmar e executar o logout
+  const handleLogout = () => {
+      logout();
+      setShowLogoutModal(false);
+      // Opcional: Redirecionar para a home ou login (o próprio `logout` pode fazer isso)
+  };
+
 
   return (
     <div style={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif' }}>
+      
       {/* Sidebar */}
       <aside className="bg-[#222421] text-white w-75 min-h-screen flex flex-col justify-between p-6">
       <div className="flex flex-col gap-15 items-center mt-8">
@@ -57,7 +73,8 @@ const Perfil: React.FC<SidebarProps> = ({ username }) => {
               />
             </svg>
           </div>
-          <p className="text-center text-white font-semibold">Olá, @{username}</p>
+          {/* Nota: No ambiente real, você provavelmente usaria user.name ou user.email aqui */}
+          <p className="text-center text-white font-semibold">Olá, @{usernameDisplay}</p>
         </div>
 
         <nav className="flex flex-col gap-1 text-lg w-full">
@@ -90,11 +107,16 @@ const Perfil: React.FC<SidebarProps> = ({ username }) => {
         </nav>
       </div>
 
-      <div className="text-center">
+      <div className="flex flex-col text-center">
         <button className="bg-white text-black rounded-full px-8 py-1 mb-4 hover:bg-gray-200 transition">
           Voltar
         </button>
-        <p className="text-white">SAIR</p>
+        <button 
+            className="text-white hover:text-red-500 transition font-bold"
+            onClick={() => setShowLogoutModal(true)} // Abre o modal
+        >
+            SAIR
+        </button>
       </div>
       </aside>
 
@@ -102,6 +124,30 @@ const Perfil: React.FC<SidebarProps> = ({ username }) => {
       <main style={{ flex: 1, backgroundColor: '#fff', padding: '65px', overflowY: 'auto' }}>
         {renderizarConteudo()}
       </main>
+      
+      {/* Modal de Confirmação de Logout */}
+      {showLogoutModal && (
+        <div className="fixed top-130 left-75 inset-0  bg-opacity-50 flex items-center  z-50 p-4">
+          <div className="bg-white rounded-lg shadow-2xl p-6 w-full max-w-sm transform transition-all duration-300 scale-100">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Confirmação de Saída</h3>
+            <p className="text-gray-600 mb-6">Tem certeza que deseja sair da sua conta?</p>
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                onClick={() => setShowLogoutModal(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                className="px-4 py-2 bg-[#1a9d20] text-white rounded-lg hover:bg-[#14a800] transition"
+                onClick={handleLogout}
+              >
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

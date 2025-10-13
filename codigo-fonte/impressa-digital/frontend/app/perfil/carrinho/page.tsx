@@ -3,24 +3,22 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useCart } from '../../contexts/CartContext';
 
-// Tipos atualizados com a estrutura de mídias
 type BackendCarrinho = { id: number; produto_id: number; user_id: number; criado_em: string };
 type BackendProduto = { 
     id: number; 
     nome: string; 
     descricao?: string; 
     preco?: number; 
-    // ADICIONADO: Estrutura de mídias (como visto em productDetail.tsx)
     midias?: Array<{ id: number; url: string }>;
 }; 
 
 type CartItem = {
-    id: string; // pode ser numérico (backend) ou prefixado (sample)
+    id: string;
     produtoId: number;
     title: string;
     description: string;
     price: number;
-    quantity: number; // local apenas por enquanto
+    quantity: number;
     image: string;
     customizable?: boolean;
     createdAt?: string;
@@ -67,7 +65,6 @@ function CartLine({
         <div className="relative flex flex-col md:flex-row gap-4 p-4 sm:p-5 md:p-6 rounded-3xl border border-gray-300 bg-white shadow-sm">
             <div className="flex-shrink-0">
                 <div className="bg-gray-100 rounded-2xl p-2 sm:p-3 w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center overflow-hidden">
-                    {/* AQUI USA A URL CORRETA RECEBIDA NO item.image */}
                     <img src={item.image} alt={item.title} className="object-cover w-full h-full rounded-lg" />
                 </div>
                 <p className="mt-3 text-xs sm:text-sm font-semibold max-w-[8rem] sm:max-w-[10rem] leading-snug">
@@ -110,7 +107,6 @@ export default function Carrinho() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [reloadIndex, setReloadIndex] = useState(0);
-
     const { setTotalItemCount } = useCart();
 
     const fetchData = useCallback(async () => {
@@ -121,7 +117,6 @@ export default function Carrinho() {
             if (!res.ok) throw new Error(`Erro ao buscar carrinho (${res.status})`);
             const registros: BackendCarrinho[] = await res.json();
 
-            // Busca produtos em paralelo
             const produtoResponses = await Promise.all(
                 registros.map(async (reg) => {
                     try {
@@ -136,8 +131,6 @@ export default function Carrinho() {
 
             const mapped: CartItem[] = registros.map((reg, idx) => {
                 const prod = produtoResponses[idx];
-                
-                // AJUSTE CRUCIAL AQUI: Pegar a URL da primeira mídia, se existir
                 const imageUrl = prod?.midias?.[0]?.url || '/images/placeholder.png';
 
                 return {
@@ -147,18 +140,18 @@ export default function Carrinho() {
                     description: prod?.descricao || '(sem descrição)',
                     price: prod?.preco ? Number(prod.preco) : 0,
                     quantity: 1,
-                    image: imageUrl, // Agora usa a URL da mídia do produto
+                    image: imageUrl,
                     customizable: false,
                     createdAt: reg.criado_em,
                 };
             });
 
             setItems(mapped);
-            setTotalItemCount(mapped.length); // Sincroniza a contagem no contexto
+            setTotalItemCount(mapped.length);
         } catch (e: any) {
             setError(e.message || 'Erro inesperado');
             setItems([]);
-            setTotalItemCount(0); // Zera a contagem em caso de erro
+            setTotalItemCount(0);
         } finally {
             setLoading(false);
         }
@@ -175,13 +168,12 @@ export default function Carrinho() {
     const removeItem = useCallback(
         async (id: string) => {
             setItems((prev) => prev.filter((it) => it.id !== id));
-            setTotalItemCount((prev) => Math.max(0, prev - 1)); // Decrementa a contagem imediatamente
+            setTotalItemCount((prev) => Math.max(0, prev - 1));
 
             if (/^\d+$/.test(id)) {
                 try {
                     await fetch(`${BASE_URL}/carrinho/${id}`, { method: 'DELETE' });
                 } catch (e) {
-                    // Silencia por enquanto
                     console.warn('Falha ao remover no backend (ignorado)', e);
                 }
             }
@@ -191,6 +183,60 @@ export default function Carrinho() {
 
     const refresh = () => setReloadIndex((i) => i + 1);
     const subtotal = useMemo(() => items.reduce((acc, it) => acc + it.price * it.quantity, 0), [items]);
+
+    // 🟢 Função principal: Fechar pedido
+    const fecharPedido = async () => {
+        if (!items.length) return;
+
+        try {
+            // 1️⃣ Cria a venda
+            const vendaResponse = await fetch(`${BASE_URL}/vendas`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: 1, // 🔧 ajustar para pegar usuário logado
+                    valor_total: subtotal,
+                    status: "pendente",
+                    data_venda: new Date(),
+                }),
+            });
+
+            if (!vendaResponse.ok) throw new Error("Erro ao criar venda");
+            const venda = await vendaResponse.json();
+
+            // 2️⃣ Cria cada item da venda
+            await Promise.all(
+                items.map((item) =>
+                    fetch(`${BASE_URL}/vendas_produtos`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            venda_id: venda.id,
+                            produto_id: item.produtoId,
+                            quantidade: item.quantity,
+                            preco_unitario: item.price,
+                        }),
+                    })
+                )
+            );
+
+            // 3️⃣ Limpa o carrinho no frontend e backend
+            await Promise.all(
+                items.map((item) =>
+                    fetch(`${BASE_URL}/carrinho/${item.id}`, { method: "DELETE" }).catch(() => {})
+                )
+            );
+
+            setItems([]);
+            setTotalItemCount(0);
+
+            // 4️⃣ Redireciona para página de pedidos
+            window.location.href = "/perfil/pedidos";
+        } catch (err) {
+            console.error("Erro ao fechar pedido:", err);
+            alert("Erro ao fechar o pedido. Tente novamente.");
+        }
+    };
 
     return (
         <div className="text-black flex flex-col gap-6 sm:gap-8 max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
@@ -213,6 +259,7 @@ export default function Carrinho() {
                         <CartLine key={it.id} item={it} onUpdate={updateQuantity} onRemove={removeItem} />
                     ))}
                 </div>
+
                 <aside className="w-full lg:w-80 flex-shrink-0 lg:sticky lg:top-6 self-start">
                     <div className="bg-white border border-gray-300 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-3 sm:gap-4">
                         <h3 className="text-lg sm:text-xl font-semibold">Resumo do pedido</h3>
@@ -229,13 +276,16 @@ export default function Carrinho() {
                             <span>Total</span>
                             <span>{currency.format(subtotal)}</span>
                         </div>
+
                         <button
                             type="button"
+                            onClick={fecharPedido}
                             disabled={!items.length || loading}
                             className="mt-1 sm:mt-2 w-full bg-[#1a9d20] hover:bg-[#17851b] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-full transition-colors"
                         >
                             Fechar pedido
                         </button>
+
                         <button
                             type="button"
                             onClick={refresh}
@@ -247,8 +297,7 @@ export default function Carrinho() {
                 </aside>
             </div>
             <p className="text-[10px] text-gray-400 text-center">
-                (Implementação simplificada: quantidade só local, sem associação real a usuário. Facilita refatorar
-                depois.)
+                (Implementação com backend: cada pedido será salvo na tabela vendas e vendas_produtos.)
             </p>
         </div>
     );

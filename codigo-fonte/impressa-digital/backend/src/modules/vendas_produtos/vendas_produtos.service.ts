@@ -11,14 +11,16 @@ export class VendasProdutosService {
 
   // 🟢 Retorna todos os itens de todas as vendas
   async findAll(): Promise<VendasProdutos[]> {
-    return this.vendasProdutosRepository.find({ relations: ['venda', 'produto'] });
+    return this.vendasProdutosRepository.find({
+      relations: ['venda', 'produto'],
+    });
   }
 
   // 🟢 Retorna um item específico
   async findOne(id: number): Promise<VendasProdutos> {
     const item = await this.vendasProdutosRepository.findOne({
       where: { id },
-      relations: ['venda', 'produto'],
+      relations: ['venda', 'produto', 'produto.midias'],
     });
     if (!item) throw new NotFoundException('Item da venda não encontrado');
     return item;
@@ -31,7 +33,10 @@ export class VendasProdutosService {
   }
 
   // 🟢 Atualiza um item da venda
-  async update(id: number, data: Partial<VendasProdutos>): Promise<VendasProdutos> {
+  async update(
+    id: number,
+    data: Partial<VendasProdutos>,
+  ): Promise<VendasProdutos> {
     const item = await this.findOne(id);
     Object.assign(item, data);
     return this.vendasProdutosRepository.save(item);

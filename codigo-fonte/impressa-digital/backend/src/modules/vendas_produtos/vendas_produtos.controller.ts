@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { VendasProdutosService } from './vendas_produtos.service';
 import { VendasProdutos } from 'src/core/database/entities/vendas_produtos.entity';
 
@@ -12,7 +21,9 @@ export class VendasProdutosController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<VendasProdutos> {
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<VendasProdutos> {
     return this.vendasProdutosService.findOne(id);
   }
 
@@ -30,14 +41,18 @@ export class VendasProdutosController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
     await this.vendasProdutosService.remove(id);
     return { message: `Item da venda ${id} removido com sucesso` };
   }
 
   // 🟢 Busca todos os produtos de uma venda específica
   @Get('venda/:vendaId')
-  async findByVenda(@Param('vendaId', ParseIntPipe) vendaId: number): Promise<VendasProdutos[]> {
+  async findByVenda(
+    @Param('vendaId', ParseIntPipe) vendaId: number,
+  ): Promise<VendasProdutos[]> {
     return this.vendasProdutosService.findByVenda(vendaId);
   }
 }
