@@ -2,6 +2,16 @@
 
 import { useState, useEffect } from "react";
 
+interface Address {
+  id?: number;
+  logradouro: string;
+  numero: string;
+  bairro: string;
+  cidade: string;
+  estado: string;
+  cep: string;
+}
+
 interface Venda {
   id: number;
   status: "pendente" | "confirmado" | "cancelado";
@@ -12,6 +22,7 @@ interface Venda {
     id: number;
     name: string;
     email: string;
+    endereco?: Address;
   };
 }
 
@@ -65,11 +76,11 @@ export default function PedidosPage() {
 
   const aplicarFiltros = () => {
     let filtrados = [...pedidos];
-    
+
     if (statusFiltro !== "todos") {
       filtrados = filtrados.filter((p) => p.status === statusFiltro);
     }
-    
+
     if (clienteFiltro.trim() !== "") {
       filtrados = filtrados.filter(
         (p) =>
@@ -77,22 +88,22 @@ export default function PedidosPage() {
           p.user?.email?.toLowerCase().includes(clienteFiltro.toLowerCase())
       );
     }
-    
+
     if (idFiltro.trim() !== "") {
       const idNumero = parseInt(idFiltro);
       if (!isNaN(idNumero)) {
         filtrados = filtrados.filter((p) => p.id === idNumero);
       }
     }
-    
+
     filtrados.sort((a, b) => {
       const dataA = new Date(a.data_venda).getTime();
       const dataB = new Date(b.data_venda).getTime();
       return ordemData === "asc" ? dataA - dataB : dataB - dataA;
     });
-    
+
     setPedidosFiltrados(filtrados);
-    setPaginaAtual(1); 
+    setPaginaAtual(1);
   };
 
   const atualizarStatus = async (id: number, novoStatus: string) => {
@@ -202,7 +213,9 @@ export default function PedidosPage() {
         <div className="flex flex-wrap gap-4 items-end">
           {/* Filtro por ID */}
           <div>
-            <label className="block text-sm text-gray-600 mb-1">ID do Pedido</label>
+            <label className="block text-sm text-gray-600 mb-1">
+              ID do Pedido
+            </label>
             <input
               type="number"
               value={idFiltro}
@@ -280,16 +293,43 @@ export default function PedidosPage() {
           >
             {atualizandoLista ? (
               <>
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Atualizando...
               </>
             ) : (
               <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  ></path>
                 </svg>
                 Atualizar Lista
               </>
@@ -316,6 +356,12 @@ export default function PedidosPage() {
               </span>
               <span>
                 <strong>Total:</strong> {formatarMoeda(pedido.valor_total || 0)}
+              </span>
+              <span>
+                <strong>Endereço:</strong>{" "}
+                {pedido.user?.endereco
+                  ? `${pedido.user.endereco.logradouro}, ${pedido.user.endereco.numero} - ${pedido.user.endereco.cidade}/${pedido.user.endereco.estado}`
+                  : "Endereço não informado"}
               </span>
               <span>
                 <strong>Observações:</strong>{" "}

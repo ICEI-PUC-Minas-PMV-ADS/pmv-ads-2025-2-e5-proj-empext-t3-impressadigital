@@ -7,6 +7,8 @@ interface User {
   email: string;
   name: string;
   role?: string;
+  cpf?: string;
+  birthDate?: string;
 }
 
 interface AuthContextType {
@@ -46,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   };
-
+  console.log(user)
   checkSession();
 }, []);
 

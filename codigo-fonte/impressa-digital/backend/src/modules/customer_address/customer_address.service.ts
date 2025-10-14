@@ -37,4 +37,11 @@ export class CustomerAddressService {
     const address = await this.findOne(id);
     await this.addressRepository.remove(address);
   }
+
+  async findByUserId(userId: number): Promise<CustomerAddress[]> {
+  return this.addressRepository.find({
+    where: { user: { id: userId } },
+    relations: ['user'],
+  });
+}
 }

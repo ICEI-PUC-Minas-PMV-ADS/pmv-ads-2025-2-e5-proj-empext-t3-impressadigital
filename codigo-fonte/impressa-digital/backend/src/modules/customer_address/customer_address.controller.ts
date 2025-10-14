@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { CustomerAddress } from 'src/core/database/entities/customer_address.entity';
 import { CustomerAddressService } from './customer_address.service';
 
@@ -12,12 +21,16 @@ export class CustomerAddressController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<CustomerAddress> {
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<CustomerAddress> {
     return this.addressService.findOne(id);
   }
 
   @Post()
-  async create(@Body() data: Partial<CustomerAddress>): Promise<CustomerAddress> {
+  async create(
+    @Body() data: Partial<CustomerAddress>,
+  ): Promise<CustomerAddress> {
     return this.addressService.create(data);
   }
 
@@ -30,8 +43,17 @@ export class CustomerAddressController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
     await this.addressService.remove(id);
     return { message: `Endereço ${id} removido com sucesso` };
+  }
+
+  @Get('user/:userId')
+  async findByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<CustomerAddress[]> {
+    return this.addressService.findByUserId(userId);
   }
 }

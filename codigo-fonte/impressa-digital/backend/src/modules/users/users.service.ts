@@ -8,30 +8,40 @@ export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
-  ) { }
-
+  ) {}
 
   async createUser(user: User): Promise<User> {
     user.password = await bcrypt.hash(user.password, 10);
 
     await this.userRepository.save(user);
-    user.password = "";
+    user.password = '';
     return user;
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+    return this.userRepository.find({ relations: ['endereco'] });
   }
 
   async findById(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id }, select: ['id', 'email', 'name', 'role'] });
-    if (!user) throw new NotFoundException(`Usuário com id ${id} não encontrado`);
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['endereco'],
+      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate'],
+    });
+    if (!user)
+      throw new NotFoundException(`Usuário com id ${id} não encontrado`);
     return user;
   }
 
-   async findByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { email:email } });
-    if (!user) throw new NotFoundException(`Usuário com e-mail: ${email} não encontrado`);
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate', 'password'],
+    });
+    if (!user)
+      throw new NotFoundException(
+        `Usuário com e-mail: ${email} não encontrado`,
+      );
     return user;
   }
 
@@ -43,7 +53,11 @@ export class UserService {
 
     await this.userRepository.update(id, data);
 
-    const updatedUser = await this.userRepository.findOne({ where: { id } });
+    const updatedUser = await this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate'],
+      relations: ['endereco'],
+    });
     if (!updatedUser) {
       throw new NotFoundException(`Usuário com id ${id} não encontrado`);
     }
@@ -53,6 +67,4 @@ export class UserService {
   async deleteUser(id: number): Promise<void> {
     await this.userRepository.delete(id);
   }
-
-
 }

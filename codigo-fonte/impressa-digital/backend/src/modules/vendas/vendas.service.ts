@@ -22,7 +22,7 @@ export class VendasService {
 
 async findAll(): Promise<Vendas[]> {
   const rep = await this.vendasRepository.find({
-    relations: ['user'],
+    relations: ['user', 'user.endereco'],
   });
   return rep;
 }
@@ -31,7 +31,7 @@ async findAll(): Promise<Vendas[]> {
 async findById(id: number): Promise<Vendas> {
   const venda = await this.vendasRepository.findOne({ 
     where: { id },
-    relations: ['user'],
+    relations: ['user', 'user.endereco'],
   });
   if (!venda) {
     throw new NotFoundException(`Venda com ID ${id} não encontrada`);
