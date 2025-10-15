@@ -109,7 +109,6 @@ const PedidosPage: React.FC = () => {
         <h2 className="text-2xl self-center font-bold text-gray-700 mb-6">
           Seus Pedidos
         </h2>
-
         <main className="flex-1 w-full max-w-5xl p-4 sm:p-10">
           {pedidos.length === 0 ? (
             <div className="text-center text-gray-500 mt-20">
@@ -132,7 +131,8 @@ const PedidosPage: React.FC = () => {
                       "/images/placeholder.png"
                     }
                     total={pedido.valor_total}
-                    status={pedido.status} // ✅ Aqui!
+                    status={pedido.status}
+                    productId={item.produto?.id}
                   />
                 ))
               )}

@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFiles,
   BadRequestException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { MidiasService } from './midia.service';
@@ -53,20 +54,29 @@ export class MidiasController {
     }
   }
 
-  @Post('upload')
+  @Post('produtos/:produtoId/upload')
   @UseInterceptors(FilesInterceptor('files', 10))
-  async uploadFiles(
+  async uploadProdutoMidias(
+    @Param('produtoId', ParseIntPipe) produtoId: number,
     @UploadedFiles() files: any[],
-    @Body('produto_id') produtoId: number,
   ): Promise<Midias[]> {
     if (!files || files.length === 0) {
       throw new BadRequestException('Nenhum arquivo enviado');
     }
 
-    if (!produtoId) {
-      throw new BadRequestException('ID do produto é obrigatório');
+    return this.midiasService.createWithUpload(files, produtoId);
+  }
+
+  @Post('avaliacoes/:avaliacaoId/upload')
+  @UseInterceptors(FilesInterceptor('files', 5))
+  async uploadAvaliacaoMidias(
+    @Param('avaliacaoId', ParseIntPipe) avaliacaoId: number,
+    @UploadedFiles() files: any[],
+  ): Promise<Midias[]> {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('Nenhum arquivo enviado');
     }
 
-    return this.midiasService.createWithUpload(files, +produtoId);
+    return this.midiasService.createForAvaliacao(files, avaliacaoId);
   }
 }

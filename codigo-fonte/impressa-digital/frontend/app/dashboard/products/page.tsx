@@ -326,10 +326,13 @@ const DashboardProducts: React.FC = () => {
         const formDataUpload = new FormData();
         files.forEach((file) => formDataUpload.append("files", file));
         formDataUpload.append("produto_id", editingProduct.id.toString());
-        const uploadRes = await fetch("http://localhost:3000/midias/upload", {
-          method: "POST",
-          body: formDataUpload,
-        });
+        const uploadRes = await fetch(
+          `http://localhost:3000/midias/produtos/${editingProduct.id}/upload`,
+          {
+            method: "POST",
+            body: formDataUpload,
+          }
+        );
         if (!uploadRes.ok) throw new Error("Erro ao enviar imagens");
       }
 

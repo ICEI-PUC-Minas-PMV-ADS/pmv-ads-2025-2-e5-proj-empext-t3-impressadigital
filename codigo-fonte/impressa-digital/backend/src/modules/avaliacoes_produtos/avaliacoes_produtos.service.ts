@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  Inject,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Avaliacoes_Produto } from 'src/core/database/entities/avaliacoes_produtos.entity';
 
@@ -25,25 +20,27 @@ export class Avaliacoes_produtosService {
 
   async findAll(): Promise<Avaliacoes_Produto[]> {
     return await this.avaliacoesRepository.find({
-      relations: ['produto', 'user'], 
+      relations: ['produto', 'user', 'midias'],
     });
   }
 
   async findByProdutoId(produtoId: number): Promise<Avaliacoes_Produto[]> {
     return await this.avaliacoesRepository.find({
       where: { produto: { id: produtoId } },
-      relations: ['produto', 'user'],
+      relations: ['produto', 'user', 'midias'],
     });
   }
 
   async findById(id: number): Promise<Avaliacoes_Produto> {
     const avaliacao = await this.avaliacoesRepository.findOne({
       where: { id },
-      relations: ['produto', 'user'],
+      relations: ['produto', 'user', 'midias'],
     });
+
     if (!avaliacao) {
       throw new NotFoundException(`Avaliação com ID ${id} não encontrada`);
     }
+
     return avaliacao;
   }
 

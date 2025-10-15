@@ -13,7 +13,11 @@ interface ToastProps {
   onClose: () => void;
 }
 
-const Toast: React.FC<ToastProps> = ({ message, type = "success", onClose }) => {
+const Toast: React.FC<ToastProps> = ({
+  message,
+  type = "success",
+  onClose,
+}) => {
   useEffect(() => {
     const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);
@@ -45,7 +49,10 @@ const DashboardAddProduct: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
 
-  const showToast = (message: string, type: "success" | "error" = "success") => {
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
     setToastMessage(message);
     setToastType(type);
   };
@@ -55,11 +62,11 @@ const DashboardAddProduct: React.FC = () => {
       try {
         setLoadingCategorias(true);
         const response = await fetch("http://localhost:3000/categories");
-        
+
         if (!response.ok) {
           throw new Error("Erro ao carregar categorias");
         }
-        
+
         const categoriasData = await response.json();
         setCategorias(categoriasData);
       } catch (err) {
@@ -141,14 +148,19 @@ const DashboardAddProduct: React.FC = () => {
         files.forEach((file) => formData.append("files", file));
         formData.append("produto_id", produtoId.toString());
 
-        const midiasRes = await fetch("http://localhost:3000/midias/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const midiasRes = await fetch(
+          `http://localhost:3000/midias/produtos/${produtoId}/upload`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
         if (!midiasRes.ok) {
           const errorData = await midiasRes.json();
-          throw new Error(errorData.message || "Erro ao fazer upload das imagens");
+          throw new Error(
+            errorData.message || "Erro ao fazer upload das imagens"
+          );
         }
 
         const midiasData = await midiasRes.json();
@@ -156,7 +168,7 @@ const DashboardAddProduct: React.FC = () => {
       }
 
       showToast("Produto adicionado com sucesso!", "success");
-      
+
       // Limpar o formulário
       setNome("");
       setDescricao("");
@@ -165,10 +177,12 @@ const DashboardAddProduct: React.FC = () => {
       setStatus("");
       setFiles([]);
       setPreviews([]);
-
     } catch (err: any) {
       console.error("Erro completo:", err);
-      showToast(err.message || "Erro ao salvar produto ou fazer upload das imagens.", "error");
+      showToast(
+        err.message || "Erro ao salvar produto ou fazer upload das imagens.",
+        "error"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -176,7 +190,9 @@ const DashboardAddProduct: React.FC = () => {
 
   return (
     <>
-      <p className="text-black text-xl lg:text-2xl font-bold mb-6">Adicionar produto</p>
+      <p className="text-black text-xl lg:text-2xl font-bold mb-6">
+        Adicionar produto
+      </p>
 
       <div className="border-2 border-gray-200 rounded-2xl p-6 shadow-sm">
         <p className="text-black font-sans font-bold mb-4 text-xl">
@@ -196,7 +212,9 @@ const DashboardAddProduct: React.FC = () => {
             disabled={loadingCategorias}
           >
             <option value="">
-              {loadingCategorias ? "Carregando categorias..." : "Selecione a categoria"}
+              {loadingCategorias
+                ? "Carregando categorias..."
+                : "Selecione a categoria"}
             </option>
             {categorias.map((cat) => (
               <option key={cat.id} value={cat.id}>
@@ -312,10 +330,12 @@ const DashboardAddProduct: React.FC = () => {
             type="submit"
             disabled={isLoading || loadingCategorias}
             className={`mt-4 px-6 py-2 bg-[#45A62D] text-white font-semibold rounded-2xl transition w-50 cursor-pointer ${
-              isLoading || loadingCategorias ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#3a8a24]'
+              isLoading || loadingCategorias
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-[#3a8a24]"
             }`}
           >
-            {isLoading ? 'Salvando...' : 'Salvar produto'}
+            {isLoading ? "Salvando..." : "Salvar produto"}
           </button>
         </form>
       </div>
