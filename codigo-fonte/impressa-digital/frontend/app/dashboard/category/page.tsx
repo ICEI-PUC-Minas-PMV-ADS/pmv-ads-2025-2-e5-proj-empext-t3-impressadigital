@@ -15,7 +15,11 @@ interface ToastProps {
   onClose: () => void;
 }
 
-const Toast: React.FC<ToastProps> = ({ message, type = "success", onClose }) => {
+const Toast: React.FC<ToastProps> = ({
+  message,
+  type = "success",
+  onClose,
+}) => {
   useEffect(() => {
     const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);
@@ -34,17 +38,23 @@ const Toast: React.FC<ToastProps> = ({ message, type = "success", onClose }) => 
 
 export default function CategoriasPage() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [categoriasFiltradas, setCategoriasFiltradas] = useState<Categoria[]>([]);
+  const [categoriasFiltradas, setCategoriasFiltradas] = useState<Categoria[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<Categoria | null>(null);
-  const [categoryToDelete, setCategoryToDelete] = useState<Categoria | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Categoria | null>(
+    null
+  );
+  const [categoryToDelete, setCategoryToDelete] = useState<Categoria | null>(
+    null
+  );
 
   const [formData, setFormData] = useState({
     nome: "",
-    descricao: ""
+    descricao: "",
   });
 
   const [filtroNome, setFiltroNome] = useState("");
@@ -54,7 +64,10 @@ export default function CategoriasPage() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
 
-  const showToast = (message: string, type: "success" | "error" = "success") => {
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
     setToastMessage(message);
     setToastType(type);
   };
@@ -88,20 +101,18 @@ export default function CategoriasPage() {
 
   const aplicarFiltros = () => {
     let filtradas = [...categorias];
-    
     if (filtroNome.trim() !== "") {
-      filtradas = filtradas.filter(cat =>
+      filtradas = filtradas.filter((cat) =>
         cat.nome.toLowerCase().includes(filtroNome.toLowerCase())
       );
     }
-
     setCategoriasFiltradas(filtradas);
     setPaginaAtual(1);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.nome.trim()) {
       showToast("Nome da categoria é obrigatório", "error");
       return;
@@ -109,20 +120,21 @@ export default function CategoriasPage() {
 
     try {
       if (editingCategory) {
-        const response = await fetch(`http://localhost:3000/categories/${editingCategory.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-        
+        const response = await fetch(
+          `http://localhost:3000/categories/${editingCategory.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          }
+        );
         if (!response.ok) throw new Error("Erro ao atualizar categoria");
-        
-        setCategorias(prev =>
-          prev.map(cat =>
+
+        setCategorias((prev) =>
+          prev.map((cat) =>
             cat.id === editingCategory.id ? { ...cat, ...formData } : cat
           )
         );
-        
         showToast("Categoria atualizada com sucesso!", "success");
       } else {
         const response = await fetch("http://localhost:3000/categories", {
@@ -130,11 +142,10 @@ export default function CategoriasPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
-        
         if (!response.ok) throw new Error("Erro ao criar categoria");
-        
+
         const novaCategoria = await response.json();
-        setCategorias(prev => [...prev, novaCategoria]);
+        setCategorias((prev) => [...prev, novaCategoria]);
         showToast("Categoria criada com sucesso!", "success");
       }
 
@@ -150,7 +161,7 @@ export default function CategoriasPage() {
       setEditingCategory(categoria);
       setFormData({
         nome: categoria.nome,
-        descricao: categoria.descricao || ""
+        descricao: categoria.descricao || "",
       });
     } else {
       setEditingCategory(null);
@@ -175,7 +186,7 @@ export default function CategoriasPage() {
     const produtosCount = contarProdutos(categoryToDelete);
     if (produtosCount > 0) {
       showToast(
-        `Não é possível excluir a categoria "${categoryToDelete.nome}" porque ela possui ${produtosCount} produto(s) vinculado(s). Remova os produtos primeiro.`,
+        `Não é possível excluir a categoria "${categoryToDelete.nome}" porque ela possui ${produtosCount} produto(s) vinculado(s).`,
         "error"
       );
       setCategoryToDelete(null);
@@ -183,13 +194,17 @@ export default function CategoriasPage() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/categories/${categoryToDelete.id}`, {
-        method: "DELETE",
-      });
-      
+      const response = await fetch(
+        `http://localhost:3000/categories/${categoryToDelete.id}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!response.ok) throw new Error("Erro ao excluir categoria");
-      
-      setCategorias(prev => prev.filter(cat => cat.id !== categoryToDelete.id));
+
+      setCategorias((prev) =>
+        prev.filter((cat) => cat.id !== categoryToDelete.id)
+      );
       showToast("Categoria excluída com sucesso!", "success");
     } catch (err) {
       showToast("Erro ao excluir categoria", "error");
@@ -199,13 +214,12 @@ export default function CategoriasPage() {
     }
   };
 
-  const contarProdutos = (categoria: Categoria) => {
-    return categoria.produtos?.length || 0;
-  };
+  const contarProdutos = (categoria: Categoria) =>
+    categoria.produtos?.length || 0;
 
   if (loading)
     return <div className="p-6 text-center">Carregando categorias...</div>;
-  
+
   if (error)
     return (
       <div className="p-6 text-center text-red-600">
@@ -219,7 +233,6 @@ export default function CategoriasPage() {
       </div>
     );
 
-  // Paginação
   const totalPaginas = Math.ceil(categoriasFiltradas.length / itensPorPagina);
   const paginaValida = Math.min(paginaAtual, totalPaginas || 1);
   const indiceInicio = (paginaValida - 1) * itensPorPagina;
@@ -232,14 +245,9 @@ export default function CategoriasPage() {
     const maxNumeros = 5;
     let inicio = Math.max(1, paginaValida - 2);
     let fim = Math.min(totalPaginas, inicio + maxNumeros - 1);
-    
-    if (fim - inicio < maxNumeros - 1) {
+    if (fim - inicio < maxNumeros - 1)
       inicio = Math.max(1, fim - maxNumeros + 1);
-    }
-    
-    const numeros = [];
-    for (let i = inicio; i <= fim; i++) numeros.push(i);
-    return numeros;
+    return Array.from({ length: fim - inicio + 1 }, (_, i) => inicio + i);
   };
 
   return (
@@ -248,11 +256,10 @@ export default function CategoriasPage() {
         Gerenciar Categorias
       </h1>
 
-      {/* Botão de adicionar e filtros */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 text-black">
         <button
           onClick={() => openModal()}
-          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700  cursor-pointer"
+          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 cursor-pointer"
         >
           Nova Categoria
         </button>
@@ -290,23 +297,28 @@ export default function CategoriasPage() {
         </div>
       </div>
 
-      {/* Lista de Categorias */}
+      {/* Lista de categorias */}
       <div className="flex flex-col gap-3">
-        {categoriasPagina.map((categoria) => (
+        {categoriasPagina.map((categoria, index) => (
           <div
             key={categoria.id}
             className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col md:flex-row md:justify-between md:items-center"
           >
             <div className="flex flex-col gap-1 text-sm text-gray-700">
-              <span className="font-semibold text-lg">#{categoria.id} - {categoria.nome}</span>
-              <span>
-                <strong>Descrição:</strong> {categoria.descricao || "Sem descrição"}
+              <span className="font-semibold text-lg">
+                #{indiceInicio + index + 1} - {categoria.nome}
               </span>
-              <span className={`text-xs px-2 py-1 rounded-full w-fit ${
-                contarProdutos(categoria) > 0 
-                  ? "bg-blue-100 text-blue-800" 
-                  : "bg-gray-100 text-gray-800"
-              }`}>
+              <span>
+                <strong>Descrição:</strong>{" "}
+                {categoria.descricao || "Sem descrição"}
+              </span>
+              <span
+                className={`text-xs px-2 py-1 rounded-full w-fit ${
+                  contarProdutos(categoria) > 0
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
                 {contarProdutos(categoria)} produto(s) vinculado(s)
               </span>
             </div>
@@ -379,8 +391,8 @@ export default function CategoriasPage() {
           <div className="text-4xl mb-4">📂</div>
           <div className="text-lg">Nenhuma categoria encontrada</div>
           <div className="text-sm mt-2">
-            {categorias.length === 0 
-              ? "Comece criando sua primeira categoria!" 
+            {categorias.length === 0
+              ? "Comece criando sua primeira categoria!"
               : "Tente ajustar os filtros."}
           </div>
         </div>
@@ -399,16 +411,22 @@ export default function CategoriasPage() {
                 <input
                   type="text"
                   value={formData.nome}
-                  onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, nome: e.target.value })
+                  }
                   className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-green-500"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Descrição</label>
+                <label className="block text-sm font-medium mb-1">
+                  Descrição
+                </label>
                 <textarea
                   value={formData.descricao}
-                  onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, descricao: e.target.value })
+                  }
                   rows={3}
                   className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-green-500"
                 />
@@ -443,20 +461,21 @@ export default function CategoriasPage() {
               <strong>{categoryToDelete.nome}</strong>?
               {contarProdutos(categoryToDelete) > 0 && (
                 <span className="block mt-2 text-red-600 text-sm">
-                  ⚠️ Esta categoria possui {contarProdutos(categoryToDelete)} produto(s) vinculado(s).
+                  ⚠️ Esta categoria possui {contarProdutos(categoryToDelete)}{" "}
+                  produto(s) vinculado(s).
                 </span>
               )}
             </p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setCategoryToDelete(null)}
-                className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100"
+                className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100 cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-2xl hover:bg-red-700"
+                className="px-4 py-2 bg-red-600 text-white rounded-2xl hover:bg-red-700 cursor-pointer"
               >
                 Excluir
               </button>

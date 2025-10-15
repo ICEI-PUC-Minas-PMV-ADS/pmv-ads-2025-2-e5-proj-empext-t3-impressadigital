@@ -14,6 +14,29 @@ import {
   FaBuilding,
 } from "react-icons/fa";
 
+interface ToastProps {
+  message: string;
+  type?: "success" | "error";
+  onClose: () => void;
+}
+
+const Toast: React.FC<ToastProps> = ({ message, type = "success", onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div
+      className={`fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 text-white ${
+        type === "success" ? "bg-green-600" : "bg-red-600"
+      }`}
+    >
+      {message}
+    </div>
+  );
+};
+
 interface Address {
   id?: number;
   logradouro: string;
@@ -43,23 +66,27 @@ const EditarPerfil: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [addressLoading, setAddressLoading] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [addressMsg, setAddressMsg] = useState("");
   const [cpfError, setCpfError] = useState("");
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToastMessage(message);
+    setToastType(type);
+  };
 
   useEffect(() => {
-    console.log("usuario:", user)
-  if (user) {
-    setForm({
-      name: user.name || "",
-      birthDate: user.birthDate ? user.birthDate.slice(0, 10) : "",
-      cpf: user.cpf ? formatCPF(user.cpf) : "",
-      email: user.email || "",
-      password: "",
-    });
-    loadUserAddress();
-  }
-}, [user]);
+    if (user) {
+      setForm({
+        name: user.name || "",
+        birthDate: user.birthDate ? user.birthDate.slice(0, 10) : "",
+        cpf: user.cpf ? formatCPF(user.cpf) : "",
+        email: user.email || "",
+        password: "",
+      });
+      loadUserAddress();
+    }
+  }, [user]);
 
   const loadUserAddress = async () => {
     if (!user) return;
@@ -74,7 +101,7 @@ const EditarPerfil: React.FC = () => {
         if (data && data.length) setAddress(data[0]);
       }
     } catch {
-      setAddressMsg("Erro ao carregar endereço");
+      showToast("Erro ao carregar endereço", "error");
     } finally {
       setAddressLoading(false);
     }
@@ -114,52 +141,50 @@ const EditarPerfil: React.FC = () => {
   }
 
   const estados = [
-    "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
+    "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG",
+    "PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (cpfError) return;
-  setLoading(true);
-  setMsg("");
+    e.preventDefault();
+    if (cpfError) return;
+    setLoading(true);
 
-  try {
-    const payload: any = {
-      name: form.name,
-      birthDate: form.birthDate,
-      cpf: form.cpf,
-      email: form.email,
-    };
+    try {
+      const payload: any = {
+        name: form.name,
+        birthDate: form.birthDate,
+        cpf: form.cpf,
+        email: form.email,
+      };
+      if (form.password && form.password.trim() !== "") {
+        payload.password = form.password;
+      }
 
-    if (form.password && form.password.trim() !== "") {
-      payload.password = form.password;
+      const res = await fetch(`http://localhost:3000/users/${user?.id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        showToast("Dados pessoais atualizados com sucesso!", "success");
+        setForm((prev) => ({ ...prev, password: "" }));
+      } else {
+        const data = await res.json();
+        showToast(data.message || "Erro ao atualizar os dados.", "error");
+      }
+    } catch {
+      showToast("Erro ao conectar com o servidor.", "error");
+    } finally {
+      setLoading(false);
     }
-
-    const res = await fetch(`http://localhost:3000/users/${user?.id}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (res.ok) {
-      setMsg("Dados pessoais atualizados com sucesso!");
-      setForm(prev => ({ ...prev, password: "" }));
-    } else {
-      const data = await res.json();
-      setMsg(data.message || "Erro ao atualizar os dados.");
-    }
-  } catch (err) {
-    setMsg("Erro ao conectar com o servidor.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleAddressSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAddressLoading(true);
-    setAddressMsg("");
 
     try {
       const method = address.id ? "PUT" : "POST";
@@ -175,14 +200,14 @@ const EditarPerfil: React.FC = () => {
       });
 
       if (res.ok) {
-        setAddressMsg("Endereço salvo com sucesso!");
+        showToast("Endereço salvo com sucesso!", "success");
         if (!address.id) loadUserAddress();
       } else {
         const data = await res.json();
-        setAddressMsg(data.message || "Erro ao salvar o endereço.");
+        showToast(data.message || "Erro ao salvar o endereço.", "error");
       }
-    } catch (err) {
-      setAddressMsg("Erro ao conectar com o servidor.");
+    } catch {
+      showToast("Erro ao conectar com o servidor.", "error");
     } finally {
       setAddressLoading(false);
     }
@@ -201,16 +226,31 @@ const EditarPerfil: React.FC = () => {
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             Dados Pessoais
           </h2>
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleSubmit}>
+          <form
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            onSubmit={handleSubmit}
+          >
             {[
               { field: "name", icon: <FaUser />, placeholder: "Nome completo" },
-              { field: "birthDate", icon: <FaBirthdayCake />, placeholder: "Data de nascimento", type: "date" },
+              {
+                field: "birthDate",
+                icon: <FaBirthdayCake />,
+                placeholder: "Data de nascimento",
+                type: "date",
+              },
               { field: "cpf", icon: <FaIdCard />, placeholder: "CPF", readOnly: true },
               { field: "email", icon: <FaEnvelope />, placeholder: "E-mail" },
-              { field: "password", icon: <FaLock />, placeholder: "Senha (deixe em branco para manter a atual)", type: "password" },
+              {
+                field: "password",
+                icon: <FaLock />,
+                placeholder: "Senha (deixe em branco para manter a atual)",
+                type: "password",
+              },
             ].map(({ field, icon, placeholder, type, readOnly }) => (
               <div key={field} className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">{icon}</div>
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  {icon}
+                </div>
                 <input
                   type={type || "text"}
                   name={field}
@@ -220,7 +260,9 @@ const EditarPerfil: React.FC = () => {
                   required={field !== "password" && !readOnly}
                   readOnly={readOnly}
                   className={`peer w-full pl-10 pr-3 pt-4 pb-2 rounded-md border border-gray-300 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                    readOnly ? "bg-gray-200 text-gray-600 cursor-not-allowed" : "bg-white text-gray-800"
+                    readOnly
+                      ? "bg-gray-200 text-gray-600 cursor-not-allowed"
+                      : "bg-white text-gray-800"
                   }`}
                   placeholder={placeholder}
                 />
@@ -229,8 +271,9 @@ const EditarPerfil: React.FC = () => {
                 </label>
               </div>
             ))}
-            {cpfError && <div className="text-red-500 text-sm col-span-full">{cpfError}</div>}
-            {msg && <div className="text-green-600 text-sm col-span-full">{msg}</div>}
+            {cpfError && (
+              <div className="text-red-500 text-sm col-span-full">{cpfError}</div>
+            )}
 
             <button
               type="submit"
@@ -248,9 +291,14 @@ const EditarPerfil: React.FC = () => {
             Endereço {address.id ? "Cadastrado" : ""}
           </h2>
           {addressLoading ? (
-            <p className="text-center py-8 text-gray-600">Carregando endereço...</p>
+            <p className="text-center py-8 text-gray-600">
+              Carregando endereço...
+            </p>
           ) : (
-            <form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleAddressSubmit}>
+            <form
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              onSubmit={handleAddressSubmit}
+            >
               {[
                 { field: "cep", icon: <FaMapMarkerAlt />, placeholder: "CEP *" },
                 { field: "logradouro", icon: <FaHome />, placeholder: "Logradouro *" },
@@ -259,7 +307,9 @@ const EditarPerfil: React.FC = () => {
                 { field: "cidade", icon: <FaCity />, placeholder: "Cidade *" },
               ].map(({ field, icon, placeholder }) => (
                 <div key={field} className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">{icon}</div>
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    {icon}
+                  </div>
                   <input
                     type="text"
                     name={field}
@@ -283,23 +333,36 @@ const EditarPerfil: React.FC = () => {
               >
                 <option value="">Estado *</option>
                 {estados.map((e) => (
-                  <option key={e} value={e}>{e}</option>
+                  <option key={e} value={e}>
+                    {e}
+                  </option>
                 ))}
               </select>
-
-              {addressMsg && <div className="text-green-600 text-sm col-span-full">{addressMsg}</div>}
 
               <button
                 type="submit"
                 disabled={addressLoading}
                 className="col-span-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md shadow-md transition-colors disabled:opacity-50"
               >
-                {addressLoading ? "Salvando..." : address.id ? "Atualizar Endereço" : "Salvar Endereço"}
+                {addressLoading
+                  ? "Salvando..."
+                  : address.id
+                  ? "Atualizar Endereço"
+                  : "Salvar Endereço"}
               </button>
             </form>
           )}
         </div>
       </div>
+
+      {/* TOAST */}
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastMessage(null)}
+        />
+      )}
     </div>
   );
 };

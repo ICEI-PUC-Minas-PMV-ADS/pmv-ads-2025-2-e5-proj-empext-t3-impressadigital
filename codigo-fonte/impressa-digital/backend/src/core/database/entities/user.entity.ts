@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, OneToOne, DeleteDateColumn } from 'typeorm';
 import { Carrinho } from './carrinho.entity';
 import { CustomerAddress } from './customer_address.entity';
 import { Vendas } from './vendas.entity';
@@ -50,7 +50,8 @@ export class User {
   @OneToMany(() => Avaliacoes_Produto, (avaliacoes) => avaliacoes.produto)
   avaliacoes: Avaliacoes_Produto[];
 
-
+  @DeleteDateColumn()
+    deletedAt: Date | null;
 
 }
 

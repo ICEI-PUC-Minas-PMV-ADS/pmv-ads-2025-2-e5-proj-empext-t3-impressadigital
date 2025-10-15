@@ -18,7 +18,8 @@ interface Client {
   cpf: string;
   email: string;
   phone: string;
-  endereco?: Address; // único endereço
+  endereco?: Address;
+  deletedAt?: string;
 }
 
 interface ToastProps {
@@ -77,6 +78,7 @@ const DashboardClients: React.FC = () => {
   const [deletingClient, setDeletingClient] = useState<Client | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
+  const [viewingDeleted, setViewingDeleted] = useState(false);
 
   const showToast = (
     message: string,
@@ -88,7 +90,7 @@ const DashboardClients: React.FC = () => {
 
   useEffect(() => {
     const fetchClients = async () => {
-      if (search.length === 0) {
+      if (search.length === 0 && !viewingDeleted) {
         setFilteredClients([]);
         setHasSearched(false);
         return;
@@ -97,11 +99,15 @@ const DashboardClients: React.FC = () => {
       setLoading(true);
       setHasSearched(true);
       try {
-        const response = await fetch("http://localhost:3000/users");
+        const url = viewingDeleted 
+          ? "http://localhost:3000/users/deleted/all" 
+          : "http://localhost:3000/users";
+        
+        const response = await fetch(url);
         if (!response.ok) throw new Error("Erro ao carregar clientes");
         const users: any[] = await response.json();
 
-        // filtra apenas clientes
+        // Filtra apenas clientes
         const clientUsers: Client[] = users
           .filter((user) => user.role === "cliente")
           .map((user) => ({
@@ -111,14 +117,18 @@ const DashboardClients: React.FC = () => {
             email: user.email,
             phone: user.phone || "Não informado",
             endereco: user.endereco || undefined,
+            deletedAt: user.deletedAt,
           }));
 
-        const results = clientUsers.filter(
-          (client) =>
-            client.name.toLowerCase().includes(search.toLowerCase()) ||
-            client.cpf.includes(search) ||
-            client.email.toLowerCase().includes(search.toLowerCase())
-        );
+        let results = clientUsers;
+        if (search.length > 0) {
+          results = clientUsers.filter(
+            (client) =>
+              client.name.toLowerCase().includes(search.toLowerCase()) ||
+              client.cpf.includes(search) ||
+              client.email.toLowerCase().includes(search.toLowerCase())
+          );
+        }
 
         setClients(clientUsers);
         setFilteredClients(results);
@@ -137,7 +147,7 @@ const DashboardClients: React.FC = () => {
 
     const timeoutId = setTimeout(fetchClients, 500);
     return () => clearTimeout(timeoutId);
-  }, [search]);
+  }, [search, viewingDeleted]);
 
   const handleRemove = (client: Client) => {
     setDeletingClient(client);
@@ -148,43 +158,94 @@ const DashboardClients: React.FC = () => {
     try {
       const response = await fetch(
         `http://localhost:3000/users/${deletingClient.id}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" }
       );
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Erro ${response.status}: ${errorText}`);
-      }
+      if (!response.ok) throw new Error("Erro ao desativar cliente");
 
       setClients((prev) => prev.filter((c) => c.id !== deletingClient.id));
       setFilteredClients((prev) =>
         prev.filter((c) => c.id !== deletingClient.id)
       );
-      showToast("Cliente removido com sucesso!", "success");
+      showToast("Cliente desativado com sucesso!", "success");
       setDeletingClient(null);
     } catch (err) {
-      console.error("Erro detalhado:", err);
-      showToast(
-        err instanceof Error ? err.message : "Erro ao remover cliente",
-        "error"
-      );
+      console.error(err);
+      showToast("Erro ao desativar cliente", "error");
     }
+  };
+
+  const handleRestore = async (client: Client) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/users/${client.id}/restore`,
+        { method: "PATCH" }
+      );
+
+      if (!response.ok) throw new Error("Erro ao reativar cliente");
+
+      setClients((prev) => prev.filter((c) => c.id !== client.id));
+      setFilteredClients((prev) => prev.filter((c) => c.id !== client.id));
+      
+      showToast("Cliente reativado com sucesso!", "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Erro ao reativar cliente", "error");
+    }
+  };
+
+    const viewDeletedUsers = () => {
+    setViewingDeleted(true);
+    setSearch("");
+  };
+
+  const viewActiveUsers = () => {
+    setViewingDeleted(false);
+    setSearch(""); 
+    setFilteredClients([]);
+    setHasSearched(false);
   };
 
   return (
     <div className="w-full bg-white p-6 text-black">
       <p className="text-xl lg:text-2xl font-bold mb-6">Clientes</p>
 
+      <div className="flex gap-4 mb-6">
+        <button
+          onClick={viewActiveUsers}
+          className={`px-4 py-2 rounded-full transition text-sm cursor-pointer ${
+            !viewingDeleted 
+              ? 'bg-[#45A62D] text-white' 
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          Clientes Ativos
+        </button>
+        
+        <button
+          onClick={viewDeletedUsers}
+          className={`px-4 py-2 rounded-full transition text-sm cursor-pointer ${
+            viewingDeleted 
+              ? 'bg-[#45A62D] text-white' 
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          Clientes Desativados
+        </button>
+      </div>
+
       {/* Pesquisa */}
       <SearchInput
         value={search}
         onChange={setSearch}
-        placeholder="Pesquisar por nome, CPF ou e-mail"
+        placeholder={
+          viewingDeleted 
+            ? "Pesquisar em clientes desativados..." 
+            : "Pesquisar por nome, CPF ou e-mail"
+        }
       />
 
-      {!hasSearched && search.length === 0 && (
+      {!hasSearched && search.length === 0 && !viewingDeleted && (
         <div className="text-center py-12">
           <div className="bg-gray-50 rounded-2xl p-8 max-w-md mx-auto">
             <p className="text-gray-600 text-lg mb-4">
@@ -193,6 +254,19 @@ const DashboardClients: React.FC = () => {
             <p className="text-gray-500 text-sm">
               Digite o nome, CPF ou e-mail do cliente na barra de pesquisa acima
               para visualizar os resultados.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {viewingDeleted && filteredClients.length === 0 && !loading && (
+        <div className="text-center py-12">
+          <div className="bg-gray-50 rounded-2xl p-8 max-w-md mx-auto">
+            <p className="text-gray-600 text-lg mb-4">
+              📋 Nenhum cliente desativado
+            </p>
+            <p className="text-gray-500 text-sm">
+              Não há clientes desativados no momento.
             </p>
           </div>
         </div>
@@ -245,14 +319,32 @@ const DashboardClients: React.FC = () => {
                       : "Não informado"}
                   </p>
                 </div>
+                
+                {viewingDeleted && client.deletedAt && (
+                  <div className="col-span-full">
+                    <p className="text-gray-400 text-sm mb-1">Desativado em</p>
+                    <p className="font-semibold text-red-600 text-sm">
+                      {new Date(client.deletedAt).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
+                )}
               </div>
 
-              <button
-                onClick={() => handleRemove(client)}
-                className="mt-4 md:mt-0 px-4 py-1 bg-[#45A62D] text-white rounded-full transition text-sm cursor-pointer"
-              >
-                Remover
-              </button>
+              {viewingDeleted ? (
+                <button
+                  onClick={() => handleRestore(client)}
+                  className="mt-4 md:mt-0 px-4 py-1 bg-green-600 text-white rounded-full transition text-sm cursor-pointer hover:bg-green-700"
+                >
+                  Reativar
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleRemove(client)}
+                  className="mt-4 md:mt-0 px-4 py-1 bg-[#45A62D] text-white rounded-full transition text-sm cursor-pointer hover:bg-[#3a8a25]"
+                >
+                  Desativar
+                </button>
+              )}
             </div>
           ))
         ) : hasSearched && !loading && search.length > 0 ? (
@@ -264,14 +356,17 @@ const DashboardClients: React.FC = () => {
         ) : null}
       </div>
 
-      {/* Modal de exclusão */}
       {deletingClient && (
         <div className="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50 p-4 text-black">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md">
-            <h2 className="text-lg font-bold mb-4">Confirmar Exclusão</h2>
+            <h2 className="text-lg font-bold mb-4">
+              {viewingDeleted ? "Confirmar Reativação" : "Confirmar Desativação"}
+            </h2>
             <p>
-              Tem certeza que deseja remover o cliente{" "}
-              <span className="font-semibold">{deletingClient.name}</span>?
+              {viewingDeleted 
+                ? `Tem certeza que deseja reativar o cliente ${deletingClient.name}?`
+                : `Tem certeza que deseja desativar o cliente ${deletingClient.name}?`
+              }
             </p>
             <div className="flex justify-end gap-3 mt-6">
               <button
@@ -281,10 +376,12 @@ const DashboardClients: React.FC = () => {
                 Cancelar
               </button>
               <button
-                onClick={confirmDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-2xl hover:bg-red-700 cursor-pointer"
+                onClick={viewingDeleted ? () => handleRestore(deletingClient) : confirmDelete}
+                className={`px-4 py-2 text-white rounded-2xl hover:opacity-90 cursor-pointer ${
+                  viewingDeleted ? 'bg-green-600' : 'bg-red-600'
+                }`}
               >
-                Remover
+                {viewingDeleted ? "Reativar" : "Desativar"}
               </button>
             </div>
           </div>
