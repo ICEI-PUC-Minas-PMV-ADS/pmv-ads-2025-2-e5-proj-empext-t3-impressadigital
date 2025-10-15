@@ -1,4 +1,72 @@
-# Planos de Testes de Software
+# Plano de Testes – Empressa Digital
+
+## 1. Objetivo
+Garantir que todos os requisitos funcionais do sistema estejam implementados corretamente, atendendo às especificações e funcionando conforme o esperado.  
+O objetivo é validar cada funcionalidade por meio de **testes de pares**, onde quem desenvolveu não poderá executar o teste.
+
+---
+
+## 2. Escopo
+O plano de testes abrange todos os **Requisitos Funcionais (RF)** do sistema, incluindo cadastro de usuários, gerenciamento de produtos, finalização de compras e login.
+
+---
+
+## 3. Responsabilidades
+- **Executor da tarefa**: responsável pelo desenvolvimento da funcionalidade.  
+- **Testador**: responsável por validar o requisito implementado.  
+- **Evidência**: link da imagem que comprova o teste executado.
+
+---
+
+## 4. Metodologia
+Os testes serão realizados de forma manual.  
+Cada requisito será verificado individualmente conforme sua descrição.  
+Caso o resultado não atenda ao esperado, o erro será documentado e reenviado para correção.
+
+---
+
+## 5. Critérios de Aceite
+Um requisito será considerado aprovado se:
+- O comportamento observado estiver de acordo com o esperado.  
+- A funcionalidade estiver livre de erros críticos.  
+- Houver evidência (link de imagem) comprovando o teste.
+
+---
+#  Testes por Pares
+
+| ID     | Descrição do Requisito | Prioridade | Desenvolvedor | Testador |
+|---------|-------------------------|-------------|----------------|-----------|
+| RF-001 | O sistema deve permitir que os usuários se cadastrem. | ALTA | Brian Mucio Duarte | Douglas Henrique de Sousa e Silva |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-002 | O sistema deve separar os produtos por categoria. | MÉDIA | Douglas Henrique de Sousa e Silva | Luiza Maria da Silva Machado |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-003 | O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras. | BAIXA | Luiza Maria da Silva Machado | Mateus Salomé Rocha Silva |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-004 | O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp". | ALTA | Mateus Salomé Rocha Silva | Marcelly Giovanna De Souza e Maia |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-005 | O sistema deve realizar um cálculo do frete de envio da compra. | MÉDIA | Marcelly Giovanna De Souza e Maia | Erick Cambraia Nunes |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-006 | O sistema deve trazer resultados de busca personalizados pelo nome ou categoria do produto. | MÉDIA | Erick Cambraia Nunes | Brian Mucio Duarte |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-007 | O sistema deve permitir que os administradores visualizem e gerenciem pedidos realizados pelos clientes. | MÉDIA | Brian Mucio Duarte | Luiza Maria da Silva Machado |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-008 | O sistema deve permitir que os usuários removam produtos do carrinho ou alterem a quantidade. | BAIXA | Douglas Henrique de Sousa e Silva | Marcelly Giovanna De Souza e Maia |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-009 | O sistema deve permitir que os usuários façam login com suas credenciais. | ALTA | Luiza Maria da Silva Machado | Erick Cambraia Nunes |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-010 | O sistema deve exibir detalhes do produto, incluindo imagens, descrições e preços. | ALTA | Mateus Salomé Rocha Silva | Brian Mucio Duarte |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-011 | O sistema deve permitir que os administradores adicionem, editem e removam produtos do catálogo. | MÉDIA | Marcelly Giovanna De Souza e Maia | Douglas Henrique de Sousa e Silva |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-012 | O sistema deve permitir que os administradores gerenciem categorias de produtos. | MÉDIA | Erick Cambraia Nunes | Mateus Salomé Rocha Silva |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-013 | O sistema deve permitir que os usuários cadastrados realizem o login. | ALTA | Brian Mucio Duarte | Marcelly Giovanna De Souza e Maia |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+| RF-014 | O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos. | MÉDIA | Douglas Henrique de Sousa e Silva | Erick Cambraia Nunes |
+|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+
+
+# Testes – Empressa Digital
 
 Casos de testes utilizados na realização da verificação e validação da aplicação.
 
