@@ -20,7 +20,6 @@ interface VendaProduto {
   quantidade: number;
   preco_unitario: number;
   produto: Produto;
-  
 }
 
 interface Venda {
@@ -56,15 +55,13 @@ const PedidosPage: React.FC = () => {
                 `${BASE_URL}/vendas_produtos/venda/${venda.id}`
               );
               const produtos = await produtosRes.json();
-console.log(produtos)
+              console.log(produtos);
               return { ...venda, produtos };
             } catch {
               return { ...venda, produtos: [] };
             }
           })
-
         );
-        
 
         // 3️⃣ Ordena as vendas por data (mais recente primeiro)
         const ordenadas = vendasComProdutos.sort(
@@ -79,7 +76,6 @@ console.log(produtos)
       } finally {
         setLoading(false);
       }
-      
     };
 
     fetchPedidos();
@@ -124,16 +120,20 @@ console.log(produtos)
               {pedidos.map((pedido) =>
                 pedido.produtos?.map((item) => (
                   <OrderCard
-  key={`${pedido.id}-${item.id}`}
-  date={new Date(pedido.data_venda).toLocaleDateString("pt-BR")}
-  title={item.produto?.nome || "Produto"}
-  description={item.produto?.descricao || ""}
-  quantity={item.quantidade}
-  productImage={item.produto?.midias?.[0]?.url || "/images/placeholder.png"}
-  total={pedido.valor_total}
-  status={pedido.status} // ✅ Aqui!
-/>
-
+                    key={`${pedido.id}-${item.id}`}
+                    date={new Date(pedido.data_venda).toLocaleDateString(
+                      "pt-BR"
+                    )}
+                    title={item.produto?.nome || "Produto"}
+                    description={item.produto?.descricao || ""}
+                    quantity={item.quantidade}
+                    productImage={
+                      item.produto?.midias?.[0]?.url ||
+                      "/images/placeholder.png"
+                    }
+                    total={pedido.valor_total}
+                    status={pedido.status} // ✅ Aqui!
+                  />
                 ))
               )}
             </div>

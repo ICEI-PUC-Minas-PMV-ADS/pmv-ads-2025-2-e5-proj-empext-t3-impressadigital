@@ -1,16 +1,13 @@
-import { Body, Controller, Get, Post, Put, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Param, Delete } from '@nestjs/common';
 import { UserService } from './users.service';
 import { User } from 'src/core/database/entities/user.entity';
-
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async createUser(
-    @Body() body: User,
-  ): Promise<User> {
+  async createUser(@Body() body: User): Promise<User> {
     return this.userService.createUser(body);
   }
 
@@ -27,5 +24,10 @@ export class UserController {
   @Put(':id')
   async updateUser(@Param('id') id: number, @Body() data: Partial<User>) {
     return this.userService.updateUser(id, data);
+  }
+
+  @Delete(':id')
+  async deleteUser(@Param('id') id: number): Promise<void> {
+    return this.userService.deleteUser(id);
   }
 }

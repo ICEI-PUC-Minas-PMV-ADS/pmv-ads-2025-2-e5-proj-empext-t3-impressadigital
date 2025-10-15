@@ -48,11 +48,11 @@ export class VendasProdutosService {
     await this.vendasProdutosRepository.remove(item);
   }
 
-  // 🟢 Busca todos os produtos de uma venda específica
-  async findByVenda(vendaId: number): Promise<VendasProdutos[]> {
-    return this.vendasProdutosRepository.find({
-      where: { venda_id: vendaId },
-      relations: ['produto'],
-    });
-  }
+// 🟢 Busca todos os produtos de uma venda específica 
+async findByVenda(vendaId: number): Promise<VendasProdutos[]> {
+  return this.vendasProdutosRepository.find({
+    where: { venda_id: vendaId },
+    relations: ['produto', 'produto.midias'],
+  });
+}
 }

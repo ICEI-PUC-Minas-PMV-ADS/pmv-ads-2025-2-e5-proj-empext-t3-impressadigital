@@ -27,7 +27,11 @@ interface ToastProps {
   onClose: () => void;
 }
 
-const Toast: React.FC<ToastProps> = ({ message, type = "success", onClose }) => {
+const Toast: React.FC<ToastProps> = ({
+  message,
+  type = "success",
+  onClose,
+}) => {
   useEffect(() => {
     const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);
@@ -74,7 +78,10 @@ const DashboardClients: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
 
-  const showToast = (message: string, type: "success" | "error" = "success") => {
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
     setToastMessage(message);
     setToastType(type);
   };
@@ -103,7 +110,7 @@ const DashboardClients: React.FC = () => {
             cpf: user.cpf || "Não informado",
             email: user.email,
             phone: user.phone || "Não informado",
-            endereco: user.endereco || undefined, // único endereço
+            endereco: user.endereco || undefined,
           }));
 
         const results = clientUsers.filter(
@@ -146,7 +153,10 @@ const DashboardClients: React.FC = () => {
         }
       );
 
-      if (!response.ok) throw new Error("Erro ao remover cliente");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Erro ${response.status}: ${errorText}`);
+      }
 
       setClients((prev) => prev.filter((c) => c.id !== deletingClient.id));
       setFilteredClients((prev) =>
@@ -155,8 +165,11 @@ const DashboardClients: React.FC = () => {
       showToast("Cliente removido com sucesso!", "success");
       setDeletingClient(null);
     } catch (err) {
-      console.error(err);
-      showToast("Erro ao remover cliente", "error");
+      console.error("Erro detalhado:", err);
+      showToast(
+        err instanceof Error ? err.message : "Erro ao remover cliente",
+        "error"
+      );
     }
   };
 
