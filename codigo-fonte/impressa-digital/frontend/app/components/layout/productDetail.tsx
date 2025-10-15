@@ -4,6 +4,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/app/contexts/CartContext";
 import { ModalCart } from "./modalCart";
+import CustomQuantitySelect from "./customQuantitySelect";
 
 
 interface Category {
@@ -261,47 +262,21 @@ const applyCepMask = (value: string): string => {
         itemCount={itemCount} 
     />
     
-    <div className="flex flex-col md:flex-row p-6 items-start gap-4">
+    <div className="flex flex-col md:flex-row md:p-6 items-center md:items-start gap-4 mt-6">
       
       {/* Container de Imagens (1/3) */}
-      <div className="w-full md:w-1/3 flex flex-col gap-4">
+      <div className="w-2/3 md:w-1/3 flex flex-col gap-4">
         
         {/* Imagem Principal com Navegação (Setas) */}
-        <div className="relative flex justify-center py-5 bg-[#F3F3F3] rounded-lg">
-            
-            {/* Botão de seta esquerda */}
-            {hasMultipleImages && (
-                <button 
-                    onClick={handlePrevImage} 
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 bg-white/70 rounded-full shadow-md z-10 hover:bg-white transition"
-                    aria-label="Imagem anterior"
-                >
-                    {/* USO DO SVG INLINE (ArrowLeftIcon) */}
-                    <ArrowLeftIcon size={24} className="text-gray-800" />
-                </button>
-            )}
-
-            <div className="flex items-center px-2 bg-white rounded-lg">
+        <div className="relative flex justify-center py-2 md:py-5 bg-[#F3F3F3] rounded-lg">
+             
                 <Image
                     src={imageUrl}
                     width={300}
                     height={300}
                     alt={product.nome}
-                    className="rounded-lg shadow object-contain"
-                />
-            </div>
-
-            {/* Botão de seta direita */}
-            {hasMultipleImages && (
-                <button 
-                    onClick={handleNextImage} 
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-white/70 rounded-full shadow-md z-10 hover:bg-white transition"
-                    aria-label="Próxima imagem"
-                >
-                    {/* USO DO SVG INLINE (ArrowRightIcon) */}
-                    <ArrowRightIcon size={24} className="text-gray-800" />
-                </button>
-            )}
+                    className="rounded-lg object-contain"
+                />   
         </div>
 
         {/* Lista de Miniaturas (Thumbnails) */}
@@ -316,7 +291,7 @@ const applyCepMask = (value: string): string => {
                                 : 'border-2 border-transparent hover:border-gray-300'
                             }`
                         }
-                        onClick={() => setSelectedImageIndex(index)}
+                        onMouseOver={() => setSelectedImageIndex(index)}
                         style={{ width: '80px', height: '80px' }}
                     >
                         <Image
@@ -337,7 +312,7 @@ const applyCepMask = (value: string): string => {
 
       {/* Informações (2/3) */}
       <div className="w-full md:w-2/3 flex flex-col">
-        <h1 className="text-2xl font-bold">{product.nome}</h1>
+        <h1 className="text-sm md:text-2xl font-bold">{product.nome}</h1>
         <div className="flex flex-wrap flex-row gap-2">
         <span
           className="text-black font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
@@ -359,31 +334,21 @@ const applyCepMask = (value: string): string => {
         </p>
           
 
-        <input
-          type="text"
-          placeholder="Escreva nome e idade"
-          className="bg-[#e6e6e6] text-[#6B6B6B] text-lg pl-4 rounded-2xl p-2 w-2/3 mt-4 focus:outline-none  focus:border-[#3DF034] focus:border-2"
-        />
+        
 
         {/* INÍCIO DA NOVA SEÇÃO: Quantidade (Select) e Adicionar ao Carrinho */}
-        <div className="flex items-center gap-4 mt-4 w-2/3">
+        <div className="flex flex-col  gap-4 mt-4 w-full md:w-1/3">
           {/* Seletor de Quantidade (Limitado a 10) */}
-          <select
-            value={quantity}
-            onChange={handleChangeQuantity}
-            className="bg-[#e6e6e6] text-[#6B6B6B] text-lg  py-2 rounded-2xl w-1/4 text-center focus:outline-none focus:border-[#3DF034] focus:border-2 appearance-none cursor-pointer"
-            aria-label="Quantidade do produto"
-          >
-            {/* Gera as opções de 1 a 10 */}
-            {[...Array(10)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>{i + 1}</option>
-            ))}
-          </select>
+         
+         <CustomQuantitySelect 
+        quantity={quantity} 
+        onChange={handleChangeQuantity} 
+      />
           {/* Botão Adicionar ao Carrinho */}
           <button
             type="button"
             onClick={handleAddToCart} // Adicionado onClick
-            className="bg-[#3DF034] text-white text-lg font-semibold p-2 rounded-2xl  focus:outline-none hover:bg-green-600 transition"
+            className="bg-[#3DF034] text-white text-sm md:text-md font-semibold p-2 rounded-2xl  focus:outline-none hover:bg-green-600 transition"
           >
             Adicionar ao Carrinho
           </button>
@@ -396,7 +361,7 @@ const applyCepMask = (value: string): string => {
           <p className="mt-4 text-gray-700">{product.descricao}</p>
         </div>
 
-        <div className="flex  w-2/3 flex-col  mt-2">
+        <div className="flex w-full md:w-2/3 flex-col  mt-2">
         <span className=" self-start font-bold">Calcular frete:</span>
           <div className="flex items-center  md:justify-normal  gap-2">
           <input type="text" name="cep" id="cep"  maxLength={9}

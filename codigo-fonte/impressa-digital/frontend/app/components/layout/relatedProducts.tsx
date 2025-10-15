@@ -155,12 +155,12 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
         <section className="p-6 mt-10 relative">
             <h2 className="text-2xl text-[#A1A1A1] text-center font-bold mb-4">Produtos Relacionados</h2>
             
-            <div className="relative flex items-center justify-center">
+            <div className="relative flex items-center  justify-center">
                 {/* Seta para a Esquerda */}
                 {showCarousel && !isAtStart && (
                     <button 
                         onClick={() => scrollCarousel('left')} 
-                        className="absolute left-0 z-10 p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition translate-x-1/2"
+                        className="  p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition translate-x-1/2"
                         aria-label="Rolar para a esquerda"
                     >
                         &lt;
@@ -181,13 +181,13 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                             href={`/product/${p.slug}`}
                             // flex-shrink-0: Garante que o item não encolha. 
                             // w-1/5: Garante que 5 itens caibam na tela (100% / 5).
-                            className="flex-shrink-0 w-1/5 snap-start" 
+                            className="flex-shrink-0 w-2/5 md:w-1/5 snap-start" 
                         >
                             <div className="flex flex-col bg-[#F3F3F3] rounded-lg p-2 shadow-sm h-full">
-                                <div className="flex items-center justify-center px-2 py-2 bg-white rounded-lg h-32">
+                                <div className="flex items-center justify-center px-2 py-2  rounded-lg h-32">
                                     <Image
-                                        width={100}
-                                        height={100}
+                                        width={150}
+                                        height={150}
                                         src={p.midias?.[0]?.url || "/images/placeholder.png"}
                                         alt={p.nome}
                                         className="rounded max-h-full object-contain"
@@ -206,7 +206,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                 {showCarousel && !isAtEnd && (
                     <button 
                         onClick={() => scrollCarousel('right')} 
-                        className="absolute right-0 z-10 p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition -translate-x-1/2"
+                        className=" p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition -translate-x-1/2"
                         aria-label="Rolar para a direita"
                     >
                         &gt;

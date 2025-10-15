@@ -28,7 +28,7 @@ export default function Product() {
         <div>
             <HeaderMain />
             
-            <div className='flex-col px-20' key={productSlug}> 
+            <div className='flex-col px-10 md:px-20' key={productSlug}> 
                 <div className=' w-full '>
                     {/* 3. Renderiza ProductDetails para iniciar a busca e notificar o status */}
                     <ProductDetails 
@@ -43,7 +43,7 @@ export default function Product() {
                 <>
                     <RelatedProducts productIdentifier={productSlug} />
                 
-                    <div className='flex-col px-20 pt-10 mt-10 bg-gray-100 ' key={`reviews-${productSlug}`} > 
+                    <div className='flex-col px-10 md:px-20 pt-10 mt-10 bg-gray-100 ' key={`reviews-${productSlug}`} > 
                         <h2 className="text-2xl text-[#A1A1A1] text-center font-bold mb-4">Avaliações de clientes</h2>
                         <CustomerReviews productIdentifier={productSlug} />
                     </div>

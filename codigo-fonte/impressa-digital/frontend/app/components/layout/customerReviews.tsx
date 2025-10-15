@@ -158,9 +158,9 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
   const reviewsToShow = showAll ? reviews : reviews.slice(0, 3);
 
   return (
-    <section className="p-6">
+    <section className="p-0 md:p-6">
       {/* ⭐ MÉDIA */}
-      <div className="flex flex-col md:flex-row items-center justify-between mb-6 bg-white rounded-lg shadow p-6">
+      <div className="flex flex-col md:flex-row items-center  md:w-full justify-between mb-6 bg-white rounded-lg shadow p-6">
         <div className="flex flex-col items-center w-full md:w-1/3 text-center">
           <p className="text-5xl font-bold text-[#38ac1b]">{average.toFixed(1)}</p>
           <p className="text-yellow-500 text-2xl">
