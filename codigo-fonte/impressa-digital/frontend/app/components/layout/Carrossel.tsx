@@ -6,9 +6,10 @@ import { useState, useEffect } from "react";
 /// só adicionar as imagens no json aqui abaixo para mudar o carrossel .
 export default function Carrossel() {
   const slides = [
-  "/images/frame1.png",
-  
-];
+    "/images/frame1.png",
+
+
+  ];
 
   const [current, setCurrent] = useState(0);
 
@@ -18,23 +19,23 @@ export default function Carrossel() {
   const nextSlide = () =>
     setCurrent(current === slides.length - 1 ? 0 : current + 1);
 
-  // Auto-play
+  // Auto-play (Alterado de 5000ms para 8000ms)
   useEffect(() => {
-    const interval = setInterval(nextSlide, 5000); // 10 segundos
+    const interval = setInterval(nextSlide, 8000); // 8 segundos
     return () => clearInterval(interval);
   }, [current]);
 
   return (
-    <div className="relative w-full h-64 md:h-96 overflow-hidden rounded-lg group">
+    // Altura alterada: h-48 para mobile, sm:h-64 para telas pequenas, md:h-[600px] para desktop.
+    <div className="relative w-full h-48 sm:h-64 md:h-[600px] overflow-hidden rounded-lg group">
       {/* Slides */}
       {slides.map((src, i) => (
         <img
           key={i}
           src={src}
           alt={`Slide ${i + 1}`}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-            i === current ? "opacity-100 z-10" : "opacity-0 z-0"
-          }`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === current ? "opacity-100 z-10" : "opacity-0 z-0"
+            }`}
         />
       ))}
 
@@ -58,9 +59,8 @@ export default function Carrossel() {
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`w-3 h-3 rounded-full transition-colors ${
-              i === current ? "bg-white" : "bg-white/50"
-            }`}
+            className={`w-3 h-3 rounded-full transition-colors ${i === current ? "bg-white" : "bg-white/50"
+              }`}
           ></button>
         ))}
       </div>

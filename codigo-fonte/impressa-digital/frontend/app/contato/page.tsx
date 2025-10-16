@@ -1,36 +1,40 @@
-// pages/contato.tsx
-import HeaderDashboard from "../components/layout/headerMain"; 
+"use client";
+
+import React from "react";
+import Link from "next/link"; 
 import Image from "next/image";
+import HeaderMain from "../components/layout/headerMain"; 
 
 export default function ContatoPage() {
   return (
-    <div className="bg-white-100 relative">
-      {/* Header padrão do dashboard */}
-      <HeaderDashboard />
+    <div>
 
-      {/* Conteúdo da página */}
-      <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row items-start gap-12 relative bg-white">
-        {/* Informações de contato */}
-        <div className="bg-white p-8 rounded-xl shadow-md flex-1 z-10">
-          <h1 className="text-3xl font-bold mb-6 text-black">Contato</h1>
-          <div className="bg-gray-100 p-6 rounded-lg space-y-4 text-black">
-            <h2 className="text-xl font-semibold">Impressa Digital</h2>
-            <p>📧 contato@impressadigital.com.br</p>
-            <p>📱 (31) 9 9140-7186</p>
+      <HeaderMain />
+
+      <div className="flex flex-col md:flex-row items-center justify-between gap-10 px-10 mt-15 mb-30">
+  
+        <div className="flex flex-col gap-5 text-justify w-full md:w-1/2 pr-10 md:mx-0 ml-10">
+          <h2 className="text-3xl font-bold mb-3 text-[#2c2a2a]">
+            Contato
+          </h2>
+         
+          <div className="bg-gray-100 p-6 rounded-lg space-y-4 text-black text-left">
+            <h3 className="text-xl font-semibold text-[#2c2a2a]">Impressa Digital</h3>
+            <p className="text-gray-700">📧 contato@impressadigital.com.br</p>
+            <p className="text-gray-700">📱 (31) 9 9140-7186</p>
           </div>
         </div>
 
-        {/* Mascote / calango */}
-        <div className="flex-1 hidden md:flex justify-end items-end">
-          <Image
-            src="/images/contato.png"
-            alt="Mascote da Impressa Digital"
-            width={400}
-            height={400}
-            className="object-contain"
-          />
-        </div>
+        {/* Mascote / calango - Estrutura de imagem */}
+        <Image
+          src="/images/contato.png"
+          alt="Mascote da Impressa Digital"
+          width={300} 
+          height={300} 
+          className="object-contain mt-15"
+        />
       </div>
+
     </div>
   );
 }

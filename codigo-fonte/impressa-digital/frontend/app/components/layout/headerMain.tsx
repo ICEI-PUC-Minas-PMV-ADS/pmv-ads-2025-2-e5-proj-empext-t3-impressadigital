@@ -1,4 +1,3 @@
-// headerMain.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -23,7 +22,7 @@ export default function HeaderMain() {
   const { itemCount } = useCart(); // Uso do contexto
   const [loadingCategories, setLoadingCategories] = useState(false);
   // 2. Obter o estado do usuário
-  const { user } = useAuth(); 
+  const { user } = useAuth();
 
   const menuItems = [
     // Removemos "Categorias" daqui, pois será um botão dedicado
@@ -160,7 +159,7 @@ export default function HeaderMain() {
             width="24px"
             fill="#1a9d20"
           >
-            <path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z" />
+            <path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80ZM680-80q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z" />
           </svg>
         </Link>
 
@@ -212,8 +211,8 @@ export default function HeaderMain() {
       {/* Barra de pesquisa - MOBILE (mantida) */}
       <div
         className={`flex md:hidden w-full px-6 pb-3 transition-all duration-500 ${animateSearch
-          ? "opacity-100 translate-y-0"
-          : "opacity-0 -translate-y-5"
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-5"
           }`}
       >
         <div className="relative w-full">
@@ -296,13 +295,16 @@ export default function HeaderMain() {
             )}
           </li>
 
-          {/* Outros itens do menu (mantidos) */}
+          {/* Outros itens do menu (CORRIGIDO) */}
           {menuItems.map((item, index) => (
             <li
               key={index}
               className="bg-[#2ab906] rounded-full px-8 py-2 text-white uppercase text-sm font-bold cursor-pointer hover:bg-green-600 transition"
             >
-              <Link href={`/${item.toLowerCase().replace(" ", "-")}`}>
+              {/* CORREÇÃO AQUI */}
+              <Link
+                href={item === "Sobre nós" ? "/about_us" : `/${item.toLowerCase().replace(" ", "-")}`}
+              >
                 {item}
               </Link>
             </li>
@@ -310,14 +312,21 @@ export default function HeaderMain() {
         </ul>
 
         {/* WhatsApp desktop (mantido) */}
-        <div className="ml-4">
-          <Image
-            src="/images/iconWhatsapp.png"
-            alt="Icone whatsapp"
-            width={60}
-            height={60}
-            className="object-contain"
-          />
+
+        <div className="ml-4 flex items-center">
+          <a
+            href="https://wa.me/5531991407186"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src="/images/iconWhatsapp.png"
+              alt="Icone whatsapp"
+              width={60}
+              height={60}
+              className="object-contain cursor-pointer"
+            />
+          </a>
         </div>
       </div>
 
@@ -368,27 +377,38 @@ export default function HeaderMain() {
               {/* Dropdown de Categorias no Mobile (mantido) */}
               {isCategoriesOpen && <CategoriesMobileList />}
 
-              {/* Outros Itens do Menu Mobile (mantidos) */}
+              {/* Outros Itens do Menu Mobile (CORRIGIDO) */}
               {menuItems.map((cat, index) => (
                 <li
                   key={index}
                   className="bg-[#2ab906] text-white rounded-full px-4 py-2 text-center font-bold cursor-pointer hover:bg-green-600"
                 >
-                  <Link href={`/${cat.toLowerCase().replace(" ", "-")}`} onClick={() => setIsOpen(false)}>
+                  {/* CORREÇÃO AQUI */}
+                  <Link 
+                    href={cat === "Sobre nós" ? "/about_us" : `/${cat.toLowerCase().replace(" ", "-")}`} 
+                    onClick={() => setIsOpen(false)}
+                  >
                     {cat}
                   </Link>
                 </li>
               ))}
             </ul>
 
+            {/* WhatsApp mobile (mantido) */}
             <div className="mt-auto">
-              <Image
-                src="/images/iconWhatsapp.png"
-                alt="Icone whatsapp"
-                width={60}
-                height={60}
-                className="object-contain"
-              />
+              <a
+                href="https://wa.me/5531991407186"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/images/iconWhatsapp.png"
+                  alt="Icone whatsapp"
+                  width={60}
+                  height={60}
+                  className="object-contain cursor-pointer"
+                />
+              </a>
             </div>
           </div>
         </>
