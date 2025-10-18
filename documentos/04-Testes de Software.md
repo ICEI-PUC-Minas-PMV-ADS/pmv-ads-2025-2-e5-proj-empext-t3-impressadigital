@@ -508,3 +508,90 @@ https://github.com/user-attachments/assets/710f1faf-d1f5-4e2c-9fc9-623d022088ea
   
 </table>
 
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-005 - S<br>Cálculo do frete de envio</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>O sistema deve realizar corretamente o cálculo do frete de envio da compra, considerando endereço e produtos selecionados.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Marcelly Giovanna De Souza e Maia</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-005: Calcular corretamente o valor do frete de envio da compra.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Entrar no site e adicionar produtos ao carrinho.<br>
+      2. Acessar o carrinho de compras.<br>
+      3. Inserir endereço de entrega.<br>
+      4. Verificar se o sistema calcula e exibe corretamente o valor do frete.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Produtos adicionados no carrinho<br>
+      - Endereço de entrega válido
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve apresentar o valor do frete corretamente baseado no endereço e nos produtos selecionados.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center">
+
+https://github.com/user-attachments/assets/95fa831b-9eb5-4021-8698-4d3356595e7f
+
+<strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-005 - I<br>Cálculo do frete de envio (Insucesso)</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Marcelly Giovanna De Souza e Maia</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+</table>
+
