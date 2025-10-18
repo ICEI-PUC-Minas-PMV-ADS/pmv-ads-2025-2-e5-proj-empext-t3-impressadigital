@@ -321,3 +321,99 @@ https://github.com/user-attachments/assets/7273dcfb-1202-456a-8304-d943a66fa8fe
   </tr>
 </table>
 
+----
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-003 - S<br>Adicionar produtos ao carrinho de compras</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Luiza Maria da Silva Machado</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-003: Permitir adicionar produtos ao carrinho de compras.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      <strong>Como cliente:</strong><br>
+      1. Entrar no site.<br>
+      2. Selecionar um produto.<br>
+      3. Adicionar o produto ao carrinho.<br>
+      4. Acessar o carrinho para visualizar os itens e o valor total da compra.<br>
+      5. Decidir se deseja finalizar a compra ou continuar navegando.<br><br>
+      <strong>Como administrador:</strong><br>
+      1. Entrar no painel de administração.<br>
+      2. Acessar a seção de produtos.<br>
+      3. Selecionar o produto que deseja editar.<br>
+      4. Adicionar ou alterar categorias do produto e salvar as alterações.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Produto existente no sistema<br>
+      - Carrinho vazio antes da adição
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve permitir que o usuário adicione produtos ao carrinho, visualizar o total da compra e permitir a finalização ou continuação da compra.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center">
+
+https://github.com/user-attachments/assets/46e217aa-a1a8-4331-b924-70abc2f2a31e
+
+</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-003 - I<br>Adicionar produtos ao carrinho (Insucesso)</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">	Mateus Salomé Rocha Silva</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+</table>
+
+
