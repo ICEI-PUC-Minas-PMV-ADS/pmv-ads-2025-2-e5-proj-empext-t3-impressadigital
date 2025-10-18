@@ -11,7 +11,7 @@ const menuItems = [
   { label: "Produtos", path: "/dashboard/products" },
   { label: "Adicionar produto", path: "/dashboard/add_product" },
   { label: "Categorias", path: "/dashboard/category" },
-  { label: "Configurações", path: "/configuracoes" },
+  { label: "Configurações", path: "/dashboard/configs" },
 ];
 
 export default function Sidebar() {
