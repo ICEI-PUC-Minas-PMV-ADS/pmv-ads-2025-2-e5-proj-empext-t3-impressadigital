@@ -768,58 +768,6 @@ https://github.com/user-attachments/assets/dc5122c1-20c9-43cf-85e2-fefbfa7c5a43
     <td>Não se aplica.</td>
   </tr>
 </table>
-
-
-
-# Testes – Empressa Digital
-
-Casos de testes utilizados na realização da verificação e validação da aplicação.
-
-### Tipo de Teste
-- **Sucesso**: Tem o objetivo de verificar se as funcionalidades funcionam corretamente.
-- **Insucesso**: Tem o objetivo de verificar se o sistema trata erros de maneira correta.
-
-### Casos de Teste de Sucesso
-
-<table>
-  <tr>
-    <th colspan="2" width="1000">CT-001 - S<br>Login com credenciais válidas</th>
-  </tr>
-  <tr>
-    <td width="150"><strong>Descrição</strong></td>
-    <td>Este caso de teste verifica se um usuário pode fazer login com sucesso utilizando credenciais válidas.</td>
-  </tr>
-  <tr>
-    <td><strong>Responsável Caso de Teste </strong></td>
-    <td width="430">Brian Múcio Duarte</td>
-  </tr>
- <tr>
-    <td><strong>Tipo do Teste</strong></td>
-    <td width="430">Sucesso</td>
-  </tr> 
-  <tr>
-    <td><strong>Requisitos associados</strong></td>
-    <td>RF-013: Permitir o login do usuário cadastrado.</td>
-  </tr>
-  <tr>
-    <td><strong>Passos</strong></td>
-    <td>
-      1. Abrir a aplicação.<br>
-      2. Inserir um email válido.<br>
-      3. Inserir uma senha válida.<br>
-      4. Clicar no botão "Entrar".
-      </td>
-  </tr>
-    <tr>
-    <td><strong>Dados de teste</strong></td>
-    <td>
-      - <strong>Email:</strong> Colocar um email cadastrado<br>
-      - <strong>Senha:</strong> Colocar valor de senha válida
-  </tr>
-    <tr>
-    <td><strong>Critérios de êxito</strong></td>
-    <td>O sistema deve redirecionar o usuário para a página inicial do aplicativo após o login bem-sucedido.</td>
-  </tr>
 </table>
 
 <table>
