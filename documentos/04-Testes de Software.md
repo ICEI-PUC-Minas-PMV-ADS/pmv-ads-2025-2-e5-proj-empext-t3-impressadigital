@@ -37,7 +37,7 @@ Um requisito será considerado aprovado se:
 | ID     | Descrição do Requisito | Prioridade | Desenvolvedor | Testador |
 |---------|-------------------------|-------------|----------------|-----------|
 | RF-001 | O sistema deve permitir que os usuários se cadastrem. | ALTA | Brian Mucio Duarte | Douglas Henrique de Sousa e Silva |
-|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+|  | **Evidência:** <img width="792" height="907" alt="Captura de tela 2025-10-17 223653" src="https://github.com/user-attachments/assets/775c89a7-7d5a-401b-83ac-f09e94305d1c" /> |
 | RF-002 | O sistema deve separar os produtos por categoria. | MÉDIA | Douglas Henrique de Sousa e Silva | Luiza Maria da Silva Machado |
 |  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
 | RF-003 | O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras. | BAIXA | Luiza Maria da Silva Machado | Mateus Salomé Rocha Silva |
