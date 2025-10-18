@@ -36,32 +36,188 @@ Um requisito será considerado aprovado se:
 
 A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade deve ser testada por um colega e os testes devem ser evidenciados. O colega "Tester" deve utilizar o caso de teste criado pelo desenvolvedor responsável pela funcionalidade (desenvolveu a funcionalidade e criou o caso de testes descrito no plano de testes) e caso perceba a necessidade de outros casos de teste, deve acrescentá-los na sessão "Plano de Testes".
 
-| ID     | Descrição do Requisito | Prioridade | Desenvolvedor | Testador |
-|---------|-------------------------|-------------|----------------|-----------|
-| RF-001 | O sistema deve permitir que os usuários se cadastrem. | ALTA | Brian Mucio Duarte | Douglas Henrique de Sousa e Silva |
-|  | **Evidência:** <img width="792" height="907" alt="Captura de tela 2025-10-17 223653" src="https://github.com/user-attachments/assets/775c89a7-7d5a-401b-83ac-f09e94305d1c" /> |
-| RF-002 | O sistema deve separar os produtos por categoria. | MÉDIA | Douglas Henrique de Sousa e Silva | Luiza Maria da Silva Machado |
-|  | **Evidência:** <img width="1818" height="511" alt="Captura de tela 2025-10-17 231558" src="https://github.com/user-attachments/assets/9dcc44ce-3f9e-449f-89fc-f9ba85fe9a4c" />|
-| RF-003 | O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras. | BAIXA | Luiza Maria da Silva Machado | Mateus Salomé Rocha Silva |
-|  | **Evidência:** <img width="1798" height="864" alt="Captura de tela 2025-10-17 233325" src="https://github.com/user-attachments/assets/30dcbc10-8d13-4af6-828b-213b21b2d86d" />|
-| RF-004 | O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp". | ALTA | Erick Cambraia Nunes | Marcelly Giovanna De Souza e Maia |
-|  | **Evidência:**  <img width="1118" height="762" alt="Captura de tela 2025-10-17 233335" src="https://github.com/user-attachments/assets/e340ada7-b2f0-4fa0-8beb-d2eba8853a8d" />|
-| RF-005 | O sistema deve realizar um cálculo do frete de envio da compra. | MÉDIA | Marcelly Giovanna De Souza e Maia | Erick Cambraia Nunes |
-|  | **Evidência:** <img width="1810" height="535" alt="Captura de tela 2025-10-17 233709" src="https://github.com/user-attachments/assets/4fe012e8-3e90-4750-a087-8e44735575cc" />|
-| RF-006 | O sistema deve trazer resultados de busca personalizados pelo nome ou categoria do produto. | MÉDIA | Erick Cambraia Nunes | Brian Mucio Duarte |
-|  | **Evidência:**<img width="1638" height="432" alt="Captura de tela 2025-10-17 232745" src="https://github.com/user-attachments/assets/449c7866-16dc-4577-bd94-670997fb3f48" />|
-| RF-007 | O sistema deve permitir que os administradores visualizem e gerenciem pedidos realizados pelos clientes. | MÉDIA | Brian Mucio Duarte | Luiza Maria da Silva Machado |
-|  | **Evidência:**<img width="1498" height="834" alt="Captura de tela 2025-10-17 233847" src="https://github.com/user-attachments/assets/cb057dbb-ed82-4aab-830e-bd7ff78b1dc2" />|
-| RF-008 | O sistema deve permitir que os usuários removam produtos do carrinho ou alterem a quantidade. | BAIXA | Douglas Henrique de Sousa e Silva | Marcelly Giovanna De Souza e Maia |
-|  | **Evidência:** <img width="1498" height="834" alt="Captura de tela 2025-10-17 233847" src="https://github.com/user-attachments/assets/cb057dbb-ed82-4aab-830e-bd7ff78b1dc2" />|
-| RF-009 | O sistema deve permitir que os usuários façam login com suas credenciais. | ALTA | Luiza Maria da Silva Machado | Erick Cambraia Nunes |
-|  | **Evidência:** <img width="1570" height="681" alt="Captura de tela 2025-10-17 234142" src="https://github.com/user-attachments/assets/0e1aae52-442a-4c8b-b6d3-1e5351be3c16" />|
-| RF-010 | O sistema deve exibir detalhes do produto, incluindo imagens, descrições e preços. | ALTA | Mateus Salomé Rocha Silva | Brian Mucio Duarte |
-|  | **Evidência:**<img width="1587" height="809" alt="Captura de tela 2025-10-17 234547" src="https://github.com/user-attachments/assets/a3c7f573-9975-4c77-bf75-b6787d287a58" />|
-| RF-011 | O sistema deve permitir que os administradores adicionem, editem e removam produtos do catálogo. | MÉDIA | Marcelly Giovanna De Souza e Maia | Douglas Henrique de Sousa e Silva |
-|  | **Evidência:** <img width="1517" height="650" alt="Captura de tela 2025-10-17 235014" src="https://github.com/user-attachments/assets/1afb6872-42cf-46e1-9557-e048d3c03a9f" />|
-| RF-012 | O sistema deve permitir que os administradores gerenciem categorias de produtos. | MÉDIA | Mateus Salomé Rocha Silva | Erick Cambraia Nunes |
-|  | **Evidência:** <img width="1869" height="804" alt="Captura de tela 2025-10-17 234822" src="https://github.com/user-attachments/assets/234382d0-49f9-499d-8221-2bc346a19352" />|
-| RF-014 | O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos. | MÉDIA | Douglas Henrique de Sousa e Silva | Mateus Salomé Rocha Silva |
-|  | **Evidência:** <img width="1774" height="505" alt="Captura de tela 2025-10-17 235223" src="https://github.com/user-attachments/assets/c4c78d85-f501-4ff3-863d-4e428595b101" />|
+<table>
+<tr><th colspan="6" width="1000">RF-001<br>O sistema deve permitir que os usuários se cadastrem.</th></tr>
+<tr>
+<td width="170"><strong>Critérios de êxito</strong></td>
+<td colspan="5">- O usuário deve conseguir preencher o formulário de cadastro.<br>- O sistema deve salvar os dados e exibir mensagem de sucesso.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td width="430">Brian Mucio Duarte</td>
+<td><strong>Responsável pelo teste</strong></td><td width="430">Douglas Henrique de Sousa e Silva</td>
+<td><strong>Prioridade</strong></td><td>ALTA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="792" height="907" alt="image" src="https://github.com/user-attachments/assets/775c89a7-7d5a-401b-83ac-f09e94305d1c" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6" width="1000">RF-002<br>O sistema deve separar os produtos por categoria.</th></tr>
+<tr>
+<td width="170"><strong>Critérios de êxito</strong></td>
+<td colspan="5">- Os produtos devem aparecer agrupados por categoria.<br>- As categorias devem ser exibidas corretamente no frontend.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Douglas Henrique de Sousa e Silva</td>
+<td><strong>Responsável pelo teste</strong></td><td>Luiza Maria da Silva Machado</td>
+<td><strong>Prioridade</strong></td><td>MÉDIA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1818" height="511" src="https://github.com/user-attachments/assets/9dcc44ce-3f9e-449f-89fc-f9ba85fe9a4c" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-003<br>O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras.</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- O botão “Adicionar ao carrinho” deve funcionar corretamente.<br>- O produto deve aparecer na lista do carrinho.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Luiza Maria da Silva Machado</td>
+<td><strong>Responsável pelo teste</strong></td><td>Mateus Salomé Rocha Silva</td>
+<td><strong>Prioridade</strong></td><td>BAIXA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1798" height="864" src="https://github.com/user-attachments/assets/30dcbc10-8d13-4af6-828b-213b21b2d86d" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-004<br>O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp".</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- O botão deve redirecionar para o WhatsApp com a mensagem automática do pedido.<br>- A mensagem deve conter informações do produto e valor total.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Erick Cambraia Nunes</td>
+<td><strong>Responsável pelo teste</strong></td><td>Marcelly Giovanna De Souza e Maia</td>
+<td><strong>Prioridade</strong></td><td>ALTA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1118" height="762" src="https://github.com/user-attachments/assets/e340ada7-b2f0-4fa0-8beb-d2eba8853a8d" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-005<br>O sistema deve realizar um cálculo do frete de envio da compra.</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- O sistema deve calcular o valor do frete automaticamente.<br>- O valor deve variar conforme o CEP informado.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Marcelly Giovanna De Souza e Maia</td>
+<td><strong>Responsável pelo teste</strong></td><td>Erick Cambraia Nunes</td>
+<td><strong>Prioridade</strong></td><td>MÉDIA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1810" height="535" src="https://github.com/user-attachments/assets/4fe012e8-3e90-4750-a087-8e44735575cc" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-006<br>O sistema deve trazer resultados de busca personalizados pelo nome ou categoria do produto.</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- A busca deve filtrar corretamente os produtos.<br>- Deve aceitar nome parcial e categoria.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Erick Cambraia Nunes</td>
+<td><strong>Responsável pelo teste</strong></td><td>Brian Mucio Duarte</td>
+<td><strong>Prioridade</strong></td><td>MÉDIA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1638" height="432" src="https://github.com/user-attachments/assets/449c7866-16dc-4577-bd94-670997fb3f48" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-007<br>O sistema deve permitir que os administradores visualizem e gerenciem pedidos realizados pelos clientes.</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- O administrador deve ver a lista de pedidos.<br>- Deve poder alterar o status e visualizar detalhes.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Brian Mucio Duarte</td>
+<td><strong>Responsável pelo teste</strong></td><td>Luiza Maria da Silva Machado</td>
+<td><strong>Prioridade</strong></td><td>MÉDIA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1498" height="834" src="https://github.com/user-attachments/assets/cb057dbb-ed82-4aab-830e-bd7ff78b1dc2" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-008<br>O sistema deve permitir que os usuários removam produtos do carrinho ou alterem a quantidade.</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- O usuário deve conseguir excluir ou atualizar a quantidade.<br>- O preço total deve atualizar automaticamente.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Douglas Henrique de Sousa e Silva</td>
+<td><strong>Responsável pelo teste</strong></td><td>Marcelly Giovanna De Souza e Maia</td>
+<td><strong>Prioridade</strong></td><td>BAIXA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1498" height="834" src="https://github.com/user-attachments/assets/cb057dbb-ed82-4aab-830e-bd7ff78b1dc2" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-009<br>O sistema deve permitir que os usuários façam login com suas credenciais.</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- O login deve validar email e senha.<br>- O sistema deve permitir acesso após autenticação.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Luiza Maria da Silva Machado</td>
+<td><strong>Responsável pelo teste</strong></td><td>Erick Cambraia Nunes</td>
+<td><strong>Prioridade</strong></td><td>ALTA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1570" height="681" src="https://github.com/user-attachments/assets/0e1aae52-442a-4c8b-b6d3-1e5351be3c16" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-010<br>O sistema deve exibir detalhes do produto, incluindo imagens, descrições e preços.</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- Ao clicar em um produto, o sistema deve exibir detalhes completos.<br>- As imagens e descrições devem corresponder ao produto selecionado.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Mateus Salomé Rocha Silva</td>
+<td><strong>Responsável pelo teste</strong></td><td>Brian Mucio Duarte</td>
+<td><strong>Prioridade</strong></td><td>ALTA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1587" height="809" src="https://github.com/user-attachments/assets/a3c7f573-9975-4c77-bf75-b6787d287a58" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-011<br>O sistema deve permitir que os administradores adicionem, editem e removam produtos do catálogo.</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- O administrador deve conseguir incluir, editar e excluir produtos.<br>- As alterações devem refletir no catálogo principal.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Marcelly Giovanna De Souza e Maia</td>
+<td><strong>Responsável pelo teste</strong></td><td>Douglas Henrique de Sousa e Silva</td>
+<td><strong>Prioridade</strong></td><td>MÉDIA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1517" height="650" src="https://github.com/user-attachments/assets/1afb6872-42cf-46e1-9557-e048d3c03a9f" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-012<br>O sistema deve permitir que os administradores gerenciem categorias de produtos.</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- Deve ser possível criar, editar e excluir categorias.<br>- As alterações devem atualizar os produtos relacionados.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Mateus Salomé Rocha Silva</td>
+<td><strong>Responsável pelo teste</strong></td><td>Erick Cambraia Nunes</td>
+<td><strong>Prioridade</strong></td><td>MÉDIA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1869" height="804" src="https://github.com/user-attachments/assets/234382d0-49f9-499d-8221-2bc346a19352" /></td></tr>
+</table>
+
+<table>
+<tr><th colspan="6">RF-014<br>O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos.</th></tr>
+<tr>
+<td><strong>Critérios de êxito</strong></td><td colspan="5">- O usuário deve conseguir enviar uma avaliação e comentário.<br>- As avaliações devem aparecer na página do produto.</td>
+</tr>
+<tr>
+<td><strong>Responsável pela funcionalidade</strong></td><td>Douglas Henrique de Sousa e Silva</td>
+<td><strong>Responsável pelo teste</strong></td><td>Mateus Salomé Rocha Silva</td>
+<td><strong>Prioridade</strong></td><td>MÉDIA</td>
+</tr>
+<tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
+<tr><td colspan="6" align="center"><img width="1774" height="505" src="https://github.com/user-attachments/assets/c4c78d85-f501-4ff3-863d-4e428595b101" /></td></tr>
+</table>
+
 
