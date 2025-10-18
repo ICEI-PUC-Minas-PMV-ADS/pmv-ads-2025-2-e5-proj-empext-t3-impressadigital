@@ -416,4 +416,95 @@ https://github.com/user-attachments/assets/46e217aa-a1a8-4331-b924-70abc2f2a31e
   </tr>
 </table>
 
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-004 - S<br>Finalizar compra pelo WhatsApp</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>O sistema deve permitir que os usuários finalizem a compra clicando no botão "Finalizar no WhatsApp".</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Marcelly Giovanna De Souza e Maia</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-004: Permitir finalizar a compra clicando no botão "Finalizar no WhatsApp".</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Entrar no site e adicionar produtos ao carrinho.<br>
+      2. Acessar o carrinho de compras.<br>
+      3. Clicar no botão "Finalizar no WhatsApp".<br>
+      4. Verificar se o WhatsApp é aberto com a mensagem automática contendo os produtos e valor total.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Produtos adicionados no carrinho<br>
+      - Valor total calculado corretamente
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      - O botão redireciona corretamente para o WhatsApp.<br>
+      - A mensagem contém os produtos e o valor total da compra.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Prioridade</strong></td>
+    <td>ALTA</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center">
+      
+ 
+
+https://github.com/user-attachments/assets/710f1faf-d1f5-4e2c-9fc9-623d022088ea
+   </td>
+
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-004 - I<br>Finalizar compra pelo WhatsApp (Insucesso)</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Marcelly Giovanna De Souza e Maia</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  
+</table>
 
