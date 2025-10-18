@@ -39,15 +39,15 @@ Um requisito será considerado aprovado se:
 | RF-001 | O sistema deve permitir que os usuários se cadastrem. | ALTA | Brian Mucio Duarte | Douglas Henrique de Sousa e Silva |
 |  | **Evidência:** <img width="792" height="907" alt="Captura de tela 2025-10-17 223653" src="https://github.com/user-attachments/assets/775c89a7-7d5a-401b-83ac-f09e94305d1c" /> |
 | RF-002 | O sistema deve separar os produtos por categoria. | MÉDIA | Douglas Henrique de Sousa e Silva | Luiza Maria da Silva Machado |
-|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+|  | **Evidência:** <img width="1818" height="511" alt="Captura de tela 2025-10-17 231558" src="https://github.com/user-attachments/assets/9dcc44ce-3f9e-449f-89fc-f9ba85fe9a4c" />|
 | RF-003 | O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras. | BAIXA | Luiza Maria da Silva Machado | Mateus Salomé Rocha Silva |
-|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+|  | **Evidência:** <img width="1798" height="864" alt="Captura de tela 2025-10-17 233325" src="https://github.com/user-attachments/assets/30dcbc10-8d13-4af6-828b-213b21b2d86d" />|
 | RF-004 | O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp". | ALTA | Mateus Salomé Rocha Silva | Marcelly Giovanna De Souza e Maia |
-|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+|  | **Evidência:**  <img width="1118" height="762" alt="Captura de tela 2025-10-17 233335" src="https://github.com/user-attachments/assets/e340ada7-b2f0-4fa0-8beb-d2eba8853a8d" />|
 | RF-005 | O sistema deve realizar um cálculo do frete de envio da compra. | MÉDIA | Marcelly Giovanna De Souza e Maia | Erick Cambraia Nunes |
-|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+|  | **Evidência:** <img width="879" height="466" alt="Captura de tela 2025-10-17 232606" src="https://github.com/user-attachments/assets/abb687e0-d762-4372-863d-0e5db4e2064a" />|
 | RF-006 | O sistema deve trazer resultados de busca personalizados pelo nome ou categoria do produto. | MÉDIA | Erick Cambraia Nunes | Brian Mucio Duarte |
-|  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
+|  | **Evidência:**<img width="1638" height="432" alt="Captura de tela 2025-10-17 232745" src="https://github.com/user-attachments/assets/449c7866-16dc-4577-bd94-670997fb3f48" />|
 | RF-007 | O sistema deve permitir que os administradores visualizem e gerenciem pedidos realizados pelos clientes. | MÉDIA | Brian Mucio Duarte | Luiza Maria da Silva Machado |
 |  | **Evidência:** [link da imagem](URL_DA_IMAGEM_AQUI) |
 | RF-008 | O sistema deve permitir que os usuários removam produtos do carrinho ou alterem a quantidade. | BAIXA | Douglas Henrique de Sousa e Silva | Marcelly Giovanna De Souza e Maia |
