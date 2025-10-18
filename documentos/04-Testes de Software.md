@@ -221,3 +221,103 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 </table>
 
 
+# Testes de Sucesso e Insucesso
+
+Casos de teste utilizados para verificar e validar as funcionalidades da aplicação.
+
+### Tipo de Teste
+- **Sucesso**: Verifica se a funcionalidade funciona corretamente conforme o esperado.  
+- **Insucesso**: Verifica se o sistema trata erros ou situações inesperadas corretamente.
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-002- S <br>Separar produtos por categoria</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>O sistema deve separar os produtos por categoria.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Luiza Maria da Silva Machado</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-002: Requisito relacionado ao teste.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      <strong>Como cliente:</strong><br>
+      1. Entrar no site.<br>
+      2. Escolher uma categoria de produtos.<br>
+      3. Selecionar um produto da categoria.<br>
+      4. Ver as opções do produto (detalhes, imagens, preço, etc.).<br><br>
+      <strong>Como administrador:</strong><br>
+      1. Entrar no painel de administração do site.<br>
+      2. Acessar a seção de produtos.<br>
+      3. Selecionar o produto que deseja editar ou adicionar categoria.<br>
+      4. Adicionar a categoria ao produto e salvar as alterações.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Categoria existente no sistema<br>
+      - Produto existente no sistema
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve apresentar corretamente os produtos filtrados por categoria e permitir que o administrador adicione categorias ao produto.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center">
+
+https://github.com/user-attachments/assets/7273dcfb-1202-456a-8304-d943a66fa8fe
+
+ </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-002 - I<br>Separar produtos por categoria (Insucesso)</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Luiza Maria da Silva Machado</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+</table>
+
