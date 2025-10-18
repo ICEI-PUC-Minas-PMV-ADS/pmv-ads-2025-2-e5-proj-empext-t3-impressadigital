@@ -28,7 +28,6 @@ export class ProductsService {
     };
 
     if (categoria_id !== undefined) {
-      // Aplica o filtro na coluna categoria_id da entidade
       findOptions.where = { categoria_id };
     }
 
@@ -57,6 +56,10 @@ export class ProductsService {
         'produto.preco',
         'produto.slug',
         'produto.status',
+        'produto.peso',
+        'produto.largura',
+        'produto.altura',
+        'produto.comprimento',
         'categoria.id',
         'categoria.nome',
         'midias.id',
@@ -71,6 +74,7 @@ export class ProductsService {
   }
 
   async create(data: Partial<Produtos>): Promise<Produtos> {
+    // validações
     if (!data.categoria_id || isNaN(Number(data.categoria_id))) {
       throw new BadRequestException(
         'categoria_id é obrigatório e deve ser um número',
@@ -81,8 +85,16 @@ export class ProductsService {
       throw new BadRequestException('O nome do produto é obrigatório');
     }
 
-    let slug = this.generateSlug(data.nome);
+    const requiredFields = ['peso', 'largura', 'altura', 'comprimento'];
+    for (const field of requiredFields) {
+      if (!data[field] || Number(data[field]) <= 0) {
+        throw new BadRequestException(
+          `O campo "${field}" é obrigatório e deve ser maior que 0.`,
+        );
+      }
+    }
 
+    let slug = this.generateSlug(data.nome);
     let counter = 1;
     let slugExists = await this.produtosRepository.findOneBy({ slug });
     while (slugExists) {
@@ -94,6 +106,10 @@ export class ProductsService {
     const produto = this.produtosRepository.create({
       ...data,
       categoria_id: Number(data.categoria_id),
+      peso: Number(data.peso),
+      largura: Number(data.largura),
+      altura: Number(data.altura),
+      comprimento: Number(data.comprimento),
       slug,
     });
 
@@ -105,6 +121,11 @@ export class ProductsService {
       ...data,
       categoria_id:
         data.categoria_id !== undefined ? Number(data.categoria_id) : undefined,
+      peso: data.peso !== undefined ? Number(data.peso) : undefined,
+      largura: data.largura !== undefined ? Number(data.largura) : undefined,
+      altura: data.altura !== undefined ? Number(data.altura) : undefined,
+      comprimento:
+        data.comprimento !== undefined ? Number(data.comprimento) : undefined,
     });
     return this.findOne(id);
   }

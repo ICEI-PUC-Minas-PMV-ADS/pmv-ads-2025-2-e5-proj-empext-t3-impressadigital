@@ -22,10 +22,8 @@ export class Produtos {
   @Column({ nullable: false })
   categoria_id: number;
 
-
   @OneToMany(() => VendasProdutos, (vp) => vp.produto)
   vendas_produtos: VendasProdutos[];
-
 
   @Column()
   status: string;
@@ -61,6 +59,15 @@ export class Produtos {
   @OneToMany(() => Avaliacoes_Produto, (avaliacoes) => avaliacoes.produto)
   avaliacoes: Avaliacoes_Produto[];
 
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  peso: number;
 
-  
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  largura: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  altura: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  comprimento: number;
 }

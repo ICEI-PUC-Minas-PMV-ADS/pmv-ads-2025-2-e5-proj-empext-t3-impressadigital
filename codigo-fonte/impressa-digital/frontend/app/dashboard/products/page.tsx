@@ -11,6 +11,10 @@ interface Product {
   categoria_nome?: string;
   midias?: Array<{ id: number; url: string }>;
   status?: string;
+  peso?: number;
+  largura?: number;
+  altura?: number;
+  comprimento?: number;
 }
 
 interface Category {
@@ -68,6 +72,10 @@ const DashboardProducts: React.FC = () => {
     categoria_id: "",
     descricao: "",
     status: "",
+    peso: "",
+    largura: "",
+    altura: "",
+    comprimento: "",
   });
 
   const [previews, setPreviews] = useState<string[]>([]);
@@ -211,6 +219,10 @@ const DashboardProducts: React.FC = () => {
       categoria_id: product.categoria_id.toString(),
       descricao: product.descricao || "",
       status: product.status || "Ativo",
+      peso: product.peso ? product.peso.toString() : "",
+      largura: product.largura ? product.largura.toString() : "",
+      altura: product.altura ? product.altura.toString() : "",
+      comprimento: product.comprimento ? product.comprimento.toString() : "",
     });
     setPreviews(product.midias?.map((m) => m.url) || []);
     setFiles([]);
@@ -227,6 +239,10 @@ const DashboardProducts: React.FC = () => {
       categoria_id: "",
       descricao: "",
       status: "",
+      peso: "",
+      largura: "",
+      altura: "",
+      comprimento: "",
     });
     setPreviews([]);
     setFiles([]);
@@ -317,6 +333,10 @@ const DashboardProducts: React.FC = () => {
             categoria_id: parseInt(formData.categoria_id),
             descricao: formData.descricao,
             status: formData.status.toLowerCase(),
+            peso: parseFloat(formData.peso),
+            largura: parseFloat(formData.largura),
+            altura: parseFloat(formData.altura),
+            comprimento: parseFloat(formData.comprimento),
           }),
         }
       );
@@ -712,6 +732,74 @@ const DashboardProducts: React.FC = () => {
                     className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
                     required
                   />
+                </div>
+
+                <div>
+                  <h3 className="block text-sm font-medium mb-2">
+                    Dimensões do Produto
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Peso (kg)
+                      </label>
+                      <input
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        name="peso"
+                        value={formData.peso}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Largura (cm)
+                      </label>
+                      <input
+                        type="number"
+                        min="0.1"
+                        step="0.1"
+                        name="largura"
+                        value={formData.largura}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Altura (cm)
+                      </label>
+                      <input
+                        type="number"
+                        min="0.1"
+                        step="0.1"
+                        name="altura"
+                        value={formData.altura}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Comprimento (cm)
+                      </label>
+                      <input
+                        type="number"
+                        min="0.1"
+                        step="0.1"
+                        name="comprimento"
+                        value={formData.comprimento}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div>

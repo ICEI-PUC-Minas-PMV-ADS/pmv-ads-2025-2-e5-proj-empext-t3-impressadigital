@@ -40,6 +40,10 @@ const DashboardAddProduct: React.FC = () => {
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [preco, setPreco] = useState("");
+  const [peso, setPeso] = useState("");
+  const [largura, setLargura] = useState("");
+  const [altura, setAltura] = useState("");
+  const [comprimento, setComprimento] = useState("");
   const [previews, setPreviews] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [status, setStatus] = useState("");
@@ -120,6 +124,31 @@ const DashboardAddProduct: React.FC = () => {
       return;
     }
 
+    // Validação dos campos de frete
+    if (!peso || parseFloat(peso) <= 0) {
+      showToast("Informe o peso do produto corretamente.", "error");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!largura || parseFloat(largura) <= 0) {
+      showToast("Informe a largura do produto corretamente.", "error");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!altura || parseFloat(altura) <= 0) {
+      showToast("Informe a altura do produto corretamente.", "error");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!comprimento || parseFloat(comprimento) <= 0) {
+      showToast("Informe o comprimento do produto corretamente.", "error");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       // Criar o produto
       const produtoRes = await fetch("http://localhost:3000/products", {
@@ -131,6 +160,10 @@ const DashboardAddProduct: React.FC = () => {
           preco: parseFloat(preco.replace(",", ".")),
           categoria_id: categoriaId,
           status,
+          peso: parseFloat(peso),
+          largura: parseFloat(largura),
+          altura: parseFloat(altura),
+          comprimento: parseFloat(comprimento),
         }),
       });
 
@@ -175,6 +208,10 @@ const DashboardAddProduct: React.FC = () => {
       setPreco("");
       setCategoriaId(null);
       setStatus("");
+      setPeso("");
+      setLargura("");
+      setAltura("");
+      setComprimento("");
       setFiles([]);
       setPreviews([]);
     } catch (err: any) {
@@ -232,6 +269,53 @@ const DashboardAddProduct: React.FC = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
             required
           />
+
+          {/* Campos de peso e dimensões */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="number"
+              min="0.01"
+              step="0.01"
+              placeholder="Peso (kg)"
+              value={peso}
+              onChange={(e) => setPeso(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+              required
+            />
+
+            <input
+              type="number"
+              min="0.1"
+              step="0.1"
+              placeholder="Largura (cm)"
+              value={largura}
+              onChange={(e) => setLargura(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+              required
+            />
+
+            <input
+              type="number"
+              min="0.1"
+              step="0.1"
+              placeholder="Altura (cm)"
+              value={altura}
+              onChange={(e) => setAltura(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+              required
+            />
+
+            <input
+              type="number"
+              min="0.1"
+              step="0.1"
+              placeholder="Comprimento (cm)"
+              value={comprimento}
+              onChange={(e) => setComprimento(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
+              required
+            />
+          </div>
 
           {/* Upload de fotos */}
           <div className="w-full px-4 py-4 border border-gray-300 rounded-2xl focus-within:ring-1 focus-within:ring-[#45A62D]">
@@ -308,19 +392,15 @@ const DashboardAddProduct: React.FC = () => {
             required
             onInput={(e) => {
               const target = e.target as HTMLInputElement;
-
               let value = target.value.replace(/\./g, ",");
               value = value.replace(/[^0-9,]/g, "");
-
               const parts = value.split(",");
               if (parts.length > 2) {
                 value = parts[0] + "," + parts[1];
               }
-
               if (parts[1]?.length > 2) {
                 value = parts[0] + "," + parts[1].slice(0, 2);
               }
-
               target.value = value;
               setPreco(value);
             }}
