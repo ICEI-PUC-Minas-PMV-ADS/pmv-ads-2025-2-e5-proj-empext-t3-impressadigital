@@ -682,4 +682,92 @@ https://github.com/user-attachments/assets/e0f81336-abf7-4c02-82a0-3e20deb3e8db
   </tr>
 </table>
 
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-007 - S<br>Remover produtos ou alterar quantidade no carrinho</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>O sistema deve permitir que os usuários removam produtos do carrinho ou alterem a quantidade de itens antes de finalizar a compra.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Brian Múcio Duarte</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-008: Permitir ajustes no carrinho de compras.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Entrar no site.<br>
+      2. Adicionar um ou mais produtos ao carrinho.<br>
+      3. Abrir o carrinho de compras.<br>
+      4. Alterar a quantidade de produtos ou remover algum item.<br>
+      5. Verificar se o total do carrinho é atualizado corretamente.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Produtos disponíveis no site<br>
+      - Quantidade inicial de produtos no carrinho
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve permitir que o usuário altere a quantidade ou remova produtos e atualizar corretamente o valor total do carrinho.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"> 
+
+https://github.com/user-attachments/assets/dc5122c1-20c9-43cf-85e2-fefbfa7c5a43
+
+</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-007 - I<br>Remover produtos ou alterar quantidade no carrinho (Insucesso)</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Brian Múcio Duarte</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+</table>
+
+
 
