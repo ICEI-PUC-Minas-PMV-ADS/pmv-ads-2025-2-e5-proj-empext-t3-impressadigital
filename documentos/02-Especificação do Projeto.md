@@ -36,7 +36,7 @@ Descreva brevemente a arquitetura definida para o projeto e as tecnologias a ser
 |RF-001| O sistema deve permitir que os usuários se cadastrem. | ALTA | Brian Mucio Duarte |
 |RF-002| O sistema deve separar os produtos por categoria.  | MÉDIA | Douglas Henrique de Sousa e Silva |
 |RF-003| O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras. | BAIXA | Luiza Maria da Silva Machado |
-|RF-004| O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp". | ALTA | Mateus Salomé Rocha Silva |
+|RF-004| O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp". | ALTA | Erick Cambraia Nunes |
 |RF-005| O sistema deve realizar um cálculo do frete de envio da compra. | MÉDIA | Marcelly Giovanna De Souza e Maia |
 |RF-006| O sistema deve trazer resultados para buscar personalizadas pelo nome ou categoria do produto. | MÉDIA | Erick Cambraia Nunes |
 |RF-007| O sistema deve permitir que os administradores visualizem e gerenciem pedidos realizados pelos clientes. | MÉDIA | Brian Mucio Duarte |
@@ -44,7 +44,7 @@ Descreva brevemente a arquitetura definida para o projeto e as tecnologias a ser
 |RF-009| O sistema deve permitir que os usuários façam login com suas credenciais. | ALTA | Luiza Maria da Silva Machado |
 |RF-010| O sistema deve exibir detalhes do produto, incluindo imagens, descrições e preços. | ALTA | Mateus Salomé Rocha Silva |
 |RF-011| O sistema deve permitir que os administradores adicionem, editem e removam produtos do catálogo | MÉDIA | Marcelly Giovanna De Souza e Maia |
-|RF-012| O sistema deve permitir que os administradores gerenciem categorias de produtos. | MÉDIA | Erick Cambraia Nunes |
+|RF-012| O sistema deve permitir que os administradores gerenciem categorias de produtos. | MÉDIA | Mateus Salomé Rocha Silva |
 |RF-013| O sistema deve permitir que os usuários cadastrados realizem o login. | ALTA | Brian Mucio Duarte |
 |RF-014| O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos. | MÉDIA | Douglas Henrique de Sousa e Silva |
 
