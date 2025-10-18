@@ -595,3 +595,91 @@ https://github.com/user-attachments/assets/95fa831b-9eb5-4021-8698-4d3356595e7f
   </tr>
 </table>
 
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-006 - S<br>Visualizar e gerenciar pedidos pelos administradores</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>O sistema deve permitir que os administradores visualizem todos os pedidos realizados pelos clientes e realizem ações de gerenciamento como alterar status ou atualizar informações do pedido.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Erick Cambraia Nunes</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-006: Administradores devem conseguir gerenciar pedidos de clientes.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Entrar no painel administrativo do site.<br>
+      2. Acessar a seção de pedidos.<br>
+      3. Visualizar a lista de pedidos realizados pelos clientes.<br>
+      4. Selecionar um pedido e alterar status ou atualizar informações conforme necessário.<br>
+      5. Salvar as alterações.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Pedidos de clientes já realizados no sistema<br>
+      - Informações de pedido válidas
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O administrador deve conseguir visualizar todos os pedidos e gerenciá-los corretamente, com alterações refletidas no sistema.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center">
+
+https://github.com/user-attachments/assets/e0f81336-abf7-4c02-82a0-3e20deb3e8db
+
+ </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-006 - I<br>Visualizar e gerenciar pedidos (Insucesso)</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste </strong></td>
+    <td width="430">Erick Cambraia Nunes</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+</table>
+
+
