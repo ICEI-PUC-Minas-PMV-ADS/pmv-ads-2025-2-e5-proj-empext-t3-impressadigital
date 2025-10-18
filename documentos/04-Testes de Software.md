@@ -44,7 +44,7 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 |  | **Evidência:** <img width="1818" height="511" alt="Captura de tela 2025-10-17 231558" src="https://github.com/user-attachments/assets/9dcc44ce-3f9e-449f-89fc-f9ba85fe9a4c" />|
 | RF-003 | O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras. | BAIXA | Luiza Maria da Silva Machado | Mateus Salomé Rocha Silva |
 |  | **Evidência:** <img width="1798" height="864" alt="Captura de tela 2025-10-17 233325" src="https://github.com/user-attachments/assets/30dcbc10-8d13-4af6-828b-213b21b2d86d" />|
-| RF-004 | O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp". | ALTA | Mateus Salomé Rocha Silva | Marcelly Giovanna De Souza e Maia |
+| RF-004 | O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp". | ALTA | Erick Cambraia Nunes | Marcelly Giovanna De Souza e Maia |
 |  | **Evidência:**  <img width="1118" height="762" alt="Captura de tela 2025-10-17 233335" src="https://github.com/user-attachments/assets/e340ada7-b2f0-4fa0-8beb-d2eba8853a8d" />|
 | RF-005 | O sistema deve realizar um cálculo do frete de envio da compra. | MÉDIA | Marcelly Giovanna De Souza e Maia | Erick Cambraia Nunes |
 |  | **Evidência:** <img width="1810" height="535" alt="Captura de tela 2025-10-17 233709" src="https://github.com/user-attachments/assets/4fe012e8-3e90-4750-a087-8e44735575cc" />|
@@ -60,8 +60,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 |  | **Evidência:**<img width="1587" height="809" alt="Captura de tela 2025-10-17 234547" src="https://github.com/user-attachments/assets/a3c7f573-9975-4c77-bf75-b6787d287a58" />|
 | RF-011 | O sistema deve permitir que os administradores adicionem, editem e removam produtos do catálogo. | MÉDIA | Marcelly Giovanna De Souza e Maia | Douglas Henrique de Sousa e Silva |
 |  | **Evidência:** <img width="1517" height="650" alt="Captura de tela 2025-10-17 235014" src="https://github.com/user-attachments/assets/1afb6872-42cf-46e1-9557-e048d3c03a9f" />|
-| RF-012 | O sistema deve permitir que os administradores gerenciem categorias de produtos. | MÉDIA | Erick Cambraia Nunes | Mateus Salomé Rocha Silva |
+| RF-012 | O sistema deve permitir que os administradores gerenciem categorias de produtos. | MÉDIA | Mateus Salomé Rocha Silva | Erick Cambraia Nunes |
 |  | **Evidência:** <img width="1869" height="804" alt="Captura de tela 2025-10-17 234822" src="https://github.com/user-attachments/assets/234382d0-49f9-499d-8221-2bc346a19352" />|
-| RF-014 | O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos. | MÉDIA | Douglas Henrique de Sousa e Silva | Erick Cambraia Nunes |
+| RF-014 | O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos. | MÉDIA | Douglas Henrique de Sousa e Silva | Mateus Salomé Rocha Silva |
 |  | **Evidência:** <img width="1774" height="505" alt="Captura de tela 2025-10-17 235223" src="https://github.com/user-attachments/assets/c4c78d85-f501-4ff3-863d-4e428595b101" />|
 
