@@ -99,7 +99,7 @@ function QuickShortcutsPanel() {
     const shortcuts = [
         { label: "Cadastrar novo produto", href: "/dashboard/products" },
         { label: "Adicionar destaque", href: "/dashboard/category" },
-        { label: "Adicionar carrossel", href: "/dashboard/" },
+        { label: "Adicionar carrossel", href: "/dashboard/carrossel" },
 
     ];
     return (
