@@ -35,7 +35,7 @@ Um requisito será considerado aprovado se:
 ## Parte 2 - Testes por pares
 
 A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade deve ser testada por um colega e os testes devem ser evidenciados. O colega "Tester" deve utilizar o caso de teste criado pelo desenvolvedor responsável pela funcionalidade (desenvolveu a funcionalidade e criou o caso de testes descrito no plano de testes) e caso perceba a necessidade de outros casos de teste, deve acrescentá-los na sessão "Plano de Testes".
-
+## O sistema deve permitir que os usuários se cadastrem
 <table>
 <tr><th colspan="6" width="1000">RF-001<br>O sistema deve permitir que os usuários se cadastrem.</th></tr>
 <tr>
@@ -50,6 +50,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
 <tr><td colspan="6" align="center"><img width="792" height="907" alt="image" src="https://github.com/user-attachments/assets/775c89a7-7d5a-401b-83ac-f09e94305d1c" /></td></tr>
 </table>
+
+## O sistema deve separar os produtos por categoria.
 
 <table>
 <tr><th colspan="6" width="1000">RF-002<br>O sistema deve separar os produtos por categoria.</th></tr>
@@ -66,6 +68,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><img width="1818" height="511" src="https://github.com/user-attachments/assets/9dcc44ce-3f9e-449f-89fc-f9ba85fe9a4c" /></td></tr>
 </table>
 
+## O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras.
+
 <table>
 <tr><th colspan="6">RF-003<br>O sistema deve permitir que os usuários adicionem produtos ao carrinho de compras.</th></tr>
 <tr>
@@ -79,6 +83,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
 <tr><td colspan="6" align="center"><img width="1798" height="864" src="https://github.com/user-attachments/assets/30dcbc10-8d13-4af6-828b-213b21b2d86d" /></td></tr>
 </table>
+
+## O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp"
 
 <table>
 <tr><th colspan="6">RF-004<br>O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp".</th></tr>
@@ -94,6 +100,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><img width="1118" height="762" src="https://github.com/user-attachments/assets/e340ada7-b2f0-4fa0-8beb-d2eba8853a8d" /></td></tr>
 </table>
 
+## O sistema deve realizar um cálculo do frete de envio da compra
+
 <table>
 <tr><th colspan="6">RF-005<br>O sistema deve realizar um cálculo do frete de envio da compra.</th></tr>
 <tr>
@@ -107,6 +115,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
 <tr><td colspan="6" align="center"><img width="1810" height="535" src="https://github.com/user-attachments/assets/4fe012e8-3e90-4750-a087-8e44735575cc" /></td></tr>
 </table>
+
+## O sistema deve trazer resultados de busca personalizados pelo nome ou categoria do produto
 
 <table>
 <tr><th colspan="6">RF-006<br>O sistema deve trazer resultados de busca personalizados pelo nome ou categoria do produto.</th></tr>
@@ -122,6 +132,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><img width="1638" height="432" src="https://github.com/user-attachments/assets/449c7866-16dc-4577-bd94-670997fb3f48" /></td></tr>
 </table>
 
+## O sistema deve permitir que os administradores visualizem e gerenciem pedidos realizados pelos clientes.
+
 <table>
 <tr><th colspan="6">RF-007<br>O sistema deve permitir que os administradores visualizem e gerenciem pedidos realizados pelos clientes.</th></tr>
 <tr>
@@ -135,6 +147,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
 <tr><td colspan="6" align="center"><img width="1498" height="834" src="https://github.com/user-attachments/assets/cb057dbb-ed82-4aab-830e-bd7ff78b1dc2" /></td></tr>
 </table>
+
+## O sistema deve permitir que os usuários removam produtos do carrinho ou alterem a quantidade.
 
 <table>
 <tr><th colspan="6">RF-008<br>O sistema deve permitir que os usuários removam produtos do carrinho ou alterem a quantidade.</th></tr>
@@ -150,6 +164,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><img width="1498" height="834" src="https://github.com/user-attachments/assets/cb057dbb-ed82-4aab-830e-bd7ff78b1dc2" /></td></tr>
 </table>
 
+## Sistema deve permitir que os usuários façam login com suas credenciais.
+
 <table>
 <tr><th colspan="6">RF-009<br>O sistema deve permitir que os usuários façam login com suas credenciais.</th></tr>
 <tr>
@@ -163,6 +179,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
 <tr><td colspan="6" align="center"><img width="1570" height="681" src="https://github.com/user-attachments/assets/0e1aae52-442a-4c8b-b6d3-1e5351be3c16" /></td></tr>
 </table>
+
+## O sistema deve exibir detalhes do produto, incluindo imagens, descrições e preços.
 
 <table>
 <tr><th colspan="6">RF-010<br>O sistema deve exibir detalhes do produto, incluindo imagens, descrições e preços.</th></tr>
@@ -178,6 +196,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><img width="1587" height="809" src="https://github.com/user-attachments/assets/a3c7f573-9975-4c77-bf75-b6787d287a58" /></td></tr>
 </table>
 
+## O sistema deve permitir que os administradores adicionem, editem e removam produtos do catálogo.
+
 <table>
 <tr><th colspan="6">RF-011<br>O sistema deve permitir que os administradores adicionem, editem e removam produtos do catálogo.</th></tr>
 <tr>
@@ -192,6 +212,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><img width="1517" height="650" src="https://github.com/user-attachments/assets/1afb6872-42cf-46e1-9557-e048d3c03a9f" /></td></tr>
 </table>
 
+## O sistema deve permitir que os administradores gerenciem categorias de produtos.
+
 <table>
 <tr><th colspan="6">RF-012<br>O sistema deve permitir que os administradores gerenciem categorias de produtos.</th></tr>
 <tr>
@@ -205,6 +227,8 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
 <tr><td colspan="6" align="center"><img width="1869" height="804" src="https://github.com/user-attachments/assets/234382d0-49f9-499d-8221-2bc346a19352" /></td></tr>
 </table>
+
+## O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos
 
 <table>
 <tr><th colspan="6">RF-014<br>O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos.</th></tr>
@@ -323,6 +347,7 @@ https://github.com/user-attachments/assets/7273dcfb-1202-456a-8304-d943a66fa8fe
 </table>
 
 ----
+## Adicionar produtos ao carrinho de compras
 
 <table>
   <tr>
@@ -417,6 +442,8 @@ https://github.com/user-attachments/assets/46e217aa-a1a8-4331-b924-70abc2f2a31e
   </tr>
 </table>
 
+## Finalizar compra pelo WhatsApp
+
 <table>
   <tr>
     <th colspan="2" width="1000">CT-004 - S<br>Finalizar compra pelo WhatsApp</th>
@@ -509,7 +536,7 @@ https://github.com/user-attachments/assets/710f1faf-d1f5-4e2c-9fc9-623d022088ea
   
 </table>
 
-
+## Cálculo do frete de envio
 <table>
   <tr>
     <th colspan="2" width="1000">CT-005 - S<br>Cálculo do frete de envio</th>
@@ -595,6 +622,8 @@ https://github.com/user-attachments/assets/95fa831b-9eb5-4021-8698-4d3356595e7f
     <td>Não se aplica.</td>
   </tr>
 </table>
+
+## Visualizar e gerenciar pedidos pelos administradores
 
 <table>
   <tr>
@@ -682,6 +711,8 @@ https://github.com/user-attachments/assets/e0f81336-abf7-4c02-82a0-3e20deb3e8db
     <td>Não se aplica.</td>
   </tr>
 </table>
+
+## Remover produtos ou alterar quantidade no carrinho
 
 <table>
   <tr>
@@ -771,6 +802,8 @@ https://github.com/user-attachments/assets/dc5122c1-20c9-43cf-85e2-fefbfa7c5a43
 </table>
 </table>
 
+## Cadastrar Usuário
+
 <table>
   <tr>
     <th colspan="2" width="1000">CT-009 - S<br>Cadastrar Usuário</th>
@@ -828,6 +861,8 @@ https://github.com/user-attachments/assets/dc5122c1-20c9-43cf-85e2-fefbfa7c5a43
   </td>
 </tr>
 </table>
+
+## Exibir detalhes do produto
 
 <table>
   <tr>
@@ -915,6 +950,8 @@ https://github.com/user-attachments/assets/6da351aa-7e17-4441-b338-78c5ea0dbddf
     <td>Não se aplica.</td>
   </tr>
 </table>
+
+## Gerenciar produtos no catálogo
 
 <table>
   <tr>
@@ -1010,6 +1047,8 @@ https://github.com/user-attachments/assets/42679069-94cb-4c20-a471-15153f3c176c
   </tr>
 </table>
 
+## Gerenciar categorias de produto
+
 <table>
   <tr>
     <th colspan="2" width="1000">CT-012 - S<br>Gerenciar categorias de produtos</th>
@@ -1100,6 +1139,9 @@ https://github.com/user-attachments/assets/5061933a-149a-4543-b948-0d63471397fd
     <td>Não se aplica.</td>
   </tr>
 </table>
+
+## Enviar avaliações e comentários sobre produtos
+
 <table>
   <tr>
     <th colspan="2" width="1000">CT-013 - S<br>Enviar avaliações e comentários sobre produtos</th>
@@ -1192,6 +1234,3 @@ https://github.com/user-attachments/assets/077d91f8-5f1f-4627-98bc-ac6e30876ac4
     <td>Não se aplica.</td>
   </tr>
 </table>
-
-
-
