@@ -965,7 +965,10 @@ https://github.com/user-attachments/assets/6da351aa-7e17-4441-b338-78c5ea0dbddf
     <td colspan="6" align="center"> 
     
 
-https://github.com/user-attachments/assets/d58d2579-8c17-48e5-9339-f164af12b1c7
+
+https://github.com/user-attachments/assets/42679069-94cb-4c20-a471-15153f3c176c
+
+
 
 
     
@@ -1005,5 +1008,97 @@ https://github.com/user-attachments/assets/d58d2579-8c17-48e5-9339-f164af12b1c7
     <td>Não se aplica.</td>
   </tr>
 </table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-012 - S<br>Gerenciar categorias de produtos</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>O sistema deve permitir que os administradores criem, editem e removam categorias de produtos, garantindo a correta organização do catálogo.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste</strong></td>
+    <td width="430">Mateus Salomé Rocha Silva</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-012: Gerenciamento de categorias de produtos pelo administrador.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Acessar o painel administrativo.<br>
+      2. Clicar na seção de “Categorias”.<br>
+      3. Criar uma nova categoria e salvar.<br>
+      4. Editar uma categoria existente alterando o nome ou descrição.<br>
+      5. Remover uma categoria.<br>
+      6. Verificar se as alterações aparecem corretamente no site para os usuários.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Conta de administrador válida.<br>
+      - Categoria existente para edição e exclusão.<br>
+      - Nome e descrição de nova categoria para inclusão.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>O sistema deve permitir adicionar, editar e remover categorias corretamente, refletindo as mudanças no catálogo de produtos.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"> 
+    
+
+https://github.com/user-attachments/assets/5061933a-149a-4543-b948-0d63471397fd
+
+
+
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-012 - I<br>Gerenciar categorias de produtos (Insucesso)</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste</strong></td>
+    <td width="430">Mateus Salomé Rocha Silva</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+</table>
+
 
 
