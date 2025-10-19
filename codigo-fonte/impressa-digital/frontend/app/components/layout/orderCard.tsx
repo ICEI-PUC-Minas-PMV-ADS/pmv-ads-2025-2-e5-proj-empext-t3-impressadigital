@@ -68,16 +68,19 @@ const OrderCard: React.FC<OrderCardProps> = ({
         produto: { id: productId },
       };
 
-      const reviewRes = await fetch("http://localhost:3000/avaliacoes_produto", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const reviewRes = await fetch(
+        "http://localhost:3000/avaliacoes_produto",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (!reviewRes.ok) throw new Error("Erro ao criar avaliação.");
       const newReview = await reviewRes.json();
 
-      // Faz upload das imagens 
+      // Faz upload das imagens
       if (files.length > 0) {
         const formDataUpload = new FormData();
         files.forEach((file) => formDataUpload.append("files", file));
@@ -269,29 +272,40 @@ const OrderCard: React.FC<OrderCardProps> = ({
               </div>
 
               {/* Estrelas */}
-              <div className="flex justify-center space-x-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    type="button"
-                    key={star}
-                    onClick={() => setRating(star)}
-                  >
-                    <span
-                      className={`text-2xl ${
-                        star <= rating ? "text-[#3fe216]" : "text-gray-300"
-                      }`}
+              <div className="flex flex-col items-center space-y-2">
+                <div className="flex justify-center space-x-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      type="button"
+                      key={star}
+                      onClick={() => setRating(star)}
                     >
-                      ★
-                    </span>
-                  </button>
-                ))}
-                <input type="hidden" name="rating" value={rating} />
+                      <span
+                        className={`text-2xl transition ${
+                          star <= rating ? "text-[#3fe216]" : "text-gray-300"
+                        }`}
+                      >
+                        ★
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                {rating === 0 && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    Selecione uma nota de 1 a 5 estrelas para enviar.
+                  </p>
+                )}
               </div>
 
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full cursor-pointer py-2 rounded-lg text-white font-semibold bg-[#3fe216] hover:bg-green-600 transition"
+                disabled={loading || rating === 0}
+                className={`w-full cursor-pointer py-2 rounded-lg text-white font-semibold transition ${
+                  rating === 0
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-[#3fe216] hover:bg-green-600"
+                }`}
               >
                 {loading ? "Enviando..." : "Enviar Avaliação"}
               </button>

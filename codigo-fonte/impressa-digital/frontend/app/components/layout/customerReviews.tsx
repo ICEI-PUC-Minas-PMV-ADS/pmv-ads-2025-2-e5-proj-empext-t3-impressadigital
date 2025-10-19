@@ -20,7 +20,9 @@ interface CustomerReviewsProps {
   productIdentifier: string | string[] | undefined;
 }
 
-export default function CustomerReviews({ productIdentifier }: CustomerReviewsProps) {
+export default function CustomerReviews({
+  productIdentifier,
+}: CustomerReviewsProps) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,16 +39,22 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
       return;
     }
 
-    const slug = Array.isArray(productIdentifier) ? productIdentifier[0] : productIdentifier;
+    const slug = Array.isArray(productIdentifier)
+      ? productIdentifier[0]
+      : productIdentifier;
 
     const fetchReviews = async () => {
       try {
         setLoading(true);
-        const mainProductRes = await fetch(`http://localhost:3000/products/slug/${slug}`);
+        const mainProductRes = await fetch(
+          `http://localhost:3000/products/slug/${slug}`
+        );
         if (!mainProductRes.ok) throw new Error("Erro ao buscar produto.");
         const mainProduct = (await mainProductRes.json()) as ProductInfo;
 
-        const res = await fetch(`http://localhost:3000/avaliacoes_produto/produto/${mainProduct.id}`);
+        const res = await fetch(
+          `http://localhost:3000/avaliacoes_produto/produto/${mainProduct.id}`
+        );
         if (!res.ok) throw new Error("Erro ao buscar avaliações.");
         const productReviews = (await res.json()) as Review[];
 
@@ -61,27 +69,40 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
     fetchReviews();
   }, [productIdentifier]);
 
-  // 📊 Média e distribuição
+  // Média e distribuição
   const { average, distribution } = useMemo(() => {
-    if (reviews.length === 0) return { average: 0, distribution: [0, 0, 0, 0, 0] };
-    const total = reviews.length;
-    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
-    const avg = sum / total;
-    const dist = [1, 2, 3, 4, 5].map(
-      (star) => reviews.filter((r) => r.rating === star).length
+    if (reviews.length === 0)
+      return { average: 0, distribution: [0, 0, 0, 0, 0] };
+    const validReviews = reviews.filter(
+      (r) => typeof r.rating === "number" && !isNaN(r.rating)
     );
+
+    if (validReviews.length === 0) {
+      return { average: 0, distribution: [0, 0, 0, 0, 0] };
+    }
+
+    const sum = validReviews.reduce((acc, r) => acc + r.rating, 0);
+    const avg = sum / validReviews.length;
+
+    const dist = [1, 2, 3, 4, 5].map(
+      (star) => validReviews.filter((r) => r.rating === star).length
+    );
+
     return { average: avg, distribution: dist };
   }, [reviews]);
 
-  // 🚀 SUBMIT COM UPLOAD
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const slug = Array.isArray(productIdentifier) ? productIdentifier[0] : productIdentifier;
+    const slug = Array.isArray(productIdentifier)
+      ? productIdentifier[0]
+      : productIdentifier;
 
     try {
       // 1. Busca produto
-      const mainProductRes = await fetch(`http://localhost:3000/products/slug/${slug}`);
+      const mainProductRes = await fetch(
+        `http://localhost:3000/products/slug/${slug}`
+      );
       if (!mainProductRes.ok) throw new Error("Erro ao buscar produto.");
       const mainProduct = (await mainProductRes.json()) as ProductInfo;
 
@@ -92,11 +113,14 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
         produto: { id: mainProduct.id },
       };
 
-      const reviewRes = await fetch("http://localhost:3000/avaliacoes_produto", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const reviewRes = await fetch(
+        "http://localhost:3000/avaliacoes_produto",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (!reviewRes.ok) throw new Error("Erro ao criar avaliação.");
       const newReview = await reviewRes.json();
@@ -112,11 +136,14 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
           body: uploadData,
         });
 
-        if (!uploadRes.ok) throw new Error("Erro ao enviar imagens da avaliação");
+        if (!uploadRes.ok)
+          throw new Error("Erro ao enviar imagens da avaliação");
       }
 
       // 4. Atualiza lista
-      const updatedReviewsRes = await fetch(`http://localhost:3000/avaliacoes_produto/produto/${mainProduct.id}`);
+      const updatedReviewsRes = await fetch(
+        `http://localhost:3000/avaliacoes_produto/produto/${mainProduct.id}`
+      );
       const updatedReviews = await updatedReviewsRes.json();
       setReviews(updatedReviews);
 
@@ -125,7 +152,6 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
       setFiles([]);
       setPreviews([]);
       setRating(0);
-
     } catch (err) {
       console.error(err);
       alert("Erro ao salvar avaliação");
@@ -162,9 +188,12 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
       {/* ⭐ MÉDIA */}
       <div className="flex flex-col md:flex-row items-center  md:w-full justify-between mb-6 bg-white rounded-lg shadow p-6">
         <div className="flex flex-col items-center w-full md:w-1/3 text-center">
-          <p className="text-5xl font-bold text-[#38ac1b]">{average.toFixed(1)}</p>
+          <p className="text-5xl font-bold text-[#38ac1b]">
+            {average.toFixed(1)}
+          </p>
           <p className="text-yellow-500 text-2xl">
-            {"★".repeat(Math.round(average))}{"☆".repeat(5 - Math.round(average))}
+            {"★".repeat(Math.round(average))}
+            {"☆".repeat(5 - Math.round(average))}
           </p>
           <p className="text-gray-500">{reviews.length} avaliações</p>
         </div>
@@ -177,9 +206,14 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
               <div key={star} className="flex items-center gap-3">
                 <span className="w-6 text-sm font-semibold">{star}★</span>
                 <div className="flex-1 bg-gray-200 h-3 rounded-full overflow-hidden">
-                  <div className="h-3 bg-[#38ac1b]" style={{ width: `${percent}%` }}></div>
+                  <div
+                    className="h-3 bg-[#38ac1b]"
+                    style={{ width: `${percent}%` }}
+                  ></div>
                 </div>
-                <span className="text-sm text-gray-500 w-12 text-right">{count}</span>
+                <span className="text-sm text-gray-500 w-12 text-right">
+                  {count}
+                </span>
               </div>
             );
           })}
@@ -190,10 +224,14 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
       {reviews.length > 0 ? (
         <>
           {reviewsToShow.map((r) => (
-            <div key={r.id} className="border rounded-lg p-4 mb-4 bg-white shadow">
+            <div
+              key={r.id}
+              className="border rounded-lg p-4 mb-4 bg-white shadow"
+            >
               <p className="font-semibold">{r.user?.nome || "Cliente"}</p>
               <p className="text-[#45A62D] text-xl">
-                {"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}
+                {"★".repeat(r.rating)}
+                {"☆".repeat(5 - r.rating)}
               </p>
               <p className="text-gray-700 mt-2">{r.avaliacoes}</p>
               {r.midias?.length ? (
@@ -247,7 +285,9 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
               ×
             </button>
 
-            <h2 className="text-xl font-bold mb-4 text-center text-gray-800">Avaliar Produto</h2>
+            <h2 className="text-xl font-bold mb-4 text-center text-gray-800">
+              Avaliar Produto
+            </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <textarea
@@ -262,7 +302,9 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
                   htmlFor="photo"
                   className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition"
                 >
-                  <span className="text-sm text-gray-500">Adicionar imagem (opcional)</span>
+                  <span className="text-sm text-gray-500">
+                    Adicionar imagem (opcional)
+                  </span>
                   <input
                     id="photo"
                     name="photo"
@@ -275,47 +317,62 @@ export default function CustomerReviews({ productIdentifier }: CustomerReviewsPr
                 </label>
 
                 {previews.length > 0 && (
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-600 mb-2">Pré-visualizações:</p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {previews.map((src, index) => (
-                        <div key={index} className="relative w-32 h-32 group">
-                          <img
-                            src={src}
-                            alt={`Pré-visualização ${index + 1}`}
-                            className="w-32 h-32 object-cover rounded-2xl border"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="absolute top-1 right-1 bg-[#45A62D] text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-80 hover:opacity-100 transition cursor-pointer"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="mt-4 grid grid-cols-3 gap-3">
+                    {previews.map((src, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={src}
+                          alt={`preview-${index}`}
+                          className="w-24 h-24 object-cover rounded-lg border"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
 
-              <div className="flex justify-center space-x-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button type="button" key={star} onClick={() => setRating(star)}>
-                    <span
-                      className={`text-2xl ${star <= rating ? "text-[#3fe216]" : "text-gray-300"}`}
+              {/* Estrelas */}
+              <div className="flex flex-col items-center space-y-2">
+                <div className="flex justify-center space-x-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      type="button"
+                      key={star}
+                      onClick={() => setRating(star)}
                     >
-                      ★
-                    </span>
-                  </button>
-                ))}
-                <input type="hidden" name="rating" value={rating} />
+                      <span
+                        className={`text-2xl transition ${
+                          star <= rating ? "text-[#3fe216]" : "text-gray-300"
+                        }`}
+                      >
+                        ★
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                {rating === 0 && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    Selecione uma nota de 1 a 5 estrelas para enviar.
+                  </p>
+                )}
               </div>
 
               <button
                 type="submit"
-                className="w-full cursor-pointer py-2 rounded-lg text-white font-semibold"
-                style={{ backgroundColor: "#3fe216" }}
+                disabled={rating === 0}
+                className={`w-full cursor-pointer py-2 rounded-lg text-white font-semibold transition ${
+                  rating === 0
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-[#3fe216] hover:bg-green-600"
+                }`}
               >
                 Enviar Avaliação
               </button>
