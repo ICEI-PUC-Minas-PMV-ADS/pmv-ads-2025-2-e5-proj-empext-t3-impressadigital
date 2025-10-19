@@ -915,4 +915,95 @@ https://github.com/user-attachments/assets/6da351aa-7e17-4441-b338-78c5ea0dbddf
   </tr>
 </table>
 
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-011 - S<br>Gerenciar produtos no catálogo</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>O sistema deve permitir que os administradores adicionem, editem e removam produtos do catálogo, garantindo que as alterações sejam refletidas corretamente para os usuários.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste</strong></td>
+    <td width="430">Mateus Salomé Rocha Silva</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-011: Permitir o gerenciamento de produtos (adicionar, editar e remover) no catálogo do sistema.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Acessar o painel administrativo.<br>
+      2. Clicar na opção de gerenciamento de produtos.<br>
+      3. Adicionar um novo produto com nome, descrição, imagem e preço.<br>
+      4. Editar um produto existente alterando um dos campos.<br>
+      5. Remover um produto do catálogo.<br>
+      6. Verificar se as alterações são refletidas corretamente na listagem dos produtos.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Conta de administrador válida.<br>
+      - Produtos cadastrados previamente para edição e exclusão.<br>
+      - Novo produto para inclusão no catálogo.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>As ações de adicionar, editar e remover devem funcionar corretamente, atualizando as informações do catálogo de forma imediata e sem erros.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"> 
+    
+
+https://github.com/user-attachments/assets/d58d2579-8c17-48e5-9339-f164af12b1c7
+
+
+    
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-011 - I<br>Gerenciar produtos no catálogo (Insucesso)</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste</strong></td>
+    <td width="430">Mateus Salomé Rocha Silva</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+</table>
+
 
