@@ -229,6 +229,7 @@ Casos de teste utilizados para verificar e validar as funcionalidades da aplica�
 - **Sucesso**: Verifica se a funcionalidade funciona corretamente conforme o esperado.  
 - **Insucesso**: Verifica se o sistema trata erros ou situações inesperadas corretamente.
 
+
 <table>
   <tr>
     <th colspan="2" width="1000">CT-002- S <br>Separar produtos por categoria</th>
@@ -1077,6 +1078,98 @@ https://github.com/user-attachments/assets/5061933a-149a-4543-b948-0d63471397fd
   <tr>
     <td><strong>Responsável Caso de Teste</strong></td>
     <td width="430">Mateus Salomé Rocha Silva</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-013 - S<br>Enviar avaliações e comentários sobre produtos</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>O sistema deve permitir que os usuários deixem avaliações e comentários sobre os produtos, exibindo-os na página do respectivo item.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste</strong></td>
+    <td width="430">Douglas Henrique de Sousa e Silva</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-013: Permitir envio e exibição de avaliações e comentários de produtos.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Entrar no site e acessar a página de um produto.<br>
+      2. Localizar a seção de avaliações.<br>
+      3. Inserir uma nota (de 1 a 5 estrelas) e um comentário sobre o produto.<br>
+      4. Enviar a avaliação.<br>
+      5. Verificar se a avaliação aparece na página do produto após o envio.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Usuário logado.<br>
+      - Produto disponível no sistema.<br>
+      - Texto e nota de avaliação para envio.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>
+      - O usuário consegue enviar uma avaliação e comentário.<br>
+      - As avaliações são exibidas corretamente na página do produto.
+    </td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"> 
+    
+
+https://github.com/user-attachments/assets/077d91f8-5f1f-4627-98bc-ac6e30876ac4
+
+
+    
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-013 - I<br>Enviar avaliações e comentários sobre produtos (Insucesso)</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste</strong></td>
+    <td width="430">Douglas Henrique de Sousa e Silva</td>
   </tr>
   <tr>
     <td><strong>Tipo do Teste</strong></td>
