@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import HeaderDashboard from "@/app/components/layout/headerMain";
 import Carrossel from "./components/layout/Carrossel";
 import ProdutosGrid from "./components/layout/ProdutosGrid";
+import Footer from "@/app/components/layout/footer"; 
 
 interface Imagem {
   id: number;
@@ -43,7 +44,11 @@ export default function Home({ children }: { children: ReactNode }) {
       <HeaderDashboard/>
       <Carrossel />
       <ProdutosGrid titulo="Produtos em Destaque" produtos={produtos} produtosPorPagina={12} />
+
+          <Footer />
     </div>
+    
   );
+      
 }
  

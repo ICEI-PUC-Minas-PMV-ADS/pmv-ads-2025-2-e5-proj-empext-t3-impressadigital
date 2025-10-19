@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import HeaderDashboard from "@/app/components/layout/headerMain";
 import ProdutosGrid from "@/app/components/layout/ProdutosGrid";
+import Footer from "@/app/components/layout/footer"; // ⬅️ IMPORTAÇÃO DO FOOTER
 
 interface Imagem {
   id: number;
@@ -94,6 +95,7 @@ export default function CategoriaPage() {
       <div className="min-h-screen flex flex-col bg-gray-50">
         <HeaderDashboard />
         <p className="text-center py-10">Carregando categoria...</p>
+        <Footer /> {/* ⬅️ FOOTER RENDERIZADO NO ESTADO DE CARREGAMENTO */}
       </div>
     );
   }
@@ -105,6 +107,7 @@ export default function CategoriaPage() {
         <p className="text-center py-10 text-red-600 font-semibold">
           Categoria não encontrada 🚫
         </p>
+        <Footer /> {/* ⬅️ FOOTER RENDERIZADO NO ESTADO DE ERRO */}
       </div>
     );
   }
@@ -123,6 +126,7 @@ export default function CategoriaPage() {
           produtosPorPagina={30} 
         />
       )}
+      <Footer /> {/* ⬅️ FOOTER RENDERIZADO NO ESTADO DE CONTEÚDO */}
     </div>
   );
 }
