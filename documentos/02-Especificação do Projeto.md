@@ -224,5 +224,14 @@ Enumere as restrições à sua solução. Lembre-se de que as restrições geral
 * **Categorias:** podem ter subcategorias via `pai_id`.
 
 
+# Diagrama do Banco de Dados `Impressa_digital`
+
+A imagem abaixo apresenta o **diagrama das tabelas** do banco de dados `impressa_digital`.  
+Ela mostra as principais **tabelas**, suas **colunas** e os **relacionamentos** entre elas, facilitando a visualização da estrutura e como os dados se conectam.
+
+<img width="1280" height="720" alt="Group 2" src="https://github.com/user-attachments/assets/08e0cf78-ed30-40a1-ab73-3d64942d2c8e" />
+
+
+
 
 
