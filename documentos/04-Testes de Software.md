@@ -81,7 +81,9 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <td><strong>Prioridade</strong></td><td>BAIXA</td>
 </tr>
 <tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
-<tr><td colspan="6" align="center"><img width="1798" height="864" src="https://github.com/user-attachments/assets/30dcbc10-8d13-4af6-828b-213b21b2d86d" /></td></tr>
+<tr><td colspan="6" align="center"><img width="1899" height="939" alt="image" src="https://github.com/user-attachments/assets/34e3e50e-ee09-42a5-80e0-8289bf5b096c" /> <img width="1904" height="942" alt="image" src="https://github.com/user-attachments/assets/eaad696f-3912-4302-8136-b523f6820075" />
+
+</td></tr>
 </table>
 
 ## O sistema deve permitir que os usuários finalizem a compra clicando em um botão "Finalizar no WhatsApp"
@@ -241,7 +243,9 @@ A fim de aumentar a qualidade da aplicação desenvolvida, cada funcionalidade d
 <td><strong>Prioridade</strong></td><td>MÉDIA</td>
 </tr>
 <tr><td colspan="6" align="center"><strong>Evidência</strong></td></tr>
-<tr><td colspan="6" align="center"><img width="1774" height="505" src="https://github.com/user-attachments/assets/c4c78d85-f501-4ff3-863d-4e428595b101" /></td></tr>
+<tr><td colspan="6" align="center"><img width="1899" height="938" alt="image" src="https://github.com/user-attachments/assets/c93dc1dd-8fe6-405b-ab9d-d9097257b7f6" /> <img width="1897" height="943" alt="image" src="https://github.com/user-attachments/assets/6d3af072-2e8a-4097-9cb3-6b87ffd51fce" />
+
+</td></tr>
 </table>
 
 
