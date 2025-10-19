@@ -828,4 +828,91 @@ https://github.com/user-attachments/assets/dc5122c1-20c9-43cf-85e2-fefbfa7c5a43
 </tr>
 </table>
 
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-010 - S<br>Exibir detalhes do produto</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>O sistema deve exibir corretamente os detalhes de cada produto, incluindo imagens, descrições e preços, quando o usuário acessa a página do item selecionado.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste</strong></td>
+    <td width="430">Mateus Salomé Rocha Silva</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Sucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>RF-010: O sistema deve exibir detalhes do produto, incluindo imagens, descrições e preços.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>
+      1. Acessar o site.<br>
+      2. Escolher uma categoria de produtos.<br>
+      3. Selecionar um produto específico.<br>
+      4. Verificar se as informações exibidas incluem imagem, descrição e preço.<br>
+      5. Confirmar que os dados apresentados estão corretos e completos.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>
+      - Produtos cadastrados no sistema com imagem, descrição e preço.<br>
+      - Acesso de usuário comum.
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>As informações do produto devem ser exibidas corretamente, sem falhas no carregamento de imagens, textos ou valores.</td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"> 
+
+https://github.com/user-attachments/assets/6da351aa-7e17-4441-b338-78c5ea0dbddf
+
+
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="2" width="1000">CT-010 - I<br>Exibir detalhes do produto (Insucesso)</th>
+  </tr>
+  <tr>
+    <td width="150"><strong>Descrição</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Responsável Caso de Teste</strong></td>
+    <td width="430">Mateus Salomé Rocha Silva</td>
+  </tr>
+  <tr>
+    <td><strong>Tipo do Teste</strong></td>
+    <td width="430">Insucesso</td>
+  </tr>
+  <tr>
+    <td><strong>Requisitos associados</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Passos</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Dados de teste</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+  <tr>
+    <td><strong>Critérios de êxito</strong></td>
+    <td>Não se aplica.</td>
+  </tr>
+</table>
+
 
