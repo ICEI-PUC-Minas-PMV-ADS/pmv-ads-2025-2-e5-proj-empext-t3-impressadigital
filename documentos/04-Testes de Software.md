@@ -915,7 +915,8 @@ https://github.com/user-attachments/assets/dc5122c1-20c9-43cf-85e2-fefbfa7c5a43
   <tr>
     <td colspan="6" align="center"> 
 
-https://github.com/user-attachments/assets/6da351aa-7e17-4441-b338-78c5ea0dbddf
+
+https://github.com/user-attachments/assets/2c59fd08-a0a9-46a1-9d61-c180222c7ca8
 
 
   </tr>
@@ -1007,11 +1008,7 @@ https://github.com/user-attachments/assets/6da351aa-7e17-4441-b338-78c5ea0dbddf
     <td colspan="6" align="center"> 
     
 
-
-https://github.com/user-attachments/assets/42679069-94cb-4c20-a471-15153f3c176c
-
-
-
+https://github.com/user-attachments/assets/1e4fa3f5-01a2-44ed-b52b-079655877ee6
 
     
   </tr>
@@ -1023,7 +1020,7 @@ https://github.com/user-attachments/assets/42679069-94cb-4c20-a471-15153f3c176c
   </tr>
   <tr>
     <td width="150"><strong>Descrição</strong></td>
-    <td>Não se aplica.</td>
+    <td>O sistema não deve permitir que os administradores adicionem produtos ao catálogo se estiver faltando algum campo obrigátório</td>
   </tr>
   <tr>
     <td><strong>Responsável Caso de Teste</strong></td>
@@ -1035,20 +1032,34 @@ https://github.com/user-attachments/assets/42679069-94cb-4c20-a471-15153f3c176c
   </tr>
   <tr>
     <td><strong>Requisitos associados</strong></td>
-    <td>Não se aplica.</td>
+    <td>RF-011: Permitir o gerenciamento de produtos (adicionar, editar e remover) no catálogo do sistema.</td>
   </tr>
   <tr>
     <td><strong>Passos</strong></td>
-    <td>Não se aplica.</td>
+    <td>
+      1. Acessar o painel administrativo.<br>
+      2. Clicar na opção de produtos.<br>
+      3. Adicionar um novo produto sem nome, status ou valor<br>
   </tr>
   <tr>
     <td><strong>Dados de teste</strong></td>
-    <td>Não se aplica.</td>
+    <td>
+      - Conta de administrador válida.<br>
+    </td>
   </tr>
   <tr>
     <td><strong>Critérios de êxito</strong></td>
-    <td>Não se aplica.</td>
+    <td>O sistema não deve permitir a criação do produto com algum campo obrigatório em branco, mostrando um aviso para que seja preenchido o campo faltante.</td>
   </tr>
+  <tr>
+    <td colspan="6" align="center"><strong>Evidência</strong></td>
+  </tr>
+  <tr>
+    <td colspan="6" align="center"> 
+
+https://github.com/user-attachments/assets/9c319d1a-3c5a-46a2-8f55-ed2cec746230
+
+</tr>
 </table>
 
 ## Gerenciar categorias de produto
@@ -1103,7 +1114,7 @@ https://github.com/user-attachments/assets/42679069-94cb-4c20-a471-15153f3c176c
     <td colspan="6" align="center"> 
     
 
-https://github.com/user-attachments/assets/5061933a-149a-4543-b948-0d63471397fd
+https://github.com/user-attachments/assets/97917215-04ba-4c07-8001-eb0937226cf5
 
 
 
