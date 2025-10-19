@@ -18,3 +18,7 @@ O grupo deve colocar aqui todas as atas dos encontros realizados com o parceiro,
 
 ## Reunião  – 30/08/2025
 ![Reunião 30/08](https://github.com/user-attachments/assets/d82511c8-eb61-4c19-ac17-da5cde590131)
+
+
+## Reunião - 16/10/2025
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/511c22f8-e042-41ff-bcf4-b6a059adddbd" />
