@@ -22,7 +22,7 @@ export const ModalCart = ({ isOpen, onClose, itemCount }: ModalCartProps) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-[100] flex justify-center items-center p-4">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/30 z-[100] flex justify-center items-center p-4">
       <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-sm">
         <h3 className="text-xl font-bold text-gray-800 mb-4">Produto Adicionado!</h3>
         
