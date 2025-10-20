@@ -1,4 +1,17 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseInterceptors,
+  UploadedFiles,
+  BadRequestException,
+  ParseIntPipe,
+} from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { MidiasService } from './midia.service';
 import { Midias } from '../../core/database/entities/midias.entity';
 
@@ -22,12 +35,48 @@ export class MidiasController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() data: Partial<Midias>): Promise<Midias> {
+  update(
+    @Param('id') id: number,
+    @Body() data: Partial<Midias>,
+  ): Promise<Midias> {
     return this.midiasService.update(+id, data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
-    return this.midiasService.remove(+id);
+  async remove(@Param('id') id: number): Promise<void> {
+    try {
+      const midia = await this.midiasService.findOne(+id);
+
+      await this.midiasService.remove(+id);
+    } catch (error) {
+      console.error(`❌ Erro ao excluir mídia ${id}:`, error);
+      throw error;
+    }
+  }
+
+  @Post('produtos/:produtoId/upload')
+  @UseInterceptors(FilesInterceptor('files', 10))
+  async uploadProdutoMidias(
+    @Param('produtoId', ParseIntPipe) produtoId: number,
+    @UploadedFiles() files: any[],
+  ): Promise<Midias[]> {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('Nenhum arquivo enviado');
+    }
+
+    return this.midiasService.createWithUpload(files, produtoId);
+  }
+
+  @Post('avaliacoes/:avaliacaoId/upload')
+  @UseInterceptors(FilesInterceptor('files', 5))
+  async uploadAvaliacaoMidias(
+    @Param('avaliacaoId', ParseIntPipe) avaliacaoId: number,
+    @UploadedFiles() files: any[],
+  ): Promise<Midias[]> {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('Nenhum arquivo enviado');
+    }
+
+    return this.midiasService.createForAvaliacao(files, avaliacaoId);
   }
 }

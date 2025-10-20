@@ -1,232 +1,496 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-const categories = [
-  { id: 1, nome: "Casamento" },
-  { id: 2, nome: "Festa Infantil" },
-  { id: 3, nome: "Aniversário Adulto" },
-  { id: 4, nome: "Eventos Corporativos" },
-  { id: 5, nome: "Formatura" },
-  { id: 6, nome: "Chá de Bebê" },
-  { id: 7, nome: "Eventos Esportivos" },
-];
+interface Categoria {
+  id: number;
+  nome: string;
+  descricao: string;
+  produtos?: any[];
+}
 
-const DashboardCategory: React.FC = () => {
-  const [categoriaId, setCategoriaId] = useState<number | null>(null);
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [preco, setPreco] = useState("");
-  const [previews, setPreviews] = useState<string[]>([]);
-  const [files, setFiles] = useState<File[]>([]);
+interface ToastProps {
+  message: string;
+  type?: "success" | "error";
+  onClose: () => void;
+}
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
-    if (selectedFiles) {
-      const newFiles = Array.from(selectedFiles);
-      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-      setFiles((prev) => [...prev, ...newFiles]);
-      setPreviews((prev) => [...prev, ...newPreviews]);
-    }
-  };
+const Toast: React.FC<ToastProps> = ({
+  message,
+  type = "success",
+  onClose,
+}) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
 
-  const removeImage = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-    setPreviews((prev) => {
-      const removed = prev[index];
-      URL.revokeObjectURL(removed);
-      return prev.filter((_, i) => i !== index);
-    });
+  return (
+    <div
+      className={`fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 text-white ${
+        type === "success" ? "bg-green-600" : "bg-red-600"
+      }`}
+    >
+      {message}
+    </div>
+  );
+};
+
+export default function CategoriasPage() {
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [categoriasFiltradas, setCategoriasFiltradas] = useState<Categoria[]>(
+    []
+  );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Categoria | null>(
+    null
+  );
+  const [categoryToDelete, setCategoryToDelete] = useState<Categoria | null>(
+    null
+  );
+
+  const [formData, setFormData] = useState({
+    nome: "",
+    descricao: "",
+  });
+
+  const [filtroNome, setFiltroNome] = useState("");
+  const [itensPorPagina, setItensPorPagina] = useState(10);
+  const [paginaAtual, setPaginaAtual] = useState(1);
+
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
+    setToastMessage(message);
+    setToastType(type);
   };
 
   useEffect(() => {
-    return () => previews.forEach((url) => URL.revokeObjectURL(url));
-  }, [previews]);
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    aplicarFiltros();
+  }, [categorias, filtroNome]);
+
+  useEffect(() => {
+    setPaginaAtual(1);
+  }, [itensPorPagina]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:3000/categories");
+      if (!response.ok) throw new Error("Erro ao carregar categorias");
+      const data = await response.json();
+      setCategorias(data);
+    } catch (err) {
+      setError("Erro ao carregar categorias");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const aplicarFiltros = () => {
+    let filtradas = [...categorias];
+    if (filtroNome.trim() !== "") {
+      filtradas = filtradas.filter((cat) =>
+        cat.nome.toLowerCase().includes(filtroNome.toLowerCase())
+      );
+    }
+    setCategoriasFiltradas(filtradas);
+    setPaginaAtual(1);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!categoriaId) {
-      alert("Selecione uma categoria.");
+    if (!formData.nome.trim()) {
+      showToast("Nome da categoria é obrigatório", "error");
       return;
     }
 
     try {
-      // 1️⃣ Cria o produto
-      const produtoRes = await fetch("http://localhost:3000/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nome,
-          descricao,
-          preco: parseFloat(preco),
-          categoria_id: categoriaId,
-        }),
-      });
+      if (editingCategory) {
+        const response = await fetch(
+          `http://localhost:3000/categories/${editingCategory.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          }
+        );
+        if (!response.ok) throw new Error("Erro ao atualizar categoria");
 
-      if (!produtoRes.ok) throw new Error("Erro ao salvar produto");
-
-      const produtoData = await produtoRes.json();
-      const produtoId = produtoData.id;
-
-      // 2️⃣ Envia as imagens se houver
-      if (files.length > 0) {
-        const formData = new FormData();
-        files.forEach((file) => formData.append("files", file));
-        formData.append("produto_id", produtoId.toString());
-
-        const midiasRes = await fetch("http://localhost:3000/midias", {
+        setCategorias((prev) =>
+          prev.map((cat) =>
+            cat.id === editingCategory.id ? { ...cat, ...formData } : cat
+          )
+        );
+        showToast("Categoria atualizada com sucesso!", "success");
+      } else {
+        const response = await fetch("http://localhost:3000/categories", {
           method: "POST",
-          body: formData,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
         });
+        if (!response.ok) throw new Error("Erro ao criar categoria");
 
-        if (!midiasRes.ok) throw new Error("Erro ao salvar imagens");
+        const novaCategoria = await response.json();
+        setCategorias((prev) => [...prev, novaCategoria]);
+        showToast("Categoria criada com sucesso!", "success");
       }
 
-      alert("Produto e imagens salvos com sucesso!");
-      setNome("");
-      setDescricao("");
-      setPreco("");
-      setCategoriaId(null);
-      setFiles([]);
-      setPreviews([]);
+      closeModal();
     } catch (err) {
+      showToast("Erro ao salvar categoria", "error");
       console.error(err);
-      alert("Erro ao salvar produto ou imagens.");
     }
   };
 
-  return (
-    <>
-      <p className="text-black text-4xl font-bold mb-6">Categoria</p>
+  const openModal = (categoria?: Categoria) => {
+    if (categoria) {
+      setEditingCategory(categoria);
+      setFormData({
+        nome: categoria.nome,
+        descricao: categoria.descricao || "",
+      });
+    } else {
+      setEditingCategory(null);
+      setFormData({ nome: "", descricao: "" });
+    }
+    setIsModalOpen(true);
+  };
 
-      <div className="border-2 border-gray-200 rounded-2xl p-6 shadow-sm">
-        <p className="text-black font-sans font-bold mb-4 text-2xl">
-          Adicionar produto
-        </p>
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingCategory(null);
+    setFormData({ nome: "", descricao: "" });
+  };
 
-        <form
-          className="flex flex-col gap-4 text-black font-sans"
-          onSubmit={handleSubmit}
+  const confirmDelete = (categoria: Categoria) => {
+    setCategoryToDelete(categoria);
+  };
+
+  const handleDelete = async () => {
+    if (!categoryToDelete) return;
+
+    const produtosCount = contarProdutos(categoryToDelete);
+    if (produtosCount > 0) {
+      showToast(
+        `Não é possível excluir a categoria "${categoryToDelete.nome}" porque ela possui ${produtosCount} produto(s) vinculado(s).`,
+        "error"
+      );
+      setCategoryToDelete(null);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/categories/${categoryToDelete.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) throw new Error("Erro ao excluir categoria");
+
+      setCategorias((prev) =>
+        prev.filter((cat) => cat.id !== categoryToDelete.id)
+      );
+      showToast("Categoria excluída com sucesso!", "success");
+    } catch (err) {
+      showToast("Erro ao excluir categoria", "error");
+      console.error(err);
+    } finally {
+      setCategoryToDelete(null);
+    }
+  };
+
+  const contarProdutos = (categoria: Categoria) =>
+    categoria.produtos?.length || 0;
+
+  if (loading)
+    return <div className="p-6 text-center">Carregando categorias...</div>;
+
+  if (error)
+    return (
+      <div className="p-6 text-center text-red-600">
+        {error}
+        <button
+          onClick={fetchData}
+          className="ml-4 bg-red-600 text-white px-3 py-1 rounded text-sm"
         >
-          {/* Categoria */}
-          <select
-            value={categoriaId ?? ""}
-            onChange={(e) => setCategoriaId(Number(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
-          >
-            <option value="">Selecione a categoria</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.nome}
-              </option>
-            ))}
-          </select>
+          Tentar novamente
+        </button>
+      </div>
+    );
 
-          {/* Nome do produto */}
-          <input
-            type="text"
-            placeholder="Nome do produto"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
-          />
+  const totalPaginas = Math.ceil(categoriasFiltradas.length / itensPorPagina);
+  const paginaValida = Math.min(paginaAtual, totalPaginas || 1);
+  const indiceInicio = (paginaValida - 1) * itensPorPagina;
+  const categoriasPagina = categoriasFiltradas.slice(
+    indiceInicio,
+    indiceInicio + itensPorPagina
+  );
 
-          {/* Upload de fotos */}
-          <div className="w-full px-4 py-4 border border-gray-300 rounded-2xl focus-within:ring-1 focus-within:ring-[#45A62D]">
-            <label
-              htmlFor="fileUpload"
-              className="px-4 py-2 rounded-2xl bg-[#45A62D] text-white font-semibold cursor-pointer w-fit"
-            >
-              Escolher imagens
+  const gerarNumerosPagina = () => {
+    const maxNumeros = 5;
+    let inicio = Math.max(1, paginaValida - 2);
+    let fim = Math.min(totalPaginas, inicio + maxNumeros - 1);
+    if (fim - inicio < maxNumeros - 1)
+      inicio = Math.max(1, fim - maxNumeros + 1);
+    return Array.from({ length: fim - inicio + 1 }, (_, i) => inicio + i);
+  };
+
+  return (
+    <div className="p-6">
+      <h1 className="text-xl lg:text-2xl font-bold text-gray-800 mb-6">
+        Gerenciar Categorias
+      </h1>
+
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 text-black">
+        <button
+          onClick={() => openModal()}
+          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 cursor-pointer"
+        >
+          Nova Categoria
+        </button>
+
+        <div className="flex flex-wrap gap-4 items-end">
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">
+              Filtrar por nome
             </label>
             <input
-              id="fileUpload"
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={handleFileChange}
+              type="text"
+              value={filtroNome}
+              onChange={(e) => setFiltroNome(e.target.value)}
+              placeholder="Digite para filtrar..."
+              className="border rounded px-3 py-2 text-sm text-black focus:border-green-500"
             />
-
-            {/* Preview das imagens */}
-            {previews.length > 0 && (
-              <div className="mt-4">
-                <p className="text-sm text-gray-600 mb-2">Pré-visualizações:</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {previews.map((src, index) => (
-                    <div key={index} className="relative w-32 h-32 group">
-                      <img
-                        src={src}
-                        alt={`Pré-visualização ${index + 1}`}
-                        className="w-32 h-32 object-cover rounded-2xl border"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute top-1 right-1 bg-[#45A62D] text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-80 hover:opacity-100 transition cursor-pointer"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Descrição */}
-          <textarea
-            placeholder="Descrição"
-            value={descricao}
-            onChange={(e) => setDescricao(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
-            rows={4}
-          />
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">
+              Itens por página
+            </label>
+            <select
+              value={itensPorPagina}
+              onChange={(e) => setItensPorPagina(Number(e.target.value))}
+              className="border rounded px-3 py-2 text-sm text-black focus:border-green-500 cursor-pointer"
+            >
+              {[5, 10, 20, 50].map((num) => (
+                <option key={num} value={num}>
+                  {num}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
 
-          {/* Valor */}
-          <input
-            type="text"
-            inputMode="decimal"
-            placeholder="Valor"
-            value={preco}
-            onChange={(e) => setPreco(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#45A62D]"
-            onInput={(e) => {
-              const target = e.target as HTMLInputElement;
+      {/* Lista de categorias */}
+      <div className="flex flex-col gap-3">
+        {categoriasPagina.map((categoria, index) => (
+          <div
+            key={categoria.id}
+            className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col md:flex-row md:justify-between md:items-center"
+          >
+            <div className="flex flex-col gap-1 text-sm text-gray-700">
+              <span className="font-semibold text-lg">
+                #{indiceInicio + index + 1} - {categoria.nome}
+              </span>
+              <span>
+                <strong>Descrição:</strong>{" "}
+                {categoria.descricao || "Sem descrição"}
+              </span>
+              <span
+                className={`text-xs px-2 py-1 rounded-full w-fit ${
+                  contarProdutos(categoria) > 0
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {contarProdutos(categoria)} produto(s) vinculado(s)
+              </span>
+            </div>
 
-              // Substituir pontos por vírgula automaticamente
-              let value = target.value.replace(/\./g, ",");
+            <div className="flex gap-2 mt-3 md:mt-0">
+              <button
+                onClick={() => openModal(categoria)}
+                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm cursor-pointer"
+              >
+                Editar
+              </button>
+              <button
+                onClick={() => confirmDelete(categoria)}
+                className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 cursor-pointer"
+              >
+                Excluir
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
 
-              // Remover tudo que não seja número ou vírgula
-              value = value.replace(/[^0-9,]/g, "");
+      {/* Paginação */}
+      {totalPaginas > 1 && (
+        <div className="flex justify-center mt-4 gap-1 items-center flex-wrap text-black text-sm">
+          <button
+            onClick={() => setPaginaAtual((p) => Math.max(1, paginaValida - 1))}
+            disabled={paginaValida === 1}
+            className={`px-1.5 py-0.5 border rounded ${
+              paginaValida === 1
+                ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                : "border-gray-300 hover:bg-gray-100 cursor-pointer"
+            }`}
+          >
+            &lt;
+          </button>
 
-              // Só ser possível digitar uma vírgula
-              const parts = value.split(",");
-              if (parts.length > 2) {
-                value = parts[0] + "," + parts[1];
-              }
-
-              // 2 casas decimais após a vírgula
-              if (parts[1]?.length > 2) {
-                value = parts[0] + "," + parts[1].slice(0, 2);
-              }
-
-              target.value = value;
-              setPreco(value);
-            }}
-          />
+          {gerarNumerosPagina().map((num) => (
+            <button
+              key={num}
+              onClick={() => setPaginaAtual(num)}
+              className={`px-2 py-0.5 border rounded ${
+                num === paginaValida
+                  ? "bg-green-500 text-white border-gray-300 cursor-pointer"
+                  : "border-gray-300 hover:bg-gray-100 text-gray-700 cursor-pointer"
+              }`}
+            >
+              {num}
+            </button>
+          ))}
 
           <button
-            type="submit"
-            className="mt-4 px-6 py-2 bg-[#45A62D] text-white font-semibold rounded-2xl transition w-50 cursor-pointer"
+            onClick={() =>
+              setPaginaAtual((p) => Math.min(totalPaginas, paginaValida + 1))
+            }
+            disabled={paginaValida === totalPaginas}
+            className={`px-1.5 py-0.5 border rounded ${
+              paginaValida === totalPaginas
+                ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                : "border-gray-300 hover:bg-gray-100 cursor-pointer"
+            }`}
           >
-            Salvar produto
+            &gt;
           </button>
-        </form>
-      </div>
-    </>
-  );
-};
+        </div>
+      )}
 
-export default DashboardCategory;
+      {categoriasFiltradas.length === 0 && (
+        <div className="text-center py-12 text-gray-500">
+          <div className="text-4xl mb-4">📂</div>
+          <div className="text-lg">Nenhuma categoria encontrada</div>
+          <div className="text-sm mt-2">
+            {categorias.length === 0
+              ? "Comece criando sua primeira categoria!"
+              : "Tente ajustar os filtros."}
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Edição/Criação */}
+      {isModalOpen && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4 text-black">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">
+              {editingCategory ? "Editar Categoria" : "Nova Categoria"}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Nome *</label>
+                <input
+                  type="text"
+                  value={formData.nome}
+                  onChange={(e) =>
+                    setFormData({ ...formData, nome: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-green-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Descrição
+                </label>
+                <textarea
+                  value={formData.descricao}
+                  onChange={(e) =>
+                    setFormData({ ...formData, descricao: e.target.value })
+                  }
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-1 focus:ring-green-500"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-green-600 text-white rounded-2xl hover:bg-green-700 cursor-pointer"
+                >
+                  {editingCategory ? "Atualizar" : "Criar"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmação */}
+      {categoryToDelete && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4 text-black">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+            <h2 className="text-lg font-bold mb-4">Confirmar exclusão</h2>
+            <p className="mb-6">
+              Tem certeza que deseja excluir a categoria{" "}
+              <strong>{categoryToDelete.nome}</strong>?
+              {contarProdutos(categoryToDelete) > 0 && (
+                <span className="block mt-2 text-red-600 text-sm">
+                  ⚠️ Esta categoria possui {contarProdutos(categoryToDelete)}{" "}
+                  produto(s) vinculado(s).
+                </span>
+              )}
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setCategoryToDelete(null)}
+                className="px-4 py-2 border border-gray-300 rounded-2xl text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-2xl hover:bg-red-700 cursor-pointer"
+              >
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastMessage(null)}
+        />
+      )}
+    </div>
+  );
+}

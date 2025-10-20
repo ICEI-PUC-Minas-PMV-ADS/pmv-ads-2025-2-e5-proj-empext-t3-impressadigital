@@ -15,4 +15,8 @@ export class Categorias {
 
   @OneToMany(() => Produtos, (produto) => produto.categoria)
   produtos: Produtos[];
+
+  @Column({ type: 'varchar', length: 255, unique: true, nullable: false }) 
+  slug: string;
+  
 }

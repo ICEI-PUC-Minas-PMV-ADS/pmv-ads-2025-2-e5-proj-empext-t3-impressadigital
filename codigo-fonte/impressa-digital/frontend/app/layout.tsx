@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/app/components/layout/navbar";
 import Footer from "@/app/components/layout/footer";
 import { SidebarProvider } from '../app/contexts/sidebarContext';
+import { AuthProvider } from "./contexts/Authprovider";
+import { CartProvider } from "./contexts/CartContext"; // Adicionar este import
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,15 +29,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-       <SidebarProvider>
-      {children}
-    </SidebarProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <AuthProvider>
+          <SidebarProvider>
+            {/* ENVOLVER COM O CARTPROVIDER */}
+            <CartProvider> 
+              {children}
+            </CartProvider>
+          </SidebarProvider>
+        </AuthProvider>
       </body>
-
     </html>
   );
 }

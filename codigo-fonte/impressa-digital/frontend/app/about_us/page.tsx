@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import HeaderMain from "../components/layout/headerMain";
 import GeneralReviews from "../components/layout/generalReviews";
+import Footer from "../components/layout/footer";
+
 
 export default function AboutUs() {
   return (
@@ -50,7 +52,7 @@ export default function AboutUs() {
         <h2 className="text-3xl text-[#A1A1A1] text-center font-bold mb-4">Avaliação geral</h2>
         <GeneralReviews />
       </div>
-      
+         <Footer />
     </div>
   );
 }

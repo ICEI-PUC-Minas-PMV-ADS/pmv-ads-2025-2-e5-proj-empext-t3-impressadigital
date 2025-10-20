@@ -11,6 +11,7 @@ export default function Cadastro() {
     cpf: "",
     email: "",
     password: "",
+    phone: "",
   });
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
@@ -18,9 +19,24 @@ export default function Cadastro() {
 
   const router = useRouter();
 
+    function formatPhone(value: string) {
+    value = value.replace(/\D/g, "");
+    value = value.slice(0, 11);
+    if (value.length <= 10) {
+      // fixo (XX) XXXX-XXXX
+      value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+    } else {
+      // celular (XX) 9XXXX-XXXX
+      value = value.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+    }
+    return value.trim();
+  }
+
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     let newValue = value;
+
     if (name === "cpf") {
       newValue = formatCPF(value);
       if (newValue.length < 14) {
@@ -29,8 +45,15 @@ export default function Cadastro() {
         setCpfError("");
       }
     }
+
+    if (name === "phone") {
+      newValue = formatPhone(value);
+    }
+
     setForm({ ...form, [name]: newValue });
   }
+
+  
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -49,7 +72,7 @@ export default function Cadastro() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          role: "client",
+          role: "cliente",
         }),
       });
 
@@ -62,6 +85,7 @@ export default function Cadastro() {
           cpf: "",
           email: "",
           password: "",
+          phone: "",
         });
 
         setTimeout(() => {
@@ -151,6 +175,16 @@ export default function Cadastro() {
             required
             className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md 
                        focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-500 text-gray-800"
+          />
+
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Telefone"
+            value={form.phone}
+            onChange={handleChange}
+            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md 
+                      focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-500 text-gray-800"
           />
 
           <input

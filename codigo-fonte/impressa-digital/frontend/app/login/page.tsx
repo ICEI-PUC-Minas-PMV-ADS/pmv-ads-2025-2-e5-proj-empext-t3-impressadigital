@@ -1,53 +1,25 @@
 "use client";
-
 import { useState } from "react";
+import { useAuth } from "../contexts/Authprovider";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setMsg("");
-      if (!email.trim() || !senha.trim()) {
-    setMsg("Preencha todos os campos obrigatórios.");
-    return;
-  }
-
     setLoading(true);
 
-    try {
-      const res = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password: senha,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data.user.id.toString());
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        setMsg("Login realizado com sucesso!");
-        router.push("/perfil");
-
-      } else {
-        setMsg(data.message || "E-mail ou senha inválidos.");
-      }
-    } catch (err) {
-      setMsg("Erro de conexão com o servidor.");
+    const success = await login(email, senha);
+    if (!success) {
+      setMsg("E-mail ou senha inválidos.");
     }
+
     setLoading(false);
   };
 
@@ -55,8 +27,12 @@ export default function LoginPage() {
     <div className="flex min-h-screen justify-center bg-white">
       {/* Área da esquerda */}
       <div className="flex flex-col items-center justify-center w-1/2 p-10 text-center">
-        <img src="/images/logo_impressa_digital.png" alt="Logo" className="w-100 mb-6" />
-        <p className="text-gray-600 text-xl max-w-md justify-center" >
+        <img
+          src="/images/logo_impressa_digital.png"
+          alt="Logo"
+          className="w-100 mb-6"
+        />
+        <p className="text-gray-600 text-xl max-w-md justify-center">
           Na Impressa Digital, você transforma ideias em personalizados únicos
           e celebra momentos inesquecíveis.
         </p>
@@ -72,8 +48,8 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md 
-             focus:outline-none focus:ring-2 focus:ring-green-500 
-             placeholder-gray-400 text-gray-800"
+               focus:outline-none focus:ring-2 focus:ring-green-500 
+               placeholder-gray-400 text-gray-800"
               required
             />
             <input
@@ -82,8 +58,8 @@ export default function LoginPage() {
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md 
-             focus:outline-none focus:ring-2 focus:ring-green-500 
-             placeholder-gray-400 text-gray-800"
+               focus:outline-none focus:ring-2 focus:ring-green-500 
+               placeholder-gray-400 text-gray-800"
               required
             />
 

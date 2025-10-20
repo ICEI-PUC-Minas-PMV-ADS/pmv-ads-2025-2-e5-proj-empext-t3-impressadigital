@@ -1,51 +1,54 @@
+import { Vendas_produtosModule } from './../../modules/vendas_produtos/vendas_produtos.module';
+import { VendasProdutosController } from './../../modules/vendas_produtos/vendas_produtos.controller';
+import { ComentarioProdutosModule } from './../../modules/comentario_produtos/comentario_produtos.module';
+
+import { Avaliacoes_produtosModule } from './../../modules/avaliacoes_produtos/avaliacoes_produtos.module';
+import { Avaliacoes_produtosService } from './../../modules/avaliacoes_produtos/avaliacoes_produtos.service';
+import { Avaliacoes_produtosController } from './../../modules/avaliacoes_produtos/avaliacoes_produtos.controller';
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
 
-import { AuthDbModule } from '../database/authdb.module';
-import { CatalogModule } from './../../modules/catalog/catalog.module';
+
+import { CatalogModule } from '../../modules/catalogo/catalog.module';
 import { AdmModule } from './../../modules/adm/adm.module';
 import { VendasModule } from './../../modules/vendas/vendas.module';
-import { PessoasModule } from './../../modules/pessoas/pessoas.module';
 import { MidiasModule } from './../../modules/midias/midias.module';
 import { Customer_addressModule } from './../../modules/customer_address/customer_address.module';
 import { CarrinhoModule } from './../../modules/carrinho/carrinho.module';
 import { CategoryModule } from './../../modules/category/category.module';
 import { ProductsModule } from '../../modules/products/products.module';
-import { UsersModule } from '../../modules/users/users.module';
+
+import { ComentarioProdutoController } from 'src/modules/comentario_produtos/comentario_produtos.controller';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from '../../modules/auth/auth.module';
+import { AuthModule } from '../database/auth/auth.module';
+import { AuthdbModule } from '../database/authdb.module';
+
 
 
 @Module({
   imports: [
+    Vendas_produtosModule,
+    ComentarioProdutosModule,
+    Avaliacoes_produtosModule,
     AuthModule,
-    ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT!),
-      username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      autoLoadEntities: true,
-      synchronize: true, // apenas em DEV
-    }),
-    AuthDbModule, // já importa User, Repository, Service, Controller
+    AuthdbModule,
     CatalogModule,
     AdmModule,
     VendasModule,
-    PessoasModule,
     MidiasModule,
     Customer_addressModule,
     CarrinhoModule,
     CategoryModule,
-    ProductsModule,
-    UsersModule,
+    ProductsModule
+
+
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [
+    VendasProdutosController,
+    ComentarioProdutoController,
+    Avaliacoes_produtosController, AppController],
+  providers: [
+    Avaliacoes_produtosService, AppService],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,6 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn } from 'typeorm';
-import { Pessoas } from './pessoas.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, OneToMany } from 'typeorm';
+import { User } from './user.entity';
 import { JoinColumn } from 'typeorm';
+import { Produtos } from './products.entity';
+import { VendasProdutos } from './vendas_produtos.entity';
 
 
 @Entity('vendas')
@@ -9,11 +11,17 @@ export class Vendas {
     id: number;
 
     @Column({ nullable: false })
-    pessoa_id: number;
+    user_id: number;
 
-    @ManyToOne(() => Pessoas, (pessoa) => pessoa.vendas)
-    @JoinColumn({ name: 'pessoa_id' })
-    pessoa: Pessoas;
+    @OneToMany(() => VendasProdutos, (vp) => vp.venda)
+    vendas_produtos: VendasProdutos[];
+
+
+  
+
+    @ManyToOne(() => User, (users) => users.vendas)
+    @JoinColumn({ name: 'user_id' })
+    user: User;
 
     @CreateDateColumn()
     data_venda: Date;
@@ -26,4 +34,5 @@ export class Vendas {
 
     @Column({ type: 'text', nullable: true })
     observacoes: string;
+
 }

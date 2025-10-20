@@ -7,7 +7,7 @@ import { PrimaryGeneratedColumn } from 'typeorm';
 @Entity('carrinho_produtos')
 export class CarrinhoProdutos {
 
-    @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ nullable: false })

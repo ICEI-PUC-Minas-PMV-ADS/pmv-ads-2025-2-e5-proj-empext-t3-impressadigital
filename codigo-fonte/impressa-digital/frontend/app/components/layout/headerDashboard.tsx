@@ -4,9 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useSidebar } from "../../contexts/sidebarContext";
+import { useAuth } from "../../contexts/Authprovider";
 
 export default function HeaderDashboard() {
   const { toggleSidebar, isSidebarOpen } = useSidebar();
+  const { user, logout } = useAuth();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -47,23 +49,28 @@ export default function HeaderDashboard() {
 
       <nav className="relative" ref={menuRef}>
         <ul className="flex gap-4 items-center relative">
-          {/* Ícone do perfil */}
           <div className="relative">
             <button
               onClick={() => setIsProfileMenuOpen((prev) => !prev)}
-              className="focus:outline-none"
+              className="focus:outline-none flex items-center gap-2"
             >
               <Image
                 src="/images/person_icon.png"
-                alt="Icone"
+                alt="Ícone do perfil"
                 width={37}
                 height={37}
                 className="transform transition-all duration-200 hover:scale-105 cursor-pointer"
               />
+              {user && (
+                <span className="hidden md:inline text-gray-700 font-medium">
+                  {user.name.split(" ")[0]}
+                </span>
+              )}
             </button>
 
+            {/* Menu dropdown */}
             <div
-              className={`absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-lg border border-gray-200 z-50
+              className={`absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg border border-gray-200 z-50
                 transform transition-all duration-200 ease-out
                 ${
                   isProfileMenuOpen
@@ -72,11 +79,26 @@ export default function HeaderDashboard() {
                 }
               `}
             >
+              {user && (
+                <div className="px-4 py-2 border-b border-gray-100">
+                  <p className="font-semibold text-gray-800">{user.name}</p>
+                  <p className="text-sm text-gray-500 capitalize cursor-pointer">
+                    {{
+                      admin: "Administrador",
+                      user: "Usuário",
+                      editor: "Editor",
+                    }[user.role ?? ""] ||
+                      user.role ||
+                      "Usuário"}
+                  </p>
+                </div>
+              )}
+
               <button
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
                 onClick={() => {
-                  console.log("Sair clicado");
-                  // Aguardando backend para colocar função de logout
+                  logout();
+                  setIsProfileMenuOpen(false);
                 }}
               >
                 Sair

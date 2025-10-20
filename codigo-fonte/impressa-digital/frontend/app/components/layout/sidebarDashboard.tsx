@@ -6,10 +6,12 @@ import { useSidebar } from "../../contexts/sidebarContext";
 
 const menuItems = [
   { label: "Dashboard", path: "/dashboard/" },
-  { label: "Produtos", path: "/dashboard/products" },
-  { label: "Categorias", path: "/dashboard/category" },
+  { label: "Pedidos", path: "/dashboard/orders" }, 
   { label: "Clientes", path: "/dashboard/clients" },
-  { label: "Configurações", path: "/configuracoes" },
+  { label: "Produtos", path: "/dashboard/products" },
+  { label: "Adicionar produto", path: "/dashboard/add_product" },
+  { label: "Categorias", path: "/dashboard/category" },
+  { label: "Configurações", path: "/dashboard/configs" },
 ];
 
 export default function Sidebar() {
