@@ -42,7 +42,7 @@ export default function Home({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <HeaderDashboard/>
-      <Carrossel />
+       
       <ProdutosGrid titulo="Produtos em Destaque" produtos={produtos} produtosPorPagina={12} />
 
           <Footer />
