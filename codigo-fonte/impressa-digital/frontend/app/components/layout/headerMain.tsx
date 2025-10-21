@@ -51,32 +51,34 @@ export default function HeaderMain() {
     fetchCategories();
   }, []);
 
-  // Buscar produtos com debounce, só depois que o usuário parar de digitar
-  useEffect(() => {
-    if (searchTerm.trim().length < 3) {
+  // Buscar produtos com debounce
+  // useEffect para busca com debounce
+useEffect(() => {
+  if (searchTerm.trim().length < 3) {
+    setSearchResults([]);
+    return;
+  }
+
+  const timeout = setTimeout(async () => {
+    setLoadingSearch(true);
+    try {
+      const res = await fetch("http://localhost:3000/products");
+      const data: Produto[] = await res.json();
+      const filtered = data.filter((p) =>
+        p.nome.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSearchResults(filtered);
+    } catch (err) {
+      console.error(err);
       setSearchResults([]);
-      return;
+    } finally {
+      setLoadingSearch(false);
     }
+  }, 300); // espera 300ms depois da última tecla
 
-    const delay = setTimeout(async () => {
-      setLoadingSearch(true);
-      try {
-        const res = await fetch("http://localhost:3000/products");
-        const data: Produto[] = await res.json();
-        const filtered = data.filter((p) =>
-          p.nome.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setSearchResults(filtered);
-      } catch (err) {
-        console.error(err);
-        setSearchResults([]);
-      } finally {
-        setLoadingSearch(false);
-      }
-    }, 800); // espera 0,8s após parar de digitar
+  return () => clearTimeout(timeout);
+}, [searchTerm]);
 
-    return () => clearTimeout(delay);
-  }, [searchTerm]);
 
   const toggleCategoriesDropdown = () => {
     setIsCategoriesOpen(!isCategoriesOpen);
@@ -105,124 +107,67 @@ export default function HeaderMain() {
     }
   };
 
-  // const SearchBar = () => (
-  //   <div className="relative w-full max-w-md mx-auto flex">
-  //     <input
-  //       type="search"
-  //       placeholder="Procure produtos aqui..."
-  //       value={searchTerm}
-  //       onChange={(e) => {
-  //         setSearchTerm(e.target.value);
-  //         setActiveIndex(0);
-  //       }}
-  //       onKeyDown={handleKeyDown}
-  //       className="flex-1 rounded-l-full border border-gray-300 bg-gray-100 px-5 py-3 text-sm placeholder-gray-500 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
-  //     />
-  //     <button
-  //       className="bg-[#2ab906] hover:bg-green-600 rounded-r-full px-4 flex items-center justify-center text-white"
-  //       type="submit"
-  //     >
-  //       <svg
-  //         xmlns="http://www.w3.org/2000/svg"
-  //         height="22"
-  //         viewBox="0 -960 960 960"
-  //         width="22"
-  //         fill="currentColor"
-  //       >
-  //         <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
-  //       </svg>
-  //     </button>
-
-  //     {searchTerm && (
-  //       <div className="absolute z-50 w-full bg-white shadow-lg mt-12 rounded-lg max-h-60 overflow-y-auto border border-gray-200">
-  //         {loadingSearch ? (
-  //           <p className="text-gray-500 p-2">Carregando...</p>
-  //         ) : searchResults.length > 0 ? (
-  //           searchResults.map((p, index) => (
-  //             <input
-  //               key={p.id}
-  //               href={`/produtos/${p.slug ?? p.id}`}
-  //               className={`block px-4 py-2 cursor-pointer ${
-  //                 index === activeIndex
-  //                   ? "bg-green-100 text-green-800"
-  //                   : "text-gray-700 hover:bg-green-50"
-  //               }`}
-  //               onMouseEnter={() => setActiveIndex(index)}
-  //             >
-  //               {p.nome}
-  //             </input>
-  //           ))
-  //         ) : (
-  //           <p className="text-gray-500 p-4 text-center">
-  //             Nenhum produto encontrado
-  //           </p>
-  //         )}
-  //       </div>
-  //     )}
-  //   </div>
-  // );
-
-const SearchBar = () => (
-  <div className="relative w-full max-w-md mx-auto flex">
-    <input
-      type="search"
-      placeholder="Procure produtos aqui..."
-      value={searchTerm}
-      onChange={(e) => {
-        setSearchTerm(e.target.value);
-        setActiveIndex(0);
-      }}
-      onKeyDown={handleKeyDown}
-      className="flex-1 rounded-l-full border border-gray-300 bg-gray-100 px-5 py-3 text-sm placeholder-gray-500 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
-    />
-    <button
-      className="bg-[#2ab906] hover:bg-green-600 rounded-r-full px-4 flex items-center justify-center text-white"
-      type="submit"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="22"
-        viewBox="0 -960 960 960"
-        width="22"
-        fill="currentColor"
+  const SearchBar = () => (
+    <div className="relative w-full max-w-md mx-auto flex">
+      <input
+       autoFocus={true}  
+        type="search"
+        placeholder="Procure produtos aqui..."
+        value={searchTerm}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          setActiveIndex(0);
+        }}
+        onKeyDown={handleKeyDown}
+        className="flex-1 rounded-l-full border border-gray-300 bg-gray-100 px-5 py-3 text-sm placeholder-gray-500 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+      />
+      <button
+        className="bg-[#2ab906] hover:bg-green-600 rounded-r-full px-4 flex items-center justify-center text-white"
+        type="submit"
       >
-        <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
-      </svg>
-    </button>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="22"
+          viewBox="0 -960 960 960"
+          width="22"
+          fill="currentColor"
+        >
+          <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+        </svg>
+      </button>
 
-    {searchTerm && (
-      <div className="absolute z-50 w-full bg-white shadow-lg mt-12 rounded-lg max-h-60 overflow-y-auto border border-gray-200">
-        {loadingSearch ? (
-          <p className="text-gray-500 p-2">Carregando...</p>
-        ) : searchResults.length > 0 ? (
-          <ul>
-            {searchResults.map((p, index) => (
-              <li
-                key={p.id}
-                className={`px-4 py-2 cursor-pointer ${
-                  index === activeIndex
-                    ? "bg-green-100 text-green-800"
-                    : "text-gray-700 hover:bg-green-50"
-                }`}
-                onMouseEnter={() => setActiveIndex(index)}
-                onClick={() =>
-                  window.location.href = `/produtos/${p.slug ?? p.id}`
-                }
-              >
-                {p.nome}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500 p-4 text-center">
-            Nenhum produto encontrado
-          </p>
-        )}
-      </div>
-    )}
-  </div>
-);
-
+      {searchTerm && (
+        <div className="absolute z-50 w-full bg-white shadow-lg mt-12 rounded-lg max-h-60 overflow-y-auto border border-gray-200">
+          {loadingSearch ? (
+            <p className="text-gray-500 p-2">Carregando...</p>
+          ) : searchResults.length > 0 ? (
+            <ul>
+              {searchResults.map((p, index) => (
+                <li
+                  key={p.id}
+                  className={`px-4 py-2 cursor-pointer ${
+                    index === activeIndex
+                      ? "bg-green-100 text-green-800"
+                      : "text-gray-700 hover:bg-green-50"
+                  }`}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onClick={() =>
+                    (window.location.href = `/produtos/${p.slug ?? p.id}`)
+                  }
+                >
+                  {p.nome}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500 p-4 text-center">
+              Nenhum produto encontrado
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  );
 
   const CategoriesMobileList = () => (
     <ul className="flex flex-col gap-2 p-2 border-l-4 border-[#2ab906] bg-gray-50">
@@ -340,7 +285,7 @@ const SearchBar = () => (
           </ul>
         </div>
 
-        {/* Barra de busca */}
+        {/* Barra de busca Desktop */}
         <div className="hidden md:block flex-1 mx-4">
           <SearchBar />
         </div>
@@ -399,15 +344,15 @@ const SearchBar = () => (
               >
                 <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" />
               </svg>
+              <span className="hidden md:block text-gray-700 font-medium">
+                Registrar
+              </span>
             </div>
-            <span className="hidden md:block text-gray-700 font-medium">
-              Iniciar sessão
-            </span>
           </Link>
         )}
       </div>
 
-      {/* Barra de busca mobile */}
+      {/* Barra de busca Mobile */}
       <div className="md:hidden px-6 pb-3">
         <SearchBar />
       </div>
@@ -416,7 +361,7 @@ const SearchBar = () => (
       {isOpen && (
         <>
           <div
-            className="fixed top-0 left-0 h-full w-full bg-black bg-opacity-50 z-40"
+            className="fixed top-0 left-0 h-full w-full bg-black opacity-30 z-40"
             onClick={() => {
               setIsOpen(false);
               closeCategoriesDropdown();
