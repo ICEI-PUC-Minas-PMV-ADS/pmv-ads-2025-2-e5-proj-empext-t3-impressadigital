@@ -10,12 +10,15 @@ interface Categoria {
   id: number;
   nome: string;
   slug: string;
+  
 }
 
 interface Produto {
   id: number;
   nome: string;
   slug?: string;
+  categoria?: Categoria;
+  
 }
 
 export default function HeaderMain() {
@@ -59,14 +62,21 @@ useEffect(() => {
     return;
   }
 
+  const normalize = (str: string) =>
+    str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
   const timeout = setTimeout(async () => {
     setLoadingSearch(true);
     try {
       const res = await fetch("http://localhost:3000/products");
       const data: Produto[] = await res.json();
-      const filtered = data.filter((p) =>
-        p.nome.toLowerCase().includes(searchTerm.toLowerCase())
+
+      const filtered = data.filter(
+        (p) =>
+          normalize(p.nome).includes(normalize(searchTerm)) || 
+          normalize(p.categoria?.nome || "").includes(normalize(searchTerm))
       );
+
       setSearchResults(filtered);
     } catch (err) {
       console.error(err);
@@ -112,7 +122,7 @@ useEffect(() => {
       <input
        autoFocus={true}  
         type="search"
-        placeholder="Procure produtos aqui..."
+        placeholder="Produto ou categoria"
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
