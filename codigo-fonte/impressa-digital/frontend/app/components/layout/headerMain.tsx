@@ -152,7 +152,7 @@ useEffect(() => {
                   }`}
                   onMouseEnter={() => setActiveIndex(index)}
                   onClick={() =>
-                    (window.location.href = `/produtos/${p.slug ?? p.id}`)
+                    (window.location.href = `/product/${p.slug ?? p.slug}`)
                   }
                 >
                   {p.nome}
