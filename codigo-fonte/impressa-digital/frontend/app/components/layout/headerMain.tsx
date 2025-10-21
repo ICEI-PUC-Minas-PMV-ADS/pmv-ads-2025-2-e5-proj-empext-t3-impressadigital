@@ -10,7 +10,6 @@ interface Categoria {
   id: number;
   nome: string;
   slug: string;
-  
 }
 
 interface Produto {
@@ -18,7 +17,6 @@ interface Produto {
   nome: string;
   slug?: string;
   categoria?: Categoria;
-  
 }
 
 export default function HeaderMain() {
@@ -54,41 +52,39 @@ export default function HeaderMain() {
     fetchCategories();
   }, []);
 
-  // Buscar produtos com debounce
-  // useEffect para busca com debounce
-useEffect(() => {
-  if (searchTerm.trim().length < 3) {
-    setSearchResults([]);
-    return;
-  }
-
-  const normalize = (str: string) =>
-    str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-
-  const timeout = setTimeout(async () => {
-    setLoadingSearch(true);
-    try {
-      const res = await fetch("http://localhost:3000/products");
-      const data: Produto[] = await res.json();
-
-      const filtered = data.filter(
-        (p) =>
-          normalize(p.nome).includes(normalize(searchTerm)) || 
-          normalize(p.categoria?.nome || "").includes(normalize(searchTerm))
-      );
-
-      setSearchResults(filtered);
-    } catch (err) {
-      console.error(err);
+  // Busca com debounce
+  useEffect(() => {
+    if (searchTerm.trim().length < 3) {
       setSearchResults([]);
-    } finally {
-      setLoadingSearch(false);
+      return;
     }
-  }, 300); // espera 300ms depois da última tecla
 
-  return () => clearTimeout(timeout);
-}, [searchTerm]);
+    const normalize = (str: string) =>
+      str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
+    const timeout = setTimeout(async () => {
+      setLoadingSearch(true);
+      try {
+        const res = await fetch("http://localhost:3000/products");
+        const data: Produto[] = await res.json();
+
+        const filtered = data.filter(
+          (p) =>
+            normalize(p.nome).includes(normalize(searchTerm)) ||
+            normalize(p.categoria?.nome || "").includes(normalize(searchTerm))
+        );
+
+        setSearchResults(filtered);
+      } catch (err) {
+        console.error(err);
+        setSearchResults([]);
+      } finally {
+        setLoadingSearch(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [searchTerm]);
 
   const toggleCategoriesDropdown = () => {
     setIsCategoriesOpen(!isCategoriesOpen);
@@ -120,7 +116,7 @@ useEffect(() => {
   const SearchBar = () => (
     <div className="relative w-full max-w-md mx-auto flex">
       <input
-       autoFocus={true}  
+        autoFocus
         type="search"
         placeholder="Produto ou categoria"
         value={searchTerm}
@@ -321,45 +317,33 @@ useEffect(() => {
           </svg>
         </Link>
 
-        {/* Login / Perfil */}
-        {user ? (
-          <Link
-            href="/perfil"
-            className="flex items-center gap-2 cursor-pointer hover:opacity-80"
-          >
-            <div className="flex items-center justify-center rounded-full bg-gray-200 p-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24"
-                viewBox="0 -960 960 960"
-                width="24"
-                fill="#555"
-              >
-                <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" />
-              </svg>
-            </div>
-          </Link>
-        ) : (
-          <Link
-            href="/login"
-            className="flex items-center gap-2 cursor-pointer hover:opacity-80"
-          >
-            <div className="flex items-center justify-center rounded-full bg-gray-200 p-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24"
-                viewBox="0 -960 960 960"
-                width="24"
-                fill="#555"
-              >
-                <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" />
-              </svg>
-              <span className="hidden md:block text-gray-700 font-medium">
-                Registrar
-              </span>
-            </div>
-          </Link>
-        )}
+        {/* Login / Perfil com nome do usuário */}
+        <Link
+          href={user ? "/perfil" : "/login"}
+          className="flex items-center gap-2 cursor-pointer hover:opacity-80"
+        >
+          <div className="flex items-center justify-center rounded-full bg-gray-200 p-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24"
+              viewBox="0 -960 960 960"
+              width="24"
+              fill="#555"
+            >
+              <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" />
+            </svg>
+          </div>
+          {user?.name && (
+            <span className="hidden md:block text-gray-700 font-medium">
+              {user.name}
+            </span>
+          )}
+          {!user?.name && !user && (
+            <span className="hidden md:block text-gray-700 font-medium">
+              Registrar
+            </span>
+          )}
+        </Link>
       </div>
 
       {/* Barra de busca Mobile */}
