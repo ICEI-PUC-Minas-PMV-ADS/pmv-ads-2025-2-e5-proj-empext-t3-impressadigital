@@ -77,9 +77,12 @@ export default function LoginPage() {
           )}
 
           <div className="text-center mt-4">
-            <Link href="/recuperar-senha" className="text-sm text-gray-500">
-              Recuperar senha
-            </Link>
+            <p className="text-sm text-gray-500">
+              Esqueceu sua senha?{" "}
+              <Link href="/forgot_password" className="text-sm text-green-600">
+                Recuperar senha
+              </Link>
+            </p>
           </div>
 
           <div className="border-t mt-6 pt-4 text-center">

@@ -1,7 +1,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/core/database/entities/user.entity';
+import { User, UserRole } from 'src/core/database/entities/user.entity'; // ✅ importe o enum
 import { Repository, IsNull, Not } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
@@ -10,25 +11,36 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async createUser(user: User): Promise<User> {
-    user.password = await bcrypt.hash(user.password, 10);
-    await this.userRepository.save(user);
-    user.password = '';
-    return user;
+  async createUser(userData: CreateUserDto): Promise<User> {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+    const newUser = this.userRepository.create({
+      ...userData,
+      password: hashedPassword,
+      role:
+        userData.role &&
+        Object.values(UserRole).includes(userData.role as UserRole)
+          ? (userData.role as UserRole)
+          : UserRole.CLIENTE,
+    });
+
+    await this.userRepository.save(newUser);
+    newUser.password = '';
+    return newUser;
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find({ 
+    return this.userRepository.find({
       relations: ['endereco'],
-      where: { deletedAt: IsNull() }
+      where: { deletedAt: IsNull() },
     });
   }
 
   async findById(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { 
+      where: {
         id,
-        deletedAt: IsNull() 
+        deletedAt: IsNull(),
       },
       relations: ['endereco'],
       select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate'],
@@ -40,20 +52,22 @@ export class UserService {
 
   async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { 
+      where: {
         email,
-        deletedAt: IsNull()
+        deletedAt: IsNull(),
       },
       select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate', 'password'],
     });
     if (!user)
-      throw new NotFoundException(`Usuário com e-mail: ${email} não encontrado`);
+      throw new NotFoundException(
+        `Usuário com e-mail: ${email} não encontrado`,
+      );
     return user;
   }
 
   async updateUser(id: number, data: Partial<User>): Promise<User> {
     const existingUser = await this.userRepository.findOne({
-      where: { id, deletedAt: IsNull() }
+      where: { id, deletedAt: IsNull() },
     });
     if (!existingUser) {
       throw new NotFoundException(`Usuário com id ${id} não encontrado`);
@@ -78,9 +92,9 @@ export class UserService {
 
   async deleteUser(id: number): Promise<void> {
     const user = await this.userRepository.findOne({
-      where: { id, deletedAt: IsNull() }
+      where: { id, deletedAt: IsNull() },
     });
-    
+
     if (!user) {
       throw new NotFoundException(`Usuário com id ${id} não encontrado`);
     }
@@ -91,7 +105,7 @@ export class UserService {
   async restoreUser(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      withDeleted: true, 
+      withDeleted: true,
     });
 
     if (!user) {
@@ -131,11 +145,11 @@ export class UserService {
       relations: ['endereco'],
       withDeleted: true,
     });
-    
+
     if (!user) {
       throw new NotFoundException(`Usuário com id ${id} não encontrado`);
     }
-    
+
     return user;
   }
 }

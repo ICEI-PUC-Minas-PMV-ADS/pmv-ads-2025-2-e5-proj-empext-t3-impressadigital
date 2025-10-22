@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import HeaderDashboard from "@/app/components/layout/headerMain";
+import HeaderDashboard from "@/app/components/layout/headerDashboard";
 import SidebarDashboard from "../components/layout/sidebarDashboard";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

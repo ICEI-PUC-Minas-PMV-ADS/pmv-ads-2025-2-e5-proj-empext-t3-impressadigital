@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './core/app/app.module';
 import * as dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 
 dotenv.config();
 
@@ -10,10 +11,18 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, 
+      forbidNonWhitelisted: true, 
+      transform: true, 
+    }),
+  );
+
   app.enableCors({
     origin: [
-      'http://localhost:3000',  // Backend
-      'http://localhost:3001',  // Frontend
+      'http://localhost:3000',  
+      'http://localhost:3001',  
       'http://localhost:8081',  
       'http://localhost:19006', 
     ],

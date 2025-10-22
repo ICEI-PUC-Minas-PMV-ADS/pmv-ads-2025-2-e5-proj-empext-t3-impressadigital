@@ -11,6 +11,7 @@ const menuItems = [
   { label: "Produtos", path: "/dashboard/products" },
   { label: "Adicionar produto", path: "/dashboard/add_product" },
   { label: "Categorias", path: "/dashboard/category" },
+  { label: "Suporte", path: "/dashboard/support" },
   { label: "Configurações", path: "/dashboard/configs" },
 ];
 
@@ -30,7 +31,7 @@ export default function Sidebar() {
 <aside
   className={`
     fixed md:static top-[80px] left-0 min-h-[calc(100vh-80px)] lg:w-[15%] text-[#000000] p-4 m-0 flex flex-col font-bold font-sans items-start text-xl
-    z-40 transition-transform duration-300 ease-in-out top-20
+    z-40 transition-transform duration-300 ease-in-out
     ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0 top-20"}
   `}
   style={{ boxShadow: "4px 0 6px -1px rgba(0,0,0,0.1)" }}

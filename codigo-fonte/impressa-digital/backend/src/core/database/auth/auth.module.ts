@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersModule } from '../../../modules/users/users.module';
+import { PasswordResetModule } from '../../../modules/forgot_password/passwordReset.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { UsersModule } from '../../../modules/users/users.module';
         signOptions: { expiresIn: '1d' },
       }),
     }),
-    UsersModule, // ✅ adicione aqui
+    UsersModule,
+    PasswordResetModule,
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

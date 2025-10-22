@@ -13,6 +13,7 @@ import {
   FaCity,
   FaBuilding,
 } from "react-icons/fa";
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 
 interface ToastProps {
   message: string;
@@ -20,7 +21,11 @@ interface ToastProps {
   onClose: () => void;
 }
 
-const Toast: React.FC<ToastProps> = ({ message, type = "success", onClose }) => {
+const Toast: React.FC<ToastProps> = ({
+  message,
+  type = "success",
+  onClose,
+}) => {
   useEffect(() => {
     const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);
@@ -55,6 +60,7 @@ const EditarPerfil: React.FC = () => {
     cpf: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [address, setAddress] = useState<Address>({
     logradouro: "",
@@ -70,9 +76,31 @@ const EditarPerfil: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
 
-  const showToast = (message: string, type: "success" | "error" = "success") => {
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
     setToastMessage(message);
     setToastType(type);
+  };
+
+  // Regras de senha forte
+  const passwordRules = [
+    { test: (pwd: string) => /[A-Z]/.test(pwd), label: "Letra maiúscula" },
+    { test: (pwd: string) => /\d/.test(pwd), label: "Número" },
+    { test: (pwd: string) => pwd.length >= 8, label: "8 caracteres" },
+    {
+      test: (pwd: string) => /[!@#$%^&*(),.?":{}|<>]/.test(pwd),
+      label: "Caractere especial",
+    },
+  ];
+
+  const passwordStrength = () => {
+    if (!form.password) return 0;
+    const passedCount = passwordRules.filter((rule) =>
+      rule.test(form.password)
+    ).length;
+    return (passedCount / passwordRules.length) * 100;
   };
 
   useEffect(() => {
@@ -83,6 +111,7 @@ const EditarPerfil: React.FC = () => {
         cpf: user.cpf ? formatCPF(user.cpf) : "",
         email: user.email || "",
         password: "",
+        confirmPassword: "",
       });
       loadUserAddress();
     }
@@ -141,13 +170,43 @@ const EditarPerfil: React.FC = () => {
   }
 
   const estados = [
-    "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG",
-    "PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
+    "AC",
+    "AL",
+    "AP",
+    "AM",
+    "BA",
+    "CE",
+    "DF",
+    "ES",
+    "GO",
+    "MA",
+    "MT",
+    "MS",
+    "MG",
+    "PA",
+    "PB",
+    "PR",
+    "PE",
+    "PI",
+    "RJ",
+    "RN",
+    "RS",
+    "RO",
+    "RR",
+    "SC",
+    "SP",
+    "SE",
+    "TO",
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cpfError) return;
+    if (form.password && form.password !== form.confirmPassword) {
+      showToast("As senhas não coincidem.", "error");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -157,7 +216,17 @@ const EditarPerfil: React.FC = () => {
         cpf: form.cpf,
         email: form.email,
       };
+
       if (form.password && form.password.trim() !== "") {
+        // Validação de senha forte
+        if (!passwordRules.every((rule) => rule.test(form.password))) {
+          showToast(
+            "A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial.",
+            "error"
+          );
+          setLoading(false);
+          return;
+        }
         payload.password = form.password;
       }
 
@@ -170,7 +239,7 @@ const EditarPerfil: React.FC = () => {
 
       if (res.ok) {
         showToast("Dados pessoais atualizados com sucesso!", "success");
-        setForm((prev) => ({ ...prev, password: "" }));
+        setForm((prev) => ({ ...prev, password: "", confirmPassword: "" }));
       } else {
         const data = await res.json();
         showToast(data.message || "Erro ao atualizar os dados.", "error");
@@ -238,14 +307,13 @@ const EditarPerfil: React.FC = () => {
                 placeholder: "Data de nascimento",
                 type: "date",
               },
-              { field: "cpf", icon: <FaIdCard />, placeholder: "CPF", readOnly: true },
-              { field: "email", icon: <FaEnvelope />, placeholder: "E-mail" },
               {
-                field: "password",
-                icon: <FaLock />,
-                placeholder: "Senha (deixe em branco para manter a atual)",
-                type: "password",
+                field: "cpf",
+                icon: <FaIdCard />,
+                placeholder: "CPF",
+                readOnly: true,
               },
+              { field: "email", icon: <FaEnvelope />, placeholder: "E-mail" },
             ].map(({ field, icon, placeholder, type, readOnly }) => (
               <div key={field} className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -271,8 +339,101 @@ const EditarPerfil: React.FC = () => {
                 </label>
               </div>
             ))}
+
+            {/* Senha e confirmação */}
+            <div className="relative col-span-full md:flex md:gap-4">
+              {/* Senha */}
+              <div className="relative flex-1">
+                <div className="absolute left-3 top-4 text-gray-400">
+                  <FaLock />
+                </div>
+                <input
+                  type="password"
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="Senha"
+                  className="peer w-full pl-10 pr-3 pt-4 pb-2 h-12 rounded-md border border-gray-300 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-800"
+                />
+                <label className="absolute left-10 top-4 text-gray-400 text-xs transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-0 peer-focus:text-green-600 peer-focus:text-xs pointer-events-none">
+                  Senha (deixe em branco para manter a atual)
+                </label>
+
+                {/* Validadores de senha animados */}
+                <div
+                  className={`mt-2 transition-all duration-500 ease-out overflow-hidden ${
+                    form.password ? "opacity-100 max-h-96" : "opacity-0 max-h-0"
+                  }`}
+                >
+                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-2 rounded-full transition-all duration-500 ease-out ${
+                        passwordStrength() < 50
+                          ? "bg-red-500"
+                          : passwordStrength() < 100
+                          ? "bg-yellow-400"
+                          : "bg-green-500"
+                      }`}
+                      style={{ width: `${passwordStrength()}%` }}
+                    />
+                  </div>
+
+                  <div className="mt-1 flex flex-col gap-1 text-sm">
+                    {passwordRules.map((rule, idx) => {
+                      const passed = rule.test(form.password);
+                      return (
+                        <span
+                          key={idx}
+                          className={`flex items-center gap-1 transition-all duration-500 transform ${
+                            passed
+                              ? "text-green-600 translate-y-1 opacity-100"
+                              : "text-red-500 translate-y-1 opacity-100"
+                          }`}
+                        >
+                          {passed ? (
+                            <AiOutlineCheckCircle className="animate-pulse" />
+                          ) : (
+                            <AiOutlineCloseCircle />
+                          )}
+                          {rule.label}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Confirmar senha */}
+              <div className="relative flex-1 mt-4 md:mt-0">
+                <div className="absolute left-3 top-4 text-gray-400">
+                  <FaLock />
+                </div>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={form.confirmPassword || ""}
+                  onChange={(e) =>
+                    setForm({ ...form, confirmPassword: e.target.value })
+                  }
+                  placeholder="Confirme a senha"
+                  className="peer w-full pl-10 pr-3 pt-4 pb-2 rounded-md border border-gray-300 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-800"
+                />
+                <label className="absolute left-10 top-4 text-gray-400 text-xs transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-0 peer-focus:text-green-600 peer-focus:text-xs pointer-events-none">
+                  Confirme a senha
+                </label>
+                {form.confirmPassword &&
+                  form.confirmPassword !== form.password && (
+                    <span className="text-red-500 text-xs mt-1 block transition-opacity duration-500 opacity-100">
+                      As senhas não coincidem
+                    </span>
+                  )}
+              </div>
+            </div>
+
             {cpfError && (
-              <div className="text-red-500 text-sm col-span-full">{cpfError}</div>
+              <div className="text-red-500 text-sm col-span-full">
+                {cpfError}
+              </div>
             )}
 
             <button
@@ -300,9 +461,21 @@ const EditarPerfil: React.FC = () => {
               onSubmit={handleAddressSubmit}
             >
               {[
-                { field: "cep", icon: <FaMapMarkerAlt />, placeholder: "CEP *" },
-                { field: "logradouro", icon: <FaHome />, placeholder: "Logradouro *" },
-                { field: "numero", icon: <FaBuilding />, placeholder: "Número *" },
+                {
+                  field: "cep",
+                  icon: <FaMapMarkerAlt />,
+                  placeholder: "CEP *",
+                },
+                {
+                  field: "logradouro",
+                  icon: <FaHome />,
+                  placeholder: "Logradouro *",
+                },
+                {
+                  field: "numero",
+                  icon: <FaBuilding />,
+                  placeholder: "Número *",
+                },
                 { field: "bairro", icon: <FaCity />, placeholder: "Bairro *" },
                 { field: "cidade", icon: <FaCity />, placeholder: "Cidade *" },
               ].map(({ field, icon, placeholder }) => (

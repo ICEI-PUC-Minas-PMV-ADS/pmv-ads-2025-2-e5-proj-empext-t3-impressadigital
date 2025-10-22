@@ -56,3 +56,5 @@ export class User {
 }
 
 
+
+export { UserRole };
