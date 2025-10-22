@@ -23,25 +23,26 @@ export default function Sidebar() {
       {/* Overlay para mobile */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-[1px] z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 backdrop-blur-[1px] z-40 md:hidden "
           onClick={closeSidebar}
         ></div>
       )}
-
-      <aside
-        className={`
-    fixed md:static top-0 left-0 min-h-screen lg:w-[15%] bg-white text-[#000000] p-4 flex flex-col font-bold font-sans items-start text-xl
-    z-50 transition-transform duration-300 ease-in-out box-border
-    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+<aside
+  className={`
+    fixed md:static top-[80px] left-0 min-h-[calc(100vh-80px)] lg:w-[15%] text-[#000000] p-4 m-0 flex flex-col font-bold font-sans items-start text-xl
+    z-40 transition-transform duration-300 ease-in-out top-20
+    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0 top-20"}
   `}
-      >
+  style={{ boxShadow: "4px 0 6px -1px rgba(0,0,0,0.1)" }}
+>
+
         <button
           className="md:hidden self-end text-2xl mb-4 text-[#45A62D] hover:text-gray-700"
           onClick={closeSidebar}
         >
           ✕
         </button>
-        <nav className="flex flex-col gap-6 mt-8 md:mt-20 w-full">
+        <nav className="flex flex-col gap-6 mt-8 md:mt-20 w-full ">
           {menuItems.map((item) => (
             <Link
               key={item.path}
