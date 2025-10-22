@@ -108,7 +108,7 @@ export default function HeaderMain() {
       e.preventDefault();
       const selected = searchResults[activeIndex];
       if (selected) {
-        window.location.href = `/produtos/${selected.slug ?? selected.id}`;
+        window.location.href = `/product/${selected.slug ?? selected.id}`;
       }
     }
   };
