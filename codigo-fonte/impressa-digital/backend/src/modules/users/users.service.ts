@@ -31,7 +31,7 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     return this.userRepository.find({
-      relations: ['endereco'],
+      relations: ['enderecos'],
       where: { deletedAt: IsNull() },
     });
   }
@@ -42,7 +42,7 @@ export class UserService {
         id,
         deletedAt: IsNull(),
       },
-      relations: ['endereco'],
+      relations: ['enderecos'],
       select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate'],
     });
     if (!user)
@@ -82,7 +82,7 @@ export class UserService {
     const updatedUser = await this.userRepository.findOne({
       where: { id, deletedAt: IsNull() },
       select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate'],
-      relations: ['endereco'],
+      relations: ['enderecos'],
     });
     if (!updatedUser) {
       throw new NotFoundException(`Usuário com id ${id} não encontrado`);
@@ -120,7 +120,7 @@ export class UserService {
 
     const restoredUser = await this.userRepository.findOne({
       where: { id },
-      relations: ['endereco'],
+      relations: ['enderecos'],
       select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate'],
     });
 
@@ -134,7 +134,7 @@ export class UserService {
   async findDeletedUsers(): Promise<User[]> {
     return this.userRepository.find({
       where: { deletedAt: Not(IsNull()) },
-      relations: ['endereco'],
+      relations: ['enderecos'],
       withDeleted: true,
     });
   }
@@ -142,7 +142,7 @@ export class UserService {
   async findByIdIncludingDeleted(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['endereco'],
+      relations: ['enderecos'],
       withDeleted: true,
     });
 

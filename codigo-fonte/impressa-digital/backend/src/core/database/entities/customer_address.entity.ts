@@ -1,7 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
-import { OneToOne } from 'typeorm';
-
 
 @Entity('customer_address')
 export class CustomerAddress {
@@ -11,25 +9,31 @@ export class CustomerAddress {
   @Column({ nullable: false })
   user_id: number;
 
-  @OneToOne(() => User, (users) => users.endereco, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.enderecos, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 255 })
   logradouro: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 20 })
   numero: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 255 })
+  complemento?: string;
+
+  @Column({ nullable: true, length: 100 })
   bairro: string;
 
   @Column({ nullable: true })
   cidade: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 100 })
   estado: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 9 })
   cep: string;
+
+  @Column({ type: 'boolean', default: false })
+  is_primary: boolean;
 }

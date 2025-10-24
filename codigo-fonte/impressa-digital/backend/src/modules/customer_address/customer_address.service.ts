@@ -1,6 +1,15 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CustomerAddress } from 'src/core/database/entities/customer_address.entity';
+import {
+  CreateCustomerAddressDto,
+  UpdateCustomerAddressDto,
+} from './dto/create-customer-address.dto';
 
 @Injectable()
 export class CustomerAddressService {
@@ -22,15 +31,75 @@ export class CustomerAddressService {
     return address;
   }
 
-  async create(data: Partial<CustomerAddress>): Promise<CustomerAddress> {
+  async create(data: CreateCustomerAddressDto): Promise<CustomerAddress> {
+    if (!data.user_id) {
+      throw new BadRequestException('user_id é obrigatório');
+    }
+
+    // Maximo 3 endereços
+    const existingAddresses = await this.addressRepository.count({
+      where: { user_id: data.user_id },
+    });
+
+    if (existingAddresses >= 3) {
+      throw new BadRequestException(
+        'O usuário já possui o limite máximo de 3 endereços.',
+      );
+    }
+
+    // Colocar como endereço principal
+    if (data.is_primary) {
+      await this.unsetPrimaryAddresses(data.user_id);
+    }
+
     const address = this.addressRepository.create(data);
     return this.addressRepository.save(address);
   }
 
-  async update(id: number, data: Partial<CustomerAddress>): Promise<CustomerAddress> {
+  async update(
+    id: number,
+    data: UpdateCustomerAddressDto,
+  ): Promise<CustomerAddress> {
     const address = await this.findOne(id);
+
+    const userId = data.user_id ?? address.user_id;
+
+    if (data.is_primary) {
+      await this.unsetPrimaryAddresses(userId);
+    }
+
     Object.assign(address, data);
     return this.addressRepository.save(address);
+  }
+
+  async setPrimaryAddress(
+    userId: number,
+    addressId: number,
+  ): Promise<CustomerAddress> {
+    const address = await this.findOne(addressId);
+    if (!address || address.user_id !== userId) {
+      throw new BadRequestException('Endereço não pertence a este usuário');
+    }
+
+    await this.unsetPrimaryAddresses(userId);
+    await this.addressRepository.update(addressId, { is_primary: true });
+    return this.findOne(addressId);
+  }
+
+  private async unsetPrimaryAddresses(userId: number): Promise<void> {
+    await this.addressRepository
+      .createQueryBuilder()
+      .update(CustomerAddress)
+      .set({ is_primary: false })
+      .where('user_id = :userId', { userId })
+      .execute();
+  }
+
+  async findPrimaryByUserId(userId: number): Promise<CustomerAddress | null> {
+    return this.addressRepository.findOne({
+      where: { user: { id: userId }, is_primary: true },
+      relations: ['user'],
+    });
   }
 
   async remove(id: number): Promise<void> {
@@ -39,9 +108,9 @@ export class CustomerAddressService {
   }
 
   async findByUserId(userId: number): Promise<CustomerAddress[]> {
-  return this.addressRepository.find({
-    where: { user: { id: userId } },
-    relations: ['user'],
-  });
-}
+    return this.addressRepository.find({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+  }
 }

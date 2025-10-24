@@ -35,7 +35,9 @@ export class CreateUserDto {
   @IsString()
   phone?: string;
 
-@IsOptional()
-@IsEnum(UserRole, { message: 'O papel do usuário deve ser admin ou cliente' })
-role?: UserRole;
+  @IsOptional()
+  @IsEnum(UserRole, {
+    message: 'O papel do usuário deve ser admin, cliente ou owner',
+  })
+  role?: UserRole;
 }
