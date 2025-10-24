@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useCart } from '../../contexts/CartContext';
 
-type BackendCarrinho = { id: number; produto_id: number; user_id: number; criado_em: string };
+type BackendCarrinho = { id: number; produto_id: number; user_id: number; criado_em: string; quantidade: number };
 type BackendProduto = { 
     id: number; 
     nome: string; 

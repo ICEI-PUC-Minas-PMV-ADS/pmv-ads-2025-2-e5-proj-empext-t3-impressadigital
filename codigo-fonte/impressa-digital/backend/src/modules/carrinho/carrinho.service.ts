@@ -10,11 +10,34 @@ export class CarrinhoService {
   ) {}
 
   async create(data: Partial<Carrinho>): Promise<Carrinho> {
+    const { produto_id, user_id, quantidade = 1 } = data;
+    
+    if (!produto_id || !user_id) {
+        throw new BadRequestException('Produto ID e User ID são obrigatórios.');
+    }
+
     try {
-      const novoItem = this.carrinhoRepository.create(data);
-      return await this.carrinhoRepository.save(novoItem);
+      // 1. Verificar se o item já existe para este usuário
+      const itemExistente = await this.carrinhoRepository.findOne({
+        where: { produto_id, user_id },
+      });
+
+      if (itemExistente) {
+        // 2. Se existe, apenas ATUALIZA a quantidade
+        itemExistente.quantidade += quantidade;
+        return await this.carrinhoRepository.save(itemExistente);
+      } else {
+        // 3. Se não existe, CRIA um novo item
+        const novoItem = this.carrinhoRepository.create({
+            produto_id,
+            user_id,
+            quantidade,
+        });
+        return await this.carrinhoRepository.save(novoItem);
+      }
     } catch (error) {
-      throw new BadRequestException('Erro ao adicionar item ao carrinho');
+      console.error(error);
+      throw new BadRequestException('Erro ao adicionar ou atualizar item no carrinho');
     }
   }
 
@@ -32,6 +55,10 @@ export class CarrinhoService {
 
   async update(id: number, data: Partial<Carrinho>): Promise<Carrinho> {
     const item = await this.findById(id);
+    // Garante que a quantidade seja tratada como número
+    if (data.quantidade !== undefined) {
+        data.quantidade = Number(data.quantidade);
+    }
     Object.assign(item, data);
     return await this.carrinhoRepository.save(item);
   }

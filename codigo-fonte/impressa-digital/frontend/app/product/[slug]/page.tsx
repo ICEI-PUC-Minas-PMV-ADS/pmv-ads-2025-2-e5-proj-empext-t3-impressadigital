@@ -28,7 +28,7 @@ export default function Product() {
         <div>
             <HeaderMain />
             
-            <div className='flex-col px-10 md:px-20' key={productSlug}> 
+            <div className='flex-col px-10 ' key={productSlug}> 
                 <div className=' w-full '>
                     {/* 3. Renderiza ProductDetails para iniciar a busca e notificar o status */}
                     <ProductDetails 

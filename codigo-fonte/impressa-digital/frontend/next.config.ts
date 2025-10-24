@@ -1,8 +1,15 @@
 import type { NextConfig } from "next";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   images: {
-    domains: ['res.cloudinary.com'], 
+    domains: ["res.cloudinary.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "www.melhorenvio.com.br",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

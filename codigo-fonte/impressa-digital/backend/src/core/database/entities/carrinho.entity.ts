@@ -11,6 +11,8 @@ export class Carrinho {
   @Column({ nullable: false })
   produto_id: number;
 
+  @Column({ nullable: false, default: 1 }) // <--- ALTERAÇÃO PRINCIPAL
+  quantidade: number;                     // <--- ADICIONADO: Campo para armazenar a quantidade
 
   @Column({ nullable: false })
   user_id: number;
