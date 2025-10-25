@@ -113,7 +113,9 @@ export default function DashboardConfigs() {
       const url = viewingDeleted
         ? "http://localhost:3000/users/deleted/all"
         : "http://localhost:3000/users";
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        credentials: "include",
+      });
       if (!response.ok) throw new Error("Erro ao carregar administradores");
       const usersData: User[] = await response.json();
       const filteredAdmins = usersData.filter((user) => user.role === "admin");
@@ -142,41 +144,45 @@ export default function DashboardConfigs() {
     setForm({ ...form, [name]: newValue });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
 
-    if (form.cpf.replace(/\D/g, "").length !== 11) {
-      setCpfError("Preencha o CPF completo (11 dígitos).");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const res = await fetch("http://localhost:3000/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, role: "admin" }),
-      });
-      if (res.ok) {
-        showToast("Administrador criado com sucesso!", "success");
-        setForm({ name: "", birthDate: "", cpf: "", email: "", password: "", phone: "", role: "admin" });
-        fetchAdmins();
-      } else {
-        const error = await res.json();
-        showToast(error.message || "Erro ao criar administrador.", "error");
-      }
-    } catch {
-      showToast("Erro de conexão com o servidor.", "error");
-    }
+  if (form.cpf.replace(/\D/g, "").length !== 11) {
+    setCpfError("Preencha o CPF completo (11 dígitos).");
     setLoading(false);
-  };
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ ...form, role: "admin" }),
+    });
+    if (res.ok) {
+      showToast("Administrador criado com sucesso!", "success");
+      setForm({ name: "", birthDate: "", cpf: "", email: "", password: "", phone: "", role: "admin" });
+      fetchAdmins();
+    } else {
+      const error = await res.json();
+      showToast(error.message || "Erro ao criar administrador.", "error");
+    }
+  } catch {
+    showToast("Erro de conexão com o servidor.", "error");
+  }
+  setLoading(false);
+};
 
   const handleDeactivate = (admin: User) => setModalAdmin(admin);
   const confirmDeactivate = async () => {
     if (!modalAdmin || !modalAdmin.id) return;
     try {
-      const res = await fetch(`http://localhost:3000/users/${modalAdmin.id}`, { method: "DELETE" });
+      const res = await fetch(`http://localhost:3000/users/${modalAdmin.id}`, { 
+        method: "DELETE",
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Erro ao desativar administrador");
       showToast("Administrador desativado com sucesso!", "success");
       fetchAdmins();
@@ -190,7 +196,10 @@ export default function DashboardConfigs() {
   const handleRestore = async (admin: User) => {
     if (!admin.id) return;
     try {
-      const res = await fetch(`http://localhost:3000/users/${admin.id}/restore`, { method: "PATCH" });
+      const res = await fetch(`http://localhost:3000/users/${admin.id}/restore`, { 
+        method: "PATCH",
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Erro ao restaurar administrador");
       showToast("Administrador restaurado com sucesso!", "success");
       fetchAdmins();

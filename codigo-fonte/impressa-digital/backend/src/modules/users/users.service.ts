@@ -1,6 +1,6 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { User, UserRole } from 'src/core/database/entities/user.entity'; // ✅ importe o enum
+import { User, UserRole } from 'src/core/database/entities/user.entity';
 import { Repository, IsNull, Not } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 
@@ -11,23 +11,28 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async createUser(userData: CreateUserDto): Promise<User> {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+ async createUser(userData: CreateUserDto, currentUser: User): Promise<User> {
+  const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-    const newUser = this.userRepository.create({
-      ...userData,
-      password: hashedPassword,
-      role:
-        userData.role &&
-        Object.values(UserRole).includes(userData.role as UserRole)
-          ? (userData.role as UserRole)
-          : UserRole.CLIENTE,
-    });
-
-    await this.userRepository.save(newUser);
-    newUser.password = '';
-    return newUser;
+  let roleToAssign = UserRole.CLIENTE;
+  if (userData.role && Object.values(UserRole).includes(userData.role as UserRole)) {
+    if ((userData.role === UserRole.ADMIN || userData.role === UserRole.OWNER) &&
+        currentUser.role !== UserRole.OWNER) {
+      throw new ForbiddenException('Apenas owners podem criar admins ou owners');
+    }
+    roleToAssign = userData.role as UserRole;
   }
+
+  const newUser = this.userRepository.create({
+    ...userData,
+    password: hashedPassword,
+    role: roleToAssign,
+  });
+
+  await this.userRepository.save(newUser);
+  newUser.password = '';
+  return newUser;
+}
 
   async findAll(): Promise<User[]> {
     return this.userRepository.find({
@@ -90,17 +95,25 @@ export class UserService {
     return updatedUser;
   }
 
-  async deleteUser(id: number): Promise<void> {
-    const user = await this.userRepository.findOne({
-      where: { id, deletedAt: IsNull() },
-    });
+async deleteUser(id: number, currentUser: User): Promise<void> {
+  const user = await this.userRepository.findOne({
+    where: { id, deletedAt: IsNull() },
+  });
 
-    if (!user) {
-      throw new NotFoundException(`Usuário com id ${id} não encontrado`);
-    }
+  if (!user) throw new NotFoundException(`Usuário com id ${id} não encontrado`);
 
-    await this.userRepository.softDelete(id);
+  if (
+    (user.role === UserRole.ADMIN || user.role === UserRole.OWNER) &&
+    currentUser.role !== UserRole.OWNER
+  ) {
+    throw new ForbiddenException(
+      'Apenas owners podem desativar admins ou owners',
+    );
   }
+
+  await this.userRepository.softDelete(id);
+}
+
 
   async restoreUser(id: number): Promise<User> {
     const user = await this.userRepository.findOne({

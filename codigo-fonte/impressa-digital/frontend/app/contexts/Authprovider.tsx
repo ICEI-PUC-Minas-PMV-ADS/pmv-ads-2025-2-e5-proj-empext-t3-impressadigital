@@ -29,7 +29,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
  useEffect(() => {
   const checkSession = async () => {
     try {
-      console.log('Verificando sessão...');
       const res = await fetch("http://localhost:3000/auth/me", {
         method: "GET",
         credentials: "include",
@@ -48,7 +47,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   };
-  console.log(user)
   checkSession();
 }, []);
 
