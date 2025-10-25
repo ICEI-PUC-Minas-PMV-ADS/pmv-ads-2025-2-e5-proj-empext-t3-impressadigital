@@ -108,10 +108,10 @@ export default function Cadastro() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/users", {
+      const res = await fetch("http://localhost:3000/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, role: "cliente" }),
+        body: JSON.stringify(form),
       });
 
       if (res.ok) {

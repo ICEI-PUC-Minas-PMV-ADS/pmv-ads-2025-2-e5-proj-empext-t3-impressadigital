@@ -17,18 +17,22 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { RolesGuard } from '../../core/database/auth/commons/guards/roles.guard';
 import { Roles } from '../../core/database/auth/commons/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../core/database/auth/jwt-auth.guard';
+import { UserRole } from 'src/core/database/entities/enum/userRole.enum';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Post('register')
+  async registerClient(@Body() body: CreateUserDto): Promise<User> {
+    body.role = UserRole.CLIENTE;
+    return this.userService.createUser(body);
+  }
+
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('owner')
-  async createUser(
-    @Body() body: CreateUserDto,
-    @Req() req: any,
-  ): Promise<User> {
+  async createUser(@Body() body: CreateUserDto, @Req() req: any): Promise<User> {
     const currentUser = req.user;
     return this.userService.createUser(body, currentUser);
   }
@@ -57,6 +61,7 @@ export class UserController {
     const userToDelete = await this.userService.findByIdIncludingDeleted(
       Number(id),
     );
+
     if (
       (userToDelete.role === 'admin' || userToDelete.role === 'owner') &&
       currentUser.role !== 'owner'

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ProtectedRoute } from "../../components/layout/protectedRoute";
 
 interface User {
   id?: number;
@@ -209,6 +210,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   };
 
   return (
+    <ProtectedRoute roles={["owner"]}>
     <>
       <style>{modalAnimationStyle}</style>
       <div className="w-full bg-white p-6 text-black">
@@ -388,5 +390,6 @@ const handleSubmit = async (e: React.FormEvent) => {
         )}
       </div>
     </>
+    </ProtectedRoute>
   );
 }

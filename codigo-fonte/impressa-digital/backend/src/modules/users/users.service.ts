@@ -11,13 +11,14 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
- async createUser(userData: CreateUserDto, currentUser: User): Promise<User> {
+ async createUser(userData: CreateUserDto, currentUser?: User): Promise<User> {
   const hashedPassword = await bcrypt.hash(userData.password, 10);
 
   let roleToAssign = UserRole.CLIENTE;
+
   if (userData.role && Object.values(UserRole).includes(userData.role as UserRole)) {
     if ((userData.role === UserRole.ADMIN || userData.role === UserRole.OWNER) &&
-        currentUser.role !== UserRole.OWNER) {
+        (!currentUser || currentUser.role !== UserRole.OWNER)) {
       throw new ForbiddenException('Apenas owners podem criar admins ou owners');
     }
     roleToAssign = userData.role as UserRole;

@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useSidebar } from "../contexts/sidebarContext";
 import { useAuth } from "../contexts/Authprovider";
 import { useState } from "react";
+import { ProtectedRoute } from "../components/layout/protectedRoute";
 
 export default function LayoutPerfil({ children }: { children: ReactNode }) {
     const { toggleSidebar } = useSidebar();
@@ -34,6 +35,7 @@ export default function LayoutPerfil({ children }: { children: ReactNode }) {
     };
 
     return (
+        <ProtectedRoute>
         <div className="min-h-screen bg-white flex flex-col">
             {/* Header: Usa `relative` e `z-10` para garantir que o dropdown funcione */}
             <header className={`p-4 flex justify-between items-center px-4 md:px-10 bg-white relative z-10`}> 
@@ -144,5 +146,6 @@ export default function LayoutPerfil({ children }: { children: ReactNode }) {
                 </div>
             )}
         </div>
+        </ProtectedRoute>
     );
 }
