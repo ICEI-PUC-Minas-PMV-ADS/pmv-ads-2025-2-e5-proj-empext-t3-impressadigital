@@ -3,21 +3,22 @@
 
 import React, { useCallback, useEffect, useMemo, useState, ChangeEvent } from 'react';
 import { useCart } from '../../contexts/CartContext';
-import Image from "next/image"; 
+import { useAuth } from '../../contexts/Authprovider';
+import Image from "next/image";
 
 type BackendCarrinho = { id: number; produto_id: number; user_id: number; criado_em: string; quantidade: number };
-type BackendProduto = { 
-    id: number; 
-    nome: string; 
-    descricao?: string; 
-    preco?: number; 
+type BackendProduto = {
+    id: number;
+    nome: string;
+    descricao?: string;
+    preco?: number;
     midias?: Array<{ id: number; url: string }>;
     // PROPRIEDADES para frete
     peso?: number;
     largura?: number;
     altura?: number;
     comprimento?: number;
-}; 
+};
 
 type CartItem = {
     id: string;
@@ -85,7 +86,7 @@ const processarOpcoesFrete = (data: any[]): ShippingOption[] => {
         const transportadoraValida =
             nomeTransportadora.includes('jadlog') ||
             nomeTransportadora.includes('azul') ||
-            nomeTransportadora.includes('correio'); 
+            nomeTransportadora.includes('correio');
 
         const temPrecoValido = !isNaN(preco) && preco >= 0; // Preço pode ser zero
         const prazoValido = prazo && prazo.toLowerCase() !== 'a consultar';
@@ -146,12 +147,12 @@ function CartLine({
         <div className="relative flex flex-col md:flex-row gap-4 p-4 sm:p-5 md:p-6 rounded-3xl border border-gray-300 bg-white shadow-sm">
             <div className="flex-shrink-0">
                 <div className="bg-gray-100 rounded-2xl p-2 sm:p-3 w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center overflow-hidden">
-                    <Image 
-                        src={item.image} 
-                        alt={item.title} 
-                        width={160} 
-                        height={160} 
-                        className="object-cover w-full h-full rounded-lg" 
+                    <Image
+                        src={item.image}
+                        alt={item.title}
+                        width={160}
+                        height={160}
+                        className="object-cover w-full h-full rounded-lg"
                     />
                 </div>
                 <p className="mt-3 text-xs sm:text-sm font-semibold max-w-[8rem] sm:max-w-[10rem] leading-snug">
@@ -190,19 +191,83 @@ function CartLine({
 }
 
 export default function Carrinho() {
+    const { user, loading: authLoading } = useAuth();
     const [items, setItems] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [reloadIndex, setReloadIndex] = useState(0);
     const { setTotalItemCount } = useCart();
-    
+
     // NOVOS ESTADOS PARA FRETE
     const [cep, setCep] = useState<string>("");
     const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>([]);
     const [loadingShipping, setLoadingShipping] = useState(false);
     const [shippingError, setShippingError] = useState<string | null>(null);
     const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
+    // NOVOS ESTADOS: Endereço e Observação para mensagem do WhatsApp
+    const [endereco, setEndereco] = useState<string>("");
+    const [observacao, setObservacao] = useState<string>("");
+    const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || ""; //apenas dígitos
 
+    // Estados para endereços salvos do usuário
+    const [addresses, setAddresses] = useState<any[]>([]);
+    const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+
+    // Formata um objeto de endereço vindo do backend para uma string legível.
+    // Tentamos várias chaves possíveis por segurança (campo pode variar entre projetos).
+    const formatAddress = (a: any) => {
+        if (!a) return '';
+        const parts: string[] = [];
+        const rua = a.rua || a.logradouro || a.street || a.address_line || a.address || '';
+        const numero = a.numero || a.number || a.n || '';
+        const complemento = a.complemento || a.complement || a.extra || '';
+        const bairro = a.bairro || a.neighborhood || a.district || '';
+        const cidade = a.cidade || a.city || a.town || '';
+        const uf = a.uf || a.state || a.region || '';
+        const cepA = a.cep || a.postal_code || a.zip || '';
+
+        if (rua) parts.push(rua + (numero ? `, ${numero}` : ''));
+        if (complemento) parts.push(complemento);
+        if (bairro) parts.push(bairro);
+        if (cidade || uf) parts.push([cidade, uf].filter(Boolean).join('/'));
+        if (cepA) parts.push(`CEP: ${cepA}`);
+
+        return parts.filter(Boolean).join(' - ');
+    };
+
+    // Busca os endereços do usuário logado (perfil)
+    const fetchAddresses = useCallback(async (userId: number) => {
+        try {
+            const res = await fetch(`${BASE_URL}/customer_address/user/${userId}`, {
+                credentials: 'include',
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                setAddresses(data);
+                if (data.length > 0) {
+                    setSelectedAddressId(String(data[0].id));
+                    setEndereco(formatAddress(data[0]));
+                }
+            }
+        } catch (err) {
+            // Falha ao buscar endereços: manter fallback para campo manual
+            console.warn('Falha ao carregar endereços do perfil', err);
+        }
+    }, []);
+
+    useEffect(() => {
+        // Aguarda resolver auth; quando houver user.id, busca endereços dele
+        if (!authLoading && user?.id) {
+            fetchAddresses(user.id);
+        }
+        // Se deslogar, limpa endereços
+        if (!authLoading && !user) {
+            setAddresses([]);
+            setSelectedAddressId(null);
+            setEndereco("");
+        }
+    }, [authLoading, user, fetchAddresses]);
 
     const handleChangeCep = (event: ChangeEvent<HTMLInputElement>) => {
         const maskedValue = applyCepMask(event.target.value);
@@ -241,17 +306,17 @@ export default function Carrinho() {
             const mapped: CartItem[] = registros.map((reg) => {
                 const prod = productMap.get(reg.produto_id);
                 const imageUrl = prod?.midias?.[0]?.url || '/images/placeholder.png';
-                
+
                 // Mapeia as dimensões com fallback para valores seguros
                 const peso = Number(prod?.peso) || 0.5;
                 const largura = Number(prod?.largura) || 10;
                 const altura = Number(prod?.altura) || 10;
                 const comprimento = Number(prod?.comprimento) || 10;
-                
+
                 // A quantidade inicial é sempre 1 no backend atual, mas aqui será o estado.
                 // Na próxima iteração, faremos um fetch para saber a quantidade real se o
                 // backend salvar essa informação. Por enquanto, a manipulação fica no front.
-                
+
                 return {
                     id: String(reg.id),
                     produtoId: reg.produto_id,
@@ -292,7 +357,8 @@ export default function Carrinho() {
     const removeItem = useCallback(
         async (id: string) => {
             setItems((prev) => prev.filter((it) => it.id !== id));
-            setTotalItemCount((prev) => Math.max(0, prev - 1));
+            // Atualiza contagem baseada no estado atual conhecido
+            setTotalItemCount(Math.max(0, items.length - 1));
             setShippingOptions([]); // Limpa as opções de frete
             setSelectedOptionIndex(null);
             setShippingError(null);
@@ -306,18 +372,18 @@ export default function Carrinho() {
                 }
             }
         },
-        [setTotalItemCount]
+        [setTotalItemCount, items.length]
     );
 
     const refresh = () => setReloadIndex((i) => i + 1);
     const subtotal = useMemo(() => items.reduce((acc, it) => acc + it.price * it.quantity, 0), [items]);
-    
+
     const selectedShippingOption = useMemo(() => {
         return selectedOptionIndex !== null && shippingOptions.length > selectedOptionIndex
-          ? shippingOptions[selectedOptionIndex]
-          : null;
-      }, [selectedOptionIndex, shippingOptions]);
-      
+            ? shippingOptions[selectedOptionIndex]
+            : null;
+    }, [selectedOptionIndex, shippingOptions]);
+
     const handleSelectOption = useCallback((index: number) => {
         setSelectedOptionIndex(index);
     }, []);
@@ -339,7 +405,7 @@ export default function Carrinho() {
         setSelectedOptionIndex(null);
 
         try {
-            const cepNumerico = cep.replace(/\D/g, ''); 
+            const cepNumerico = cep.replace(/\D/g, '');
 
             // Construir a lista de produtos com as dimensões e quantidades atuais (do estado do carrinho)
             const produtosApi = items.map(item => ({
@@ -382,14 +448,57 @@ export default function Carrinho() {
         }
     }, [cep, items]);
 
-    // 🟢 Função principal: Fechar pedido
+    // 🧩 Monta a mensagem para WhatsApp com endereço, observação, valores e itens
+    const buildWhatsappMessage = useCallback(() => {
+        const linhas: string[] = [];
+        linhas.push("Olá! Gostaria de concluir meu pedido.");
+        linhas.push("");
+        linhas.push("Itens:");
+        items.forEach((it) => {
+            const totalItem = it.price * it.quantity;
+            linhas.push(`- ${it.quantity}x ${it.title} — ${currency.format(it.price)} = ${currency.format(totalItem)}`);
+        });
+        linhas.push("");
+        linhas.push(`Subtotal: ${currency.format(subtotal)}`);
+        if (selectedShippingOption) {
+            linhas.push(
+                `Frete (${selectedShippingOption.carrier} - ${selectedShippingOption.deliveryTime}): ${currency.format(selectedShippingOption.price)}`
+            );
+        } else {
+            linhas.push("Frete: a calcular");
+        }
+        const total = subtotal + (selectedShippingOption?.price || 0);
+        linhas.push(`Total: ${currency.format(total)}`);
+        linhas.push("");
+        if (cep) {
+            linhas.push(`CEP: ${cep}`);
+        }
+        linhas.push(`Endereço: ${endereco || "(não informado)"}`);
+        if (observacao) {
+            linhas.push(`Observação: ${observacao}`);
+        }
+        return linhas.join("\n");
+    }, [items, subtotal, selectedShippingOption, cep, endereco, observacao]);
+
+    // � Abre o WhatsApp com a mensagem montada
+    const enviarWhatsapp = useCallback(() => {
+        const mensagem = buildWhatsappMessage();
+        const numeroLimpo = WHATSAPP_NUMBER.replace(/\D/g, "");
+        const base = numeroLimpo ? `https://wa.me/55${numeroLimpo}` : "https://wa.me/";
+        const url = `${base}?text=${encodeURIComponent(mensagem)}`;
+        if (typeof window !== 'undefined') {
+            window.open(url, '_blank');
+        }
+    }, [WHATSAPP_NUMBER, buildWhatsappMessage]);
+
+    // �🟢 Função principal: Fechar pedido
     const fecharPedido = async () => {
         if (!items.length) return;
         if (!selectedShippingOption) {
             alert("Por favor, calcule e selecione uma opção de frete para fechar o pedido.");
             return;
         }
-        
+
         // Valor total final
         const valorTotal = subtotal + selectedShippingOption.price;
 
@@ -399,7 +508,7 @@ export default function Carrinho() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    user_id: 1, 
+                    user_id: 1,
                     valor_total: valorTotal, // VALOR TOTAL COM FRETE
                     status: "pendente",
                     data_venda: new Date(),
@@ -429,7 +538,7 @@ export default function Carrinho() {
             // 3️⃣ Limpa o carrinho no frontend e backend
             await Promise.all(
                 items.map((item) =>
-                    fetch(`${BASE_URL}/carrinho/${item.id}`, { method: "DELETE" }).catch(() => {})
+                    fetch(`${BASE_URL}/carrinho/${item.id}`, { method: "DELETE" }).catch(() => { })
                 )
             );
 
@@ -473,7 +582,7 @@ export default function Carrinho() {
                             <span className="text-gray-600">Subtotal ({items.length} itens)</span>
                             <span className="font-medium">{currency.format(subtotal)}</span>
                         </div>
-                        
+
                         {/* NOVO BLOCO DE FRETE */}
                         <div className="mt-2 pt-2 border-t border-gray-200">
                             <h4 className="text-sm font-semibold mb-2">Frete e Envio</h4>
@@ -524,6 +633,43 @@ export default function Carrinho() {
                             </div>
                         </div>
 
+                        {/* NOVOS CAMPOS: Endereço e Observação */}
+                        <div className="mt-2 pt-2 border-t border-gray-200 flex flex-col gap-2">
+                            <h4 className="text-sm font-semibold">Dados para contato</h4>
+                            <label className="text-xs text-gray-600" htmlFor="enderecoSelect">Endereço para entrega</label>
+                            {addresses.length > 0 ? (
+                                <select
+                                    id="enderecoSelect"
+                                    value={selectedAddressId ?? ''}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setSelectedAddressId(val);
+                                        const addr = addresses.find(a => String(a.id) === val);
+                                        setEndereco(formatAddress(addr));
+                                    }}
+                                    className="w-full bg-gray-100 text-sm rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#3DF034]"
+                                >
+                                    {addresses.map((a) => (
+                                        <option key={a.id} value={String(a.id)}>{formatAddress(a)}</option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <div className="text-xs sm:text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                    Nenhum endereço cadastrado. Vá até a aba de <a href="/perfil/editarPerfil" className="text-[#1a9d20] underline font-semibold">Perfil</a> para cadastrar seu endereço de entrega.
+                                </div>
+                            )}
+
+                            <label className="text-xs text-gray-600" htmlFor="observacao">Observação</label>
+                            <input
+                                id="observacao"
+                                type="text"
+                                value={observacao}
+                                onChange={(e) => setObservacao(e.target.value)}
+                                className="w-full bg-gray-100 text-sm rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#3DF034]"
+                                placeholder="Ex.: Portaria 24h, ligar antes de entregar, etc."
+                            />
+                        </div>
+
                         <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-600">Frete</span>
                             <span className="font-medium">
@@ -547,6 +693,15 @@ export default function Carrinho() {
 
                         <button
                             type="button"
+                            onClick={enviarWhatsapp}
+                            disabled={!items.length}
+                            className="w-full bg-[#25D366] hover:bg-[#1ebe57] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-full transition-colors"
+                        >
+                            Enviar por WhatsApp
+                        </button>
+
+                        <button
+                            type="button"
                             onClick={refresh}
                             className="w-full text-xs text-[#1a9d20] font-semibold underline mt-1"
                         >
@@ -555,9 +710,7 @@ export default function Carrinho() {
                     </div>
                 </aside>
             </div>
-            <p className="text-[10px] text-gray-400 text-center">
-                (Implementação com backend: cada pedido será salvo na tabela vendas e vendas_produtos.)
-            </p>
+
         </div>
     );
 }
