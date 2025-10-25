@@ -20,23 +20,35 @@ export class VendasService {
     }
   }
 
-async findAll(): Promise<Vendas[]> {
-  const rep = await this.vendasRepository.find({
+async findAll(): Promise<any[]> {
+  const vendas = await this.vendasRepository.find({
     relations: ['user', 'user.enderecos'],
   });
-  return rep;
-}
 
+  return vendas.map((venda) => ({
+    ...venda,
+    user: {
+      ...venda.user,
+      endereco: venda.user.enderecos?.[0] || null, 
+    },
+  }));
+}
  
 async findById(id: number): Promise<Vendas> {
-  const venda = await this.vendasRepository.findOne({ 
+  const venda = await this.vendasRepository.findOne({
     where: { id },
     relations: ['user', 'user.enderecos'],
   });
-  if (!venda) {
-    throw new NotFoundException(`Venda com ID ${id} não encontrada`);
-  }
-  return venda;
+
+  if (!venda) throw new NotFoundException(`Venda com ID ${id} não encontrada`);
+
+  return {
+    ...venda,
+    user: {
+      ...venda.user,
+      endereco: venda.user.enderecos?.[0] || null,
+    },
+  } as Vendas;
 }
 
   async update(id: number, data: Partial<Vendas>): Promise<Vendas> {
