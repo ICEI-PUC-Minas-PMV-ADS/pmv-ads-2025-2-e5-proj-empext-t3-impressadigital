@@ -17,7 +17,7 @@ export default function LayoutPerfil({ children }: { children: ReactNode }) {
     const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     
-    const usernameDisplay = user ? user.name.split(" ")[0] : "Visitante";
+    const usernameDisplay = user?.name?.split(" ")[0] || "Visitante";
 
     // Handlers
     const handleLogout = () => {

@@ -21,7 +21,7 @@ const SidebarPerfil: React.FC = () => {
   // Estado para controlar a visibilidade do modal de confirmação
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const usernameDisplay = user ? user.name.split(" ")[0] : "Visitante";
+  const usernameDisplay = user?.name?.split(" ")[0] || "Visitante";
 
   // Handler para confirmar e executar o logout
   const handleLogout = () => {
