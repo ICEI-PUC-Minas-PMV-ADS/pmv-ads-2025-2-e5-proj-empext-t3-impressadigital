@@ -9,6 +9,7 @@ interface User {
   role?: string;
   cpf?: string;
   birthDate?: string;
+  phone: string;
 }
 
 interface AuthContextType {

@@ -49,7 +49,7 @@ export class UserService {
         deletedAt: IsNull(),
       },
       relations: ['enderecos'],
-      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate'],
+      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate', 'phone'],
     });
     if (!user)
       throw new NotFoundException(`Usuário com id ${id} não encontrado`);
@@ -62,7 +62,7 @@ export class UserService {
         email,
         deletedAt: IsNull(),
       },
-      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate', 'password'],
+      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate', 'password', 'phone'],
     });
     if (!user)
       throw new NotFoundException(
@@ -87,7 +87,7 @@ export class UserService {
 
     const updatedUser = await this.userRepository.findOne({
       where: { id, deletedAt: IsNull() },
-      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate'],
+      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate', 'phone'],
       relations: ['enderecos'],
     });
     if (!updatedUser) {
@@ -135,7 +135,7 @@ async deleteUser(id: number, currentUser: User): Promise<void> {
     const restoredUser = await this.userRepository.findOne({
       where: { id },
       relations: ['enderecos'],
-      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate'],
+      select: ['id', 'name', 'email', 'role', 'cpf', 'birthDate', 'phone'],
     });
 
     if (!restoredUser) {

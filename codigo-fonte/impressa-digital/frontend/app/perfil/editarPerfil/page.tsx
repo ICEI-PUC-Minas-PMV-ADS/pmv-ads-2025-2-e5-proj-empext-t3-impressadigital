@@ -15,6 +15,7 @@ import {
   FaCheck,
 } from "react-icons/fa";
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
+import { JSX } from "react";
 
 interface ToastProps {
   message: string;
@@ -55,6 +56,14 @@ interface Address {
   is_primary?: boolean;
 }
 
+interface FormField {
+  field: string;
+  icon: JSX.Element;
+  placeholder: string;
+  type?: string;
+  readOnly?: boolean;
+}
+
 const EditarPerfil: React.FC = () => {
   const { user } = useAuth();
   const [form, setForm] = useState({
@@ -62,6 +71,7 @@ const EditarPerfil: React.FC = () => {
     birthDate: "",
     cpf: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
@@ -103,11 +113,13 @@ const EditarPerfil: React.FC = () => {
 
   useEffect(() => {
     if (user) {
+      console.log("User carregado:", user);
       setForm({
         name: user.name || "",
         birthDate: user.birthDate ? user.birthDate.slice(0, 10) : "",
         cpf: user.cpf ? formatCPF(user.cpf) : "",
         email: user.email || "",
+        phone: user.phone || "",
         password: "",
         confirmPassword: "",
       });
@@ -237,6 +249,7 @@ const EditarPerfil: React.FC = () => {
         birthDate: form.birthDate,
         cpf: form.cpf,
         email: form.email,
+        phone: form.phone,
       };
       if (form.password && form.password.trim() !== "") {
         if (!passwordRules.every((rule) => rule.test(form.password))) {
@@ -389,6 +402,23 @@ const EditarPerfil: React.FC = () => {
     }
   };
 
+  const primeiraLinha: FormField[] = [
+    { field: "name", icon: <FaUser />, placeholder: "Nome completo" },
+    { field: "email", icon: <FaEnvelope />, placeholder: "E-mail" },
+  ];
+
+  const segundaLinha: FormField[] = [
+    { field: "cpf", icon: <FaIdCard />, placeholder: "CPF", readOnly: true },
+    { field: "phone", icon: <FaIdCard />, placeholder: "Telefone" },
+    {
+      field: "birthDate",
+      icon: <FaBirthdayCake />,
+      placeholder: "Data de nascimento",
+      type: "date",
+      readOnly: true,
+    },
+  ];
+
   return (
     <div className="flex justify-center p-4 bg-gray-50 min-h-screen">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-6xl space-y-6">
@@ -402,58 +432,64 @@ const EditarPerfil: React.FC = () => {
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             Dados Pessoais
           </h2>
-          <form
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
-            onSubmit={handleSubmit}
-          >
-            {[
-              {
-                field: "name",
-                icon: <FaUser />,
-                placeholder: "Nome completo",
-              },
-              {
-                field: "birthDate",
-                icon: <FaBirthdayCake />,
-                placeholder: "Data de nascimento",
-                type: "date",
-              },
-              {
-                field: "cpf",
-                icon: <FaIdCard />,
-                placeholder: "CPF",
-                readOnly: true,
-              },
-              {
-                field: "email",
-                icon: <FaEnvelope />,
-                placeholder: "E-mail",
-              },
-            ].map(({ field, icon, placeholder, type, readOnly }) => (
-              <div key={field} className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  {icon}
-                </div>
-                <input
-                  type={type || "text"}
-                  name={field}
-                  value={form[field as keyof typeof form]}
-                  onChange={handleChange}
-                  maxLength={field === "cpf" ? 14 : undefined}
-                  required={field !== "password" && !readOnly}
-                  readOnly={readOnly}
-                  className={`peer w-full pl-10 pr-3 pt-4 pb-2 rounded-md border border-gray-300 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                    readOnly
-                      ? "bg-gray-200 text-gray-600 cursor-not-allowed"
-                      : "bg-white text-gray-800"
-                  }`}
-                  placeholder={placeholder}
-                />
-                <label className="absolute left-10 -top-0 text-gray-400 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-0 peer-focus:text-green-600 peer-focus:text-xs pointer-events-none">
-                  {placeholder}
-                </label>
-              </div>
-            ))}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {/* Primeira linha: Nome e Email */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {primeiraLinha.map(
+                ({ field, icon, placeholder, type, readOnly }) => (
+                  <div key={field} className="relative">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                      {icon}
+                    </div>
+                    <input
+                      type={type || "text"}
+                      name={field}
+                      value={form[field as keyof typeof form]}
+                      onChange={handleChange}
+                      readOnly={readOnly}
+                      placeholder={placeholder}
+                      className={`peer w-full pl-10 pr-3 pt-4 pb-2 rounded-md border border-gray-300 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                        readOnly
+                          ? "bg-gray-200 text-gray-600 cursor-not-allowed"
+                          : "bg-white text-gray-800"
+                      }`}
+                    />
+                    <label className="absolute left-10 -top-0 text-gray-400 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-0 peer-focus:text-green-600 peer-focus:text-xs pointer-events-none">
+                      {placeholder}
+                    </label>
+                  </div>
+                )
+              )}
+            </div>
+
+            {/* Segunda linha: CPF, Telefone e Data de Nascimento */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {segundaLinha.map(
+                ({ field, icon, placeholder, type, readOnly }) => (
+                  <div key={field} className="relative">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                      {icon}
+                    </div>
+                    <input
+                      type={type || "text"}
+                      name={field}
+                      value={form[field as keyof typeof form]}
+                      onChange={handleChange}
+                      readOnly={readOnly}
+                      placeholder={placeholder}
+                      className={`peer w-full pl-10 pr-3 pt-4 pb-2 rounded-md border border-gray-300 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                        readOnly
+                          ? "bg-gray-200 text-gray-600 cursor-not-allowed"
+                          : "bg-white text-gray-800"
+                      }`}
+                    />
+                    <label className="absolute left-10 -top-0 text-gray-400 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-0 peer-focus:text-green-600 peer-focus:text-xs pointer-events-none">
+                      {placeholder}
+                    </label>
+                  </div>
+                )
+              )}
+            </div>
 
             {/* Senha e confirmação */}
             <div className="relative col-span-full md:flex md:gap-4">
@@ -549,7 +585,7 @@ const EditarPerfil: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="col-span-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md shadow-md transition-colors disabled:opacity-50"
+              className="col-span-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md shadow-md transition-colors disabled:opacity-50 cursor-pointer"
             >
               {loading ? "Salvando..." : "Salvar Dados Pessoais"}
             </button>
