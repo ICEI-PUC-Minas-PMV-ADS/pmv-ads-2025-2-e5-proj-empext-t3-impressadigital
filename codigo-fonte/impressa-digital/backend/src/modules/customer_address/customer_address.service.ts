@@ -36,7 +36,7 @@ export class CustomerAddressService {
       throw new BadRequestException('user_id é obrigatório');
     }
 
-    // Maximo 3 endereços
+    // Limite de endereços
     const existingAddresses = await this.addressRepository.count({
       where: { user_id: data.user_id },
     });
@@ -47,9 +47,10 @@ export class CustomerAddressService {
       );
     }
 
-    // Colocar como endereço principal
     if (data.is_primary) {
       await this.unsetPrimaryAddresses(data.user_id);
+    } else if (existingAddresses === 0) {
+      data.is_primary = true;
     }
 
     const address = this.addressRepository.create(data);
@@ -82,8 +83,8 @@ export class CustomerAddressService {
     }
 
     await this.unsetPrimaryAddresses(userId);
-    await this.addressRepository.update(addressId, { is_primary: true });
-    return this.findOne(addressId);
+    address.is_primary = true;
+    return this.addressRepository.save(address);
   }
 
   private async unsetPrimaryAddresses(userId: number): Promise<void> {
@@ -97,7 +98,7 @@ export class CustomerAddressService {
 
   async findPrimaryByUserId(userId: number): Promise<CustomerAddress | null> {
     return this.addressRepository.findOne({
-      where: { user: { id: userId }, is_primary: true },
+      where: { user_id: userId, is_primary: true },
       relations: ['user'],
     });
   }
@@ -109,7 +110,7 @@ export class CustomerAddressService {
 
   async findByUserId(userId: number): Promise<CustomerAddress[]> {
     return this.addressRepository.find({
-      where: { user: { id: userId } },
+      where: { user_id: userId },
       relations: ['user'],
     });
   }
