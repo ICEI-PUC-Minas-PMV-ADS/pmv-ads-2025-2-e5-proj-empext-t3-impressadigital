@@ -17,7 +17,7 @@ export default function AccessDenied() {
           Você não tem permissão para acessar esta página.
         </p>
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/dashboard")}
           className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition cursor-pointer"
         >
           Voltar

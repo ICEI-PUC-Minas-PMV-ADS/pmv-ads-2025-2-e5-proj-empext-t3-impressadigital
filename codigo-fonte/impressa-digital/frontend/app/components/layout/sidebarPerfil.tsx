@@ -41,7 +41,7 @@ const SidebarPerfil: React.FC = () => {
       )}
       <aside
         className={`
-    fixed flex  md:static top-0 left-0 min-h-screen h-[100vh] md:h-50 md:w-64 lg:w-[15%] bg-white text-[#000000] p-4 flex flex-col justify-between font-bold font-sans items-start text-xl
+    fixed md:static top-0 left-0 min-h-screen h-[100vh] md:h-50 md:w-64 lg:w-[15%] bg-white text-[#000000] p-4 flex flex-col justify-between font-bold font-sans items-start text-xl
     z-50 transition-transform duration-300 ease-in-out box-border shadow-md 
     ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
   `}

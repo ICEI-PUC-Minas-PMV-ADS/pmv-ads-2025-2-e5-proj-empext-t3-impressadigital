@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/Authprovider";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -9,6 +10,15 @@ export default function LoginPage() {
   const [senha, setSenha] = useState("");
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('showModal') === 'true') {
+      setShowModal(true);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,22 +34,38 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen justify-center bg-white">
-      {/* Área da esquerda */}
-      <div className="flex flex-col items-center justify-center w-1/2 p-10 text-center">
+    <div className="flex min-h-screen bg-white">
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 backdrop-blur-md bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full mx-4">
+            <h2 className="text-lg font-semibold mb-4">Olá!</h2>
+            <p className="mb-4">Para acessar seu perfil você deve estar logado</p>
+            <button
+              onClick={() => setShowModal(false)}
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition cursor-pointer"
+            >
+              Fazer Login
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Área esquerda - informações */}
+      <div className="hidden md:flex flex-col items-center justify-center w-1/2 p-10 text-center">
         <img
           src="/images/logo_impressa_digital.png"
           alt="Logo"
           className="w-100 mb-6"
         />
-        <p className="text-gray-600 text-xl max-w-md justify-center">
+        <p className="text-gray-600 text-xl max-w-md">
           Na Impressa Digital, você transforma ideias em personalizados únicos
           e celebra momentos inesquecíveis.
         </p>
       </div>
 
-      {/* Área da direita - Card de login */}
-      <div className="flex w-1/2 items-center justify-center">
+      {/* Área direita - Card de login */}
+      <div className="flex flex-1 items-center justify-center p-8">
         <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             <input

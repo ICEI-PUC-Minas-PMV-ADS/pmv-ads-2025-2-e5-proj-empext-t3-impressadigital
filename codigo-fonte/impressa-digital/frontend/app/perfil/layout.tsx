@@ -6,18 +6,28 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSidebar } from "../contexts/sidebarContext";
 import { useAuth } from "../contexts/Authprovider";
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Adicione o useEffect
 import { ProtectedRoute } from "../components/layout/protectedRoute";
+import { useRouter } from "next/navigation"; // Adicione o useRouter
 
 export default function LayoutPerfil({ children }: { children: ReactNode }) {
     const { toggleSidebar } = useSidebar();
-    const { logout, user } = useAuth();
+    const { logout, user, loading } = useAuth(); // Adicione loading
+    const router = useRouter(); // Inicialize o router
     
     // Estados para controlar o dropdown e o modal
     const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false); // Novo estado para modal de login
     
     const usernameDisplay = user?.name?.split(" ")[0] || "Visitante";
+
+    // Effect para verificar se o usuário não está autenticado
+    useEffect(() => {
+        if (!loading && !user) {
+            setShowLoginModal(true);
+        }
+    }, [user, loading]);
 
     // Handlers
     const handleLogout = () => {
@@ -26,21 +36,41 @@ export default function LayoutPerfil({ children }: { children: ReactNode }) {
     };
 
     const openLogoutModal = () => {
-        setShowUserDropdown(false); // Fecha o dropdown primeiro
-        setShowLogoutModal(true); // Abre o modal
+        setShowUserDropdown(false);
+        setShowLogoutModal(true);
     };
     
     const toggleDropdown = () => {
         setShowUserDropdown(prev => !prev);
     };
 
+    // Handler para o modal de login
+    const handleLoginModalClose = () => {
+        setShowLoginModal(false);
+        router.push("/login"); // Redireciona para a página de login
+    };
+
+    const handleLoginModalConfirm = () => {
+        setShowLoginModal(false);
+        router.push("/login"); // Redireciona para a página de login
+    };
+
+    // Se estiver carregando, mostra um loading
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <div className="text-lg">Carregando...</div>
+            </div>
+        );
+    }
+
     return (
         <ProtectedRoute>
         <div className="min-h-screen bg-white flex flex-col">
-            {/* Header: Usa `relative` e `z-10` para garantir que o dropdown funcione */}
+            {/* Header */}
             <header className={`p-4 flex justify-between items-center px-4 md:px-10 bg-white relative z-10`}> 
                 
-                {/* Toggle mobile: Posicionamento absoluto */}
+                {/* Toggle mobile */}
                 <button
                     className="md:hidden mr-4 text-2xl text-[#45A62D] absolute left-4 top-1/2 transform -translate-y-1/2"
                     onClick={toggleSidebar}
@@ -48,7 +78,7 @@ export default function LayoutPerfil({ children }: { children: ReactNode }) {
                     ☰
                 </button>
 
-                {/* Container do Logo: Centralizado */}
+                {/* Container do Logo */}
                 <div className="flex-1 flex justify-center items-center">
                     <Link href="/" className="self-center">
                         <Image
@@ -61,7 +91,7 @@ export default function LayoutPerfil({ children }: { children: ReactNode }) {
                     </Link>
                 </div>
                 
-                {/* Ícone de perfil e nome com Dropdown (Posicionamento relativo) */}
+                {/* Ícone de perfil e nome com Dropdown */}
                 <div className=" self-start relative z-20"> 
                     <div 
                         className="flex flex-col items-center "
@@ -116,7 +146,7 @@ export default function LayoutPerfil({ children }: { children: ReactNode }) {
                 </main>
             </div>
             
-            {/* Modal de Confirmação de Logout (Overlay de tela cheia) */}
+            {/* Modal de Confirmação de Logout */}
             {showLogoutModal && (
                 <div 
                     className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999]"
@@ -140,6 +170,38 @@ export default function LayoutPerfil({ children }: { children: ReactNode }) {
                                 onClick={handleLogout}
                             >
                                 Sair
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* NOVO MODAL PARA USUÁRIO NÃO AUTENTICADO */}
+            {showLoginModal && (
+                <div 
+                    className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999]"
+                    onClick={handleLoginModalClose}
+                >
+                    <div 
+                        className="bg-white rounded-lg shadow-2xl p-6 w-full max-w-sm transform transition-all duration-300 scale-100"
+                        onClick={(e) => e.stopPropagation()} 
+                    >
+                        <h3 className="text-xl font-bold text-gray-800 mb-4">Acesso Restrito</h3>
+                        <p className="text-gray-600 mb-6">
+                            Para acessar a área de perfil, você precisa estar logado.
+                        </p>
+                        <div className="flex justify-end gap-3">
+                            <button
+                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                                onClick={handleLoginModalClose}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-[#1a9d20] text-white rounded-lg hover:bg-[#14a800] transition"
+                                onClick={handleLoginModalConfirm}
+                            >
+                                Fazer Login
                             </button>
                         </div>
                     </div>

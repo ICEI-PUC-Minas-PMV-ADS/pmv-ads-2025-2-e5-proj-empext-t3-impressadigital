@@ -12,7 +12,7 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({
   children,
   roles,
-  redirectDeniedTo = "/acesso-negado",
+  redirectDeniedTo = "/dashboard/access_denied",
 }: ProtectedRouteProps) {
   const { user, loading } = useAuth();
   const router = useRouter();

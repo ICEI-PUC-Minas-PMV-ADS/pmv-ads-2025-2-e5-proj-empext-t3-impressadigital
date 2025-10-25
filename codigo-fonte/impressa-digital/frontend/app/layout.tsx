@@ -6,6 +6,7 @@ import Footer from "@/app/components/layout/footer";
 import { SidebarProvider } from '../app/contexts/sidebarContext';
 import { AuthProvider } from "./contexts/Authprovider";
 import { CartProvider } from "./contexts/CartContext"; // Adicionar este import
+import DebugAuth from './components/layout/debugAuth';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
