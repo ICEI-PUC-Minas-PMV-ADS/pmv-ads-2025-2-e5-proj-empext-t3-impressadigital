@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Pequeno delay para garantir que o cookie foi salvo
       setTimeout(() => {
-        router.push("/perfil");
+        router.push("/");
         router.refresh(); // Força atualização para o middleware
       }, 100);
       
@@ -93,7 +93,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Erro no logout:", err);
     } finally {
       setUser(null);
-      router.push("/login");
+      router.push("/");
+      router.refresh();
     }
   };
 
