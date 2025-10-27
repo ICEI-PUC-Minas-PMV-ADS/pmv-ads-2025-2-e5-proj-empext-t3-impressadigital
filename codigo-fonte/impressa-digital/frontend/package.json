@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "framer-motion": "^12.23.24",
     "jose": "^6.1.0",
     "jsonwebtoken": "^9.0.2",
     "next": "^15.5.2",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/cookie-parser": "^1.4.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

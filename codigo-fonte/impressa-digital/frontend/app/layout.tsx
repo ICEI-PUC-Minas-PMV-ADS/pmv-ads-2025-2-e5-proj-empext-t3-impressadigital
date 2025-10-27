@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/Authprovider";
 import { CartProvider } from "./contexts/CartContext"; // Adicionar este import
 import DebugAuth from './components/layout/debugAuth';
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

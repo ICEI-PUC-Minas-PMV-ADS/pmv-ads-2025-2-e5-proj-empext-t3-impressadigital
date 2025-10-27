@@ -40,7 +40,7 @@
     "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
     "mysql2": "^3.15.0",
-    "nodemailer": "^7.0.9",
+    "nodemailer": "^7.0.10",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",

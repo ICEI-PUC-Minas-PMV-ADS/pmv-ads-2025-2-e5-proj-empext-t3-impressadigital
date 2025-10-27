@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
 
       {/* Card do formulário */}
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold mb-2 text-center">Esqueci Minha Senha</h1>
+        <h1 className="text-3xl font-bold mb-2 text-center">Esqueci minha senha</h1>
         <p className="text-gray-600 mb-6 text-center">
           Informe seu e-mail para receber o link de redefinição de senha.
         </p>
