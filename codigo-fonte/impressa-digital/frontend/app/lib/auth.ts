@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { jwtVerify, JWTPayload } from "jose";
 
-const JWT_SECRET = process.env.JWT_SECRET || "sua_chave_super_secreta";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export interface AuthUser {
   id: number;
