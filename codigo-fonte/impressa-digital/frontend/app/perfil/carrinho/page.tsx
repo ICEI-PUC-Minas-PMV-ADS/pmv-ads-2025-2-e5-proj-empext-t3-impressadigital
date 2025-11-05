@@ -204,6 +204,7 @@ export default function Carrinho() {
     const [loadingShipping, setLoadingShipping] = useState(false);
     const [shippingError, setShippingError] = useState<string | null>(null);
     const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
+    const [isPickup, setIsPickup] = useState<boolean>(false);
     // NOVOS ESTADOS: Endereço e Observação para mensagem do WhatsApp
     const [endereco, setEndereco] = useState<string>("");
     const [observacao, setObservacao] = useState<string>("");
@@ -246,8 +247,15 @@ export default function Carrinho() {
             if (Array.isArray(data)) {
                 setAddresses(data);
                 if (data.length > 0) {
-                    setSelectedAddressId(String(data[0].id));
-                    setEndereco(formatAddress(data[0]));
+                    // Prioriza o endereço marcado como principal
+                    const preferred = data.find((a: any) =>
+                        a?.is_primary === true || a?.isPrimary === true || a?.principal === true || a?.default === true || a?.padrao === true
+                    ) || data[0];
+
+                    setSelectedAddressId(String(preferred.id));
+                    setEndereco(formatAddress(preferred));
+                    const cepFound = preferred?.cep || preferred?.postal_code || '';
+                    if (cepFound) setCep(applyCepMask(String(cepFound)));
                 }
             }
         } catch (err) {
@@ -385,6 +393,7 @@ export default function Carrinho() {
     }, [selectedOptionIndex, shippingOptions]);
 
     const handleSelectOption = useCallback((index: number) => {
+        setIsPickup(false);
         setSelectedOptionIndex(index);
     }, []);
 
@@ -460,25 +469,30 @@ export default function Carrinho() {
         });
         linhas.push("");
         linhas.push(`Subtotal: ${currency.format(subtotal)}`);
-        if (selectedShippingOption) {
+        if (isPickup) {
+            linhas.push("Entrega: Retirada no local");
+            //linhas.push(`Frete: ${currency.format(0)}`);
+        } else if (selectedShippingOption) {
             linhas.push(
                 `Frete (${selectedShippingOption.carrier} - ${selectedShippingOption.deliveryTime}): ${currency.format(selectedShippingOption.price)}`
             );
         } else {
             linhas.push("Frete: a calcular");
         }
-        const total = subtotal + (selectedShippingOption?.price || 0);
+        const total = subtotal + (isPickup ? 0 : (selectedShippingOption?.price || 0));
         linhas.push(`Total: ${currency.format(total)}`);
         linhas.push("");
-        if (cep) {
-            linhas.push(`CEP: ${cep}`);
+        if (!isPickup) {
+            if (cep) {
+                linhas.push(`CEP: ${cep}`);
+            }
+            linhas.push(`Endereço: ${endereco || "(não informado)"}`);
         }
-        linhas.push(`Endereço: ${endereco || "(não informado)"}`);
         if (observacao) {
             linhas.push(`Observação: ${observacao}`);
         }
         return linhas.join("\n");
-    }, [items, subtotal, selectedShippingOption, cep, endereco, observacao]);
+    }, [items, subtotal, selectedShippingOption, isPickup, cep, endereco, observacao]);
 
     // � Abre o WhatsApp com a mensagem montada
     const enviarWhatsapp = useCallback(() => {
@@ -586,49 +600,68 @@ export default function Carrinho() {
                         {/* NOVO BLOCO DE FRETE */}
                         <div className="mt-2 pt-2 border-t border-gray-200">
                             <h4 className="text-sm font-semibold mb-2">Frete e Envio</h4>
-                            <div className="flex flex-col gap-2">
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="text"
-                                        maxLength={9}
-                                        value={cep}
-                                        onChange={handleChangeCep}
-                                        className="bg-gray-100 text-sm font-medium rounded-lg p-2 flex-grow focus:outline-none focus:ring-2 focus:ring-[#3DF034]"
-                                        placeholder="00000-000"
-                                    />
+                            <div className="flex flex-col gap-3">
+                                {/* Escolha da forma de entrega */}
+                                <div className="grid grid-cols-2 gap-2">
                                     <button
                                         type="button"
-                                        onClick={handleCalculateShipping}
-                                        disabled={loadingShipping || items.length === 0}
-                                        className="bg-[#3DF034] text-white text-sm font-semibold rounded-lg p-2 focus:outline-none disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+                                        onClick={() => { setIsPickup(true); setSelectedOptionIndex(null); setShippingOptions([]); setShippingError(null); }}
+                                        className={`text-xs sm:text-sm font-semibold rounded-lg p-2 border transition cursor-pointer ${isPickup ? 'bg-[#F7FFF7] border-[#3DF034] text-[#0f8f1a]' : 'bg-white border-gray-200 hover:border-gray-300'}`}
                                     >
-                                        {loadingShipping ? '...' : 'Buscar'}
+                                        Retirada no local
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => { setIsPickup(false); setShippingError(null); }}
+                                        className={`text-xs sm:text-sm font-semibold rounded-lg p-2 border transition cursor-pointer ${!isPickup ? 'bg-[#F7FFF7] border-[#3DF034] text-[#0f8f1a]' : 'bg-white border-gray-200 hover:border-gray-300'}`}
+                                    >
+                                        Entrega
                                     </button>
                                 </div>
-                                {shippingError && <p className="text-red-500 text-xs mt-1">{shippingError}</p>}
-                                {shippingOptions.length > 0 && (
-                                    <div className="mt-1 flex flex-col gap-1 max-h-40 overflow-y-auto">
-                                        {shippingOptions.map((option, index) => (
-                                            <div
-                                                key={index}
-                                                onClick={() => handleSelectOption(index)}
-                                                className={`flex items-center justify-between p-2 border rounded-lg cursor-pointer transition-all duration-200
-                                                    ${selectedOptionIndex === index
-                                                        ? 'border-[#3DF034] bg-[#F7FFF7]'
-                                                        : 'border-gray-100 hover:border-gray-300'
-                                                    }`}
+
+                                {/* Campos de entrega apenas quando for entrega */}
+                                {!isPickup && (
+                                    <>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="text"
+                                                maxLength={9}
+                                                value={cep}
+                                                onChange={handleChangeCep}
+                                                className="bg-gray-100 text-sm font-medium rounded-lg p-2 flex-grow focus:outline-none focus:ring-2 focus:ring-[#3DF034]"
+                                                placeholder="00000-000"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={handleCalculateShipping}
+                                                disabled={loadingShipping || items.length === 0}
+                                                className="bg-[#3DF034] cursor-pointer text-white text-sm font-semibold rounded-lg p-2 focus:outline-none disabled:bg-gray-400 disabled:cursor-not-allowed transition"
                                             >
-                                                <div className="flex items-center gap-2">
-                                                    <Image src={option.logo} width={20} height={20} alt={option.carrier} className="object-contain" />
-                                                    <div>
-                                                        <p className="font-medium text-xs leading-snug">{option.carrier}</p>
-                                                        <p className="text-[10px] text-gray-500">{option.deliveryTime}</p>
+                                                {loadingShipping ? '...' : 'Buscar'}
+                                            </button>
+                                        </div>
+                                        {shippingError && <p className="text-red-500 text-xs mt-1">{shippingError}</p>}
+                                        {shippingOptions.length > 0 && (
+                                            <div className="mt-1 flex flex-col gap-1 max-h-40 overflow-y-auto">
+                                                {shippingOptions.map((option, index) => (
+                                                    <div
+                                                        key={index}
+                                                        onClick={() => handleSelectOption(index)}
+                                                        className={`flex items-center justify-between p-2 border rounded-lg cursor-pointer transition-all duration-200 ${selectedOptionIndex === index ? 'border-[#3DF034] bg-[#F7FFF7]' : 'border-gray-100 hover:border-gray-300'}`}
+                                                    >
+                                                        <div className="flex items-center gap-2">
+                                                            <Image src={option.logo} width={20} height={20} alt={option.carrier} className="object-contain" />
+                                                            <div>
+                                                                <p className="font-medium text-xs leading-snug">{option.carrier}</p>
+                                                                <p className="text-[10px] text-gray-500">{option.deliveryTime}</p>
+                                                            </div>
+                                                        </div>
+                                                        <p className="font-bold text-sm">{currency.format(option.price)}</p>
                                                     </div>
-                                                </div>
-                                                <p className="font-bold text-sm">{currency.format(option.price)}</p>
+                                                ))}
                                             </div>
-                                        ))}
-                                    </div>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </div>
@@ -646,6 +679,8 @@ export default function Carrinho() {
                                         setSelectedAddressId(val);
                                         const addr = addresses.find(a => String(a.id) === val);
                                         setEndereco(formatAddress(addr));
+                                        const cepFound = addr?.cep || addr?.postal_code || '';
+                                        if (cepFound) setCep(applyCepMask(String(cepFound)));
                                     }}
                                     className="w-full bg-gray-100 text-sm rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#3DF034]"
                                 >
@@ -673,29 +708,20 @@ export default function Carrinho() {
                         <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-600">Frete</span>
                             <span className="font-medium">
-                                {selectedShippingOption ? currency.format(selectedShippingOption.price) : 'A calcular'}
+                                {isPickup ? 'Retirada no local' : (selectedShippingOption ? currency.format(selectedShippingOption.price) : 'A calcular')}
                             </span>
                         </div>
                         <hr className="border-gray-200" />
                         <div className="flex items-center justify-between text-base font-bold">
                             <span>Total</span>
-                            <span>{currency.format(subtotal + (selectedShippingOption?.price || 0))}</span>
+                            <span>{currency.format(subtotal + (isPickup ? 0 : (selectedShippingOption?.price || 0)))}</span>
                         </div>
 
                         <button
                             type="button"
-                            onClick={fecharPedido}
-                            disabled={!items.length || loading || !selectedShippingOption}
-                            className="mt-1 sm:mt-2 w-full bg-[#1a9d20] hover:bg-[#17851b] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-full transition-colors"
-                        >
-                            Fechar pedido
-                        </button>
-
-                        <button
-                            type="button"
                             onClick={enviarWhatsapp}
-                            disabled={!items.length}
-                            className="w-full bg-[#25D366] hover:bg-[#1ebe57] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-full transition-colors"
+                            disabled={!items.length || !selectedAddressId}
+                            className="w-full bg-[#25D366] cursor-pointer hover:bg-[#1ebe57] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-full transition-colors"
                         >
                             Enviar por WhatsApp
                         </button>
@@ -703,7 +729,7 @@ export default function Carrinho() {
                         <button
                             type="button"
                             onClick={refresh}
-                            className="w-full text-xs text-[#1a9d20] font-semibold underline mt-1"
+                            className="w-full text-xs text-[#1a9d20] cursor-pointer font-semibold underline mt-1"
                         >
                             Atualizar lista
                         </button>
