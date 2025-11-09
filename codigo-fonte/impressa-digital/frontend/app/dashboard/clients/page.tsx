@@ -100,8 +100,8 @@ const DashboardClients: React.FC = () => {
       setHasSearched(true);
       try {
         const url = viewingDeleted 
-          ? "http://localhost:3000/users/deleted/all" 
-          : "http://localhost:3000/users";
+          ? `${process.env.NEXT_PUBLIC_API_URL}/users/deleted/all` 
+          : `${process.env.NEXT_PUBLIC_API_URL}/users`;
         
         const response = await fetch(url);
         if (!response.ok) throw new Error("Erro ao carregar clientes");
@@ -157,7 +157,7 @@ const DashboardClients: React.FC = () => {
     if (!deletingClient) return;
     try {
       const response = await fetch(
-        `http://localhost:3000/users/${deletingClient.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/${deletingClient.id}`,
         { method: "DELETE" }
       );
 
@@ -178,7 +178,7 @@ const DashboardClients: React.FC = () => {
   const handleRestore = async (client: Client) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/users/${client.id}/restore`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/${client.id}/restore`,
         { method: "PATCH" }
       );
 

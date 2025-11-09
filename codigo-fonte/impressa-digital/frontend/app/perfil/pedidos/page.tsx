@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import OrderCard from "@/app/components/layout/orderCard";
 import { useAuth } from "@/app/contexts/Authprovider"; // Importe o useAuth
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface Produto {
   id: number;

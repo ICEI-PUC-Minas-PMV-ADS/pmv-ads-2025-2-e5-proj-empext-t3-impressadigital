@@ -87,7 +87,7 @@ export default function CategoriasPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/categories");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
       if (!response.ok) throw new Error("Erro ao carregar categorias");
       const data = await response.json();
       setCategorias(data);
@@ -121,7 +121,7 @@ export default function CategoriasPage() {
     try {
       if (editingCategory) {
         const response = await fetch(
-          `http://localhost:3000/categories/${editingCategory.id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/categories/${editingCategory.id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -137,7 +137,7 @@ export default function CategoriasPage() {
         );
         showToast("Categoria atualizada com sucesso!", "success");
       } else {
-        const response = await fetch("http://localhost:3000/categories", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
@@ -195,7 +195,7 @@ export default function CategoriasPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/categories/${categoryToDelete.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/categories/${categoryToDelete.id}`,
         {
           method: "DELETE",
         }

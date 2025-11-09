@@ -104,8 +104,8 @@ const DashboardProducts: React.FC = () => {
     try {
       setLoading(true);
       const [productsRes, categoriesRes] = await Promise.all([
-        fetch("http://localhost:3000/products"),
-        fetch("http://localhost:3000/categories"),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`),
       ]);
 
       if (!productsRes.ok) throw new Error("Erro ao buscar produtos");
@@ -165,7 +165,7 @@ const DashboardProducts: React.FC = () => {
     if (!productToDelete) return;
     try {
       const response = await fetch(
-        `http://localhost:3000/products/${productToDelete.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/products/${productToDelete.id}`,
         { method: "DELETE" }
       );
       if (!response.ok) throw new Error("Erro ao excluir produto");
@@ -183,7 +183,7 @@ const DashboardProducts: React.FC = () => {
     try {
       console.log(`Recarregando produto ID: ${productId}`);
       const response = await fetch(
-        `http://localhost:3000/products/${productId}`
+        `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`
       );
 
       if (response.ok) {
@@ -280,7 +280,7 @@ const DashboardProducts: React.FC = () => {
       const mediaId = editingProduct.midias[index].id;
 
       try {
-        const res = await fetch(`http://localhost:3000/midias/${mediaId}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/midias/${mediaId}`, {
           method: "DELETE",
         });
 
@@ -323,7 +323,7 @@ const DashboardProducts: React.FC = () => {
     try {
       const precoNumerico = parseFloat(formData.preco.replace(",", "."));
       const response = await fetch(
-        `http://localhost:3000/products/${editingProduct.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/products/${editingProduct.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -347,7 +347,7 @@ const DashboardProducts: React.FC = () => {
         files.forEach((file) => formDataUpload.append("files", file));
         formDataUpload.append("produto_id", editingProduct.id.toString());
         const uploadRes = await fetch(
-          `http://localhost:3000/midias/produtos/${editingProduct.id}/upload`,
+          `${process.env.NEXT_PUBLIC_API_URL}/midias/produtos/${editingProduct.id}/upload`,
           {
             method: "POST",
             body: formDataUpload,

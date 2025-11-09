@@ -65,7 +65,7 @@ const DashboardAddProduct: React.FC = () => {
     const fetchCategorias = async () => {
       try {
         setLoadingCategorias(true);
-        const response = await fetch("http://localhost:3000/categories");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
 
         if (!response.ok) {
           throw new Error("Erro ao carregar categorias");
@@ -151,7 +151,7 @@ const DashboardAddProduct: React.FC = () => {
 
     try {
       // Criar o produto
-      const produtoRes = await fetch("http://localhost:3000/products", {
+      const produtoRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -182,7 +182,7 @@ const DashboardAddProduct: React.FC = () => {
         formData.append("produto_id", produtoId.toString());
 
         const midiasRes = await fetch(
-          `http://localhost:3000/midias/produtos/${produtoId}/upload`,
+          `${process.env.NEXT_PUBLIC_API_URL}/midias/produtos/${produtoId}/upload`,
           {
             method: "POST",
             body: formData,

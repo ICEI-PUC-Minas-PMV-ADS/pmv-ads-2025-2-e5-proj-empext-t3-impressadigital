@@ -56,7 +56,7 @@ export default function PedidosPage() {
 
   const carregarPedidos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/vendas");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/vendas`);
       if (!response.ok) throw new Error("Erro ao carregar pedidos");
       const data = await response.json();
       setPedidos(data);
@@ -109,7 +109,7 @@ export default function PedidosPage() {
   const atualizarStatus = async (id: number, novoStatus: string) => {
     setAtualizando(id);
     try {
-      const response = await fetch(`http://localhost:3000/vendas/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/vendas/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: novoStatus }),

@@ -23,7 +23,7 @@ export function useProdutos(slug?: string): { produtos: Produto[]; loading: bool
     setLoading(true);
     try {
       // 🔹 Busca produtos diretamente pelo slug
-      const res = await fetch(`http://localhost:3000/products/categoria/${slug}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/categoria/${slug}`);
       if (!res.ok) throw new Error("Erro ao buscar produtos");
 
       let data: Produto[] = await res.json();

@@ -46,7 +46,7 @@ interface ShippingOption {
 }
 
 const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // --- Funções Auxiliares de Frete ---
 

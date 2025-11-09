@@ -40,7 +40,7 @@ export default function CategoriaPage() {
   // Buscar os produtos com todos os campos, incluindo a mídia
   const fetchProdutoCompleto = async (produtoId: number): Promise<Produto | null> => {
     try {
-      const res = await fetch(`http://localhost:3000/products/${produtoId}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${produtoId}`);
       if (res.ok) {
         return await res.json();
       }
@@ -55,7 +55,7 @@ export default function CategoriaPage() {
 
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:3000/categories/slug/${slug}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/slug/${slug}`);
       if (!res.ok) throw new Error("Categoria não encontrada");
 
       const data: Categoria = await res.json();

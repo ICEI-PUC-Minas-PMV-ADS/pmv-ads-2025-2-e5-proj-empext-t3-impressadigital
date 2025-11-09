@@ -81,7 +81,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
         const fetchRelatedProducts = async () => {
             try {
                 // 1. Busca o produto principal para obter Categoria ID e Status
-                const mainProductRes = await fetch(`http://localhost:3000/products/slug/${slug}`);
+                const mainProductRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/slug/${slug}`);
                 if (!mainProductRes.ok) throw new Error("Erro ao buscar o produto principal.");
                 
                 const mainProduct = (await mainProductRes.json()) as MainProductInfo;
@@ -97,7 +97,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                 let finalProducts: RelatedProduct[] = [];
 
                 // 2. Tenta buscar produtos da MESMA categoria
-                let relatedRes = await fetch(`http://localhost:3000/products?categoria_id=${categoryId}`);
+                let relatedRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?categoria_id=${categoryId}`);
                 let relatedData: RelatedProduct[] = await relatedRes.json();
                 
                 // 3. Filtra produtos inativos e o produto principal
@@ -108,7 +108,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                 // 4. Lógica de Fallback
                 if (filteredCategoryProducts.length === 0) { // Se não encontrou NENHUM na mesma categoria
                     // Busca TODOS os produtos ativos (fallback)
-                    const fallbackRes = await fetch(`http://localhost:3000/products?status=ativo`);
+                    const fallbackRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?status=ativo`);
                     const fallbackData: RelatedProduct[] = await fallbackRes.json();
 
                     finalProducts = fallbackData
