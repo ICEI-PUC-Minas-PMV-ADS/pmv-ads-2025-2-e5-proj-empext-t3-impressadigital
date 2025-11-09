@@ -26,7 +26,7 @@ export default function GeneralReviews() {
 
         // *** ROTA AJUSTADA ***: Usando a rota base da coleção 'avaliacoes_produto'
         // Presume-se que o acesso à rota base retorna TODOS os itens da coleção.
-        const apiUrl = `http://localhost:3000/avaliacoes_produto`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/avaliacoes_produto`;
         
         const res = await fetch(apiUrl);
 

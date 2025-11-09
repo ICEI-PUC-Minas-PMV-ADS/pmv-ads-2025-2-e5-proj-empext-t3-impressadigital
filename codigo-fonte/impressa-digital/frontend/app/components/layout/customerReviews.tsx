@@ -47,13 +47,13 @@ export default function CustomerReviews({
       try {
         setLoading(true);
         const mainProductRes = await fetch(
-          `http://localhost:3000/products/slug/${slug}`
+          `${process.env.NEXT_PUBLIC_API_URL}/products/slug/${slug}`
         );
         if (!mainProductRes.ok) throw new Error("Erro ao buscar produto.");
         const mainProduct = (await mainProductRes.json()) as ProductInfo;
 
         const res = await fetch(
-          `http://localhost:3000/avaliacoes_produto/produto/${mainProduct.id}`
+          `${process.env.NEXT_PUBLIC_API_URL}/avaliacoes_produto/produto/${mainProduct.id}`
         );
         if (!res.ok) throw new Error("Erro ao buscar avaliações.");
         const productReviews = (await res.json()) as Review[];
@@ -101,7 +101,7 @@ export default function CustomerReviews({
     try {
       // 1. Busca produto
       const mainProductRes = await fetch(
-        `http://localhost:3000/products/slug/${slug}`
+        `${process.env.NEXT_PUBLIC_API_URL}/products/slug/${slug}`
       );
       if (!mainProductRes.ok) throw new Error("Erro ao buscar produto.");
       const mainProduct = (await mainProductRes.json()) as ProductInfo;
@@ -114,7 +114,7 @@ export default function CustomerReviews({
       };
 
       const reviewRes = await fetch(
-        "http://localhost:3000/avaliacoes_produto",
+        "${process.env.NEXT_PUBLIC_API_URL}/avaliacoes_produto",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -131,7 +131,7 @@ export default function CustomerReviews({
         files.forEach((file) => uploadData.append("files", file));
         uploadData.append("avaliacao_id", newReview.id.toString());
 
-        const uploadRes = await fetch("http://localhost:3000/midias/upload", {
+        const uploadRes = await fetch("${process.env.NEXT_PUBLIC_API_URL}/midias/upload", {
           method: "POST",
           body: uploadData,
         });
@@ -142,7 +142,7 @@ export default function CustomerReviews({
 
       // 4. Atualiza lista
       const updatedReviewsRes = await fetch(
-        `http://localhost:3000/avaliacoes_produto/produto/${mainProduct.id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/avaliacoes_produto/produto/${mainProduct.id}`
       );
       const updatedReviews = await updatedReviewsRes.json();
       setReviews(updatedReviews);

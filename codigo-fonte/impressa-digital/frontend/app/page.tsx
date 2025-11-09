@@ -28,7 +28,7 @@ export default function Home({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function fetchProdutos() {
       try {
-        const res = await fetch("http://localhost:3000/products");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
         const data: Produto[] = await res.json();
         setProdutos(data);
       } catch (error) {

@@ -114,7 +114,7 @@ export default function HeaderMain() {
     const fetchCategories = async () => {
       setLoadingCategories(true);
       try {
-        const res = await fetch("http://localhost:3000/categories");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
         if (!res.ok) throw new Error("Erro ao buscar categorias");
         const data: Categoria[] = await res.json();
         setAllCategories(data);
@@ -140,7 +140,7 @@ export default function HeaderMain() {
     const timeout = setTimeout(async () => {
       setLoadingSearch(true);
       try {
-        const res = await fetch("http://localhost:3000/products");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
         const data: Produto[] = await res.json();
 
         const filtered = data.filter(

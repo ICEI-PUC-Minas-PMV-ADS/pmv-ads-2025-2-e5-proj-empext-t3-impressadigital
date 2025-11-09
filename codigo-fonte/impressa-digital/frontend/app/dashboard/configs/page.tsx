@@ -160,8 +160,8 @@ export default function DashboardConfigs() {
     try {
       setLoadingAdmins(true);
       const url = viewingDeleted
-        ? "http://localhost:3000/users/deleted/all"
-        : "http://localhost:3000/users";
+        ? `${process.env.NEXT_PUBLIC_API_URL}/users/deleted/all`
+        : `${process.env.NEXT_PUBLIC_API_URL}/users`;
       const response = await fetch(url, {
         credentials: "include",
       });
@@ -232,7 +232,7 @@ export default function DashboardConfigs() {
       // Criar payload sem o confirmPassword
       const { confirmPassword, ...payload } = form;
       
-      const res = await fetch("http://localhost:3000/users", {
+      const res = await fetch("${process.env.NEXT_PUBLIC_API_URL}/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -265,7 +265,7 @@ export default function DashboardConfigs() {
   const confirmDeactivate = async () => {
     if (!modalAdmin || !modalAdmin.id) return;
     try {
-      const res = await fetch(`http://localhost:3000/users/${modalAdmin.id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${modalAdmin.id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -283,7 +283,7 @@ export default function DashboardConfigs() {
     if (!admin.id) return;
     try {
       const res = await fetch(
-        `http://localhost:3000/users/${admin.id}/restore`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/${admin.id}/restore`,
         {
           method: "PATCH",
           credentials: "include",

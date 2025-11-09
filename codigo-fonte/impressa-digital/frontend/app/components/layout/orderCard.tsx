@@ -69,7 +69,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
       };
 
       const reviewRes = await fetch(
-        "http://localhost:3000/avaliacoes_produto",
+        `${process.env.NEXT_PUBLIC_API_URL}/avaliacoes_produto`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -86,7 +86,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
         files.forEach((file) => formDataUpload.append("files", file));
 
         const uploadRes = await fetch(
-          `http://localhost:3000/midias/avaliacoes/${newReview.id}/upload`,
+          `${process.env.NEXT_PUBLIC_API_URL}/midias/avaliacoes/${newReview.id}/upload`,
           {
             method: "POST",
             body: formDataUpload,

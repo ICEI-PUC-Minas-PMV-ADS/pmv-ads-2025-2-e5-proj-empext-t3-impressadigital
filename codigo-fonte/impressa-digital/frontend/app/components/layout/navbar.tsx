@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Navbar() {
   // Lista de categorias com labels e rotas
 
-  const host= "http://localhost:3000/"
+  const host= `${process.env.NEXT_PUBLIC_API_URL}/`
   const categories = [
     { label: "Inicio", href: host },
     { label: "Categorias", href: host+"dashboard/category" },
