@@ -7,6 +7,7 @@ import HeaderMain from '../../components/layout/headerMain';
 import ProductDetails from '../../components/layout/productDetail';
 import RelatedProducts from '../../components/layout/relatedProducts';
 import CustomerReviews from '../../components/layout/customerReviews';
+import Footer from '@/app/components/layout/footer';
 
 export default function Product() {
     // useParams() retorna o nome da pasta dinâmica, que é 'slug'
@@ -49,6 +50,9 @@ export default function Product() {
                     </div>
                 </>
             ) : null}
+            <Footer />
         </div>
+
+        
     )
 }

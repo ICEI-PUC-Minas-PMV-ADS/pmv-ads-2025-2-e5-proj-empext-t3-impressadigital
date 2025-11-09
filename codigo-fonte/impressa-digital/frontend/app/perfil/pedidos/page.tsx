@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import OrderCard from "@/app/components/layout/orderCard";
+import { useAuth } from "@/app/contexts/Authprovider"; // Importe o useAuth
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -32,18 +33,26 @@ interface Venda {
 }
 
 const PedidosPage: React.FC = () => {
+  const { user, loading: authLoading } = useAuth(); // Use o hook de autenticação
   const [pedidos, setPedidos] = useState<Venda[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPedidos = async () => {
+      // 🟢 VERIFICA SE O USUÁRIO ESTÁ LOGADO
+      if (!user) {
+        setLoading(false);
+        setError("Usuário não autenticado. Faça login para ver seus pedidos.");
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
 
-        // 1️⃣ Busca todas as vendas do backend
-        const vendasRes = await fetch(`${BASE_URL}/vendas`);
+        // 🟢 BUSCA APENAS AS VENDAS DO USUÁRIO LOGADO
+        const vendasRes = await fetch(`${BASE_URL}/vendas?user_id=${user.id}`);
         if (!vendasRes.ok) throw new Error("Erro ao buscar vendas.");
         const vendas: Venda[] = await vendasRes.json();
 
@@ -54,6 +63,8 @@ const PedidosPage: React.FC = () => {
               const produtosRes = await fetch(
                 `${BASE_URL}/vendas_produtos/venda/${venda.id}`
               );
+              if (!produtosRes.ok) return { ...venda, produtos: [] };
+              
               const produtos = await produtosRes.json();
               console.log(produtos);
               return { ...venda, produtos };
@@ -78,8 +89,34 @@ const PedidosPage: React.FC = () => {
       }
     };
 
-    fetchPedidos();
-  }, []);
+    if (!authLoading) {
+      fetchPedidos();
+    }
+  }, [user, authLoading]); // 🟢 Adicione as dependências
+
+  // 🟢 MOSTRA CARREGAMENTO DA AUTENTICAÇÃO
+  if (authLoading) {
+    return (
+      <div className="flex justify-center items-center h-[80vh] text-gray-500">
+        Verificando autenticação...
+      </div>
+    );
+  }
+
+  // 🟢 VERIFICA SE USUÁRIO ESTÁ LOGADO
+  if (!user) {
+    return (
+      <div className="flex flex-col justify-center items-center h-[80vh] text-gray-500">
+        <p className="text-lg mb-4">Você precisa estar logado para ver seus pedidos.</p>
+        <button
+          onClick={() => window.location.href = "/login"}
+          className="bg-[#4DC53E] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#45b336] transition"
+        >
+          Fazer Login
+        </button>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
