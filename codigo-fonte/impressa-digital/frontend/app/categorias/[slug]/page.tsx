@@ -28,7 +28,7 @@ interface Categoria {
   slug: string;
   produtos?: Produto[];
 }
-
+export const runtime = 'edge';
 export default function CategoriaPage() {
   const params = useParams();
   const slug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug;

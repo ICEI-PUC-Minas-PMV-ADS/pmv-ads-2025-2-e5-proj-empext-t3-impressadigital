@@ -9,6 +9,7 @@ import RelatedProducts from '../../components/layout/relatedProducts';
 import CustomerReviews from '../../components/layout/customerReviews';
 import Footer from '@/app/components/layout/footer';
 
+export const runtime = 'edge';
 export default function Product() {
     // useParams() retorna o nome da pasta dinâmica, que é 'slug'
     const params = useParams();
