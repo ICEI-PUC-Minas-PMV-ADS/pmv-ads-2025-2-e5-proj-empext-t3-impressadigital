@@ -62,7 +62,7 @@ export default function HeaderDashboard() {
                 className="transform transition-all duration-200 hover:scale-105 cursor-pointer"
               />
               {user && (
-                <span className="hidden md:inline text-gray-700 font-medium">
+                <span className="hidden md:inline text-gray-700 font-medium cursor-pointer">
                   {user.name.split(" ")[0]}
                 </span>
               )}

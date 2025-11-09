@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, OneToOne, DeleteDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  OneToMany,
+  OneToOne,
+  DeleteDateColumn,
+} from 'typeorm';
 import { Carrinho } from './carrinho.entity';
 import { CustomerAddress } from './customer_address.entity';
 import { Vendas } from './vendas.entity';
@@ -29,19 +37,28 @@ export class User {
   @Column({ nullable: true })
   password: string;
 
-  @Column({ type: 'enum', enum: ['admin', 'cliente'], default: 'cliente' })
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.CLIENTE })
   role: UserRole;
 
   @CreateDateColumn()
   criado_em: Date;
 
-  @OneToOne(() => CustomerAddress, (address) => address.user, { cascade: true, onDelete: 'CASCADE' })
-  endereco: CustomerAddress;
+  @OneToMany(() => CustomerAddress, (address) => address.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  enderecos: CustomerAddress[];
 
-  @OneToMany(() => Carrinho, (carrinho) => carrinho.user, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany(() => Carrinho, (carrinho) => carrinho.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   carrinhos: Carrinho[];
 
-  @OneToMany(() => Vendas, (venda) => venda.user, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany(() => Vendas, (venda) => venda.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   vendas: Vendas[];
 
   @OneToMany(() => ComentarioProduto, (comentario) => comentario.user)
@@ -51,8 +68,7 @@ export class User {
   avaliacoes: Avaliacoes_Produto[];
 
   @DeleteDateColumn()
-    deletedAt: Date | null;
-
+  deletedAt: Date | null;
 }
 
-
+export { UserRole };

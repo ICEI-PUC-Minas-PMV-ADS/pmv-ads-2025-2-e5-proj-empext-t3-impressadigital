@@ -1,5 +1,4 @@
-import {Controller,Get,Post,Put,Delete,Param,Body,ParseIntPipe}
-from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, Query } from '@nestjs/common';
 import { VendasService } from './vendas.service';
 import { Vendas } from 'src/core/database/entities/vendas.entity';
 
@@ -13,9 +12,13 @@ export class VendasController {
     return await this.vendasService.create(data);
   }
 
-  // Listar todas as vendas
+  // 🟢 ROTA ATUALIZADA: Listar vendas com filtro por usuário
   @Get()
-  async findAll(): Promise<Vendas[]> {
+  async findAll(@Query('user_id') user_id?: string): Promise<Vendas[]> {
+    if (user_id) {
+      const userId = parseInt(user_id, 10);
+      return await this.vendasService.findByUserId(userId);
+    }
     return await this.vendasService.findAll();
   }
 

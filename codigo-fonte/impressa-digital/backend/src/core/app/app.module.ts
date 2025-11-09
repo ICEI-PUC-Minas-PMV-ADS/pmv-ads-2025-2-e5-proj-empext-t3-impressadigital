@@ -8,7 +8,6 @@ import { Avaliacoes_produtosController } from './../../modules/avaliacoes_produt
 // app.module.ts
 import { Module } from '@nestjs/common';
 
-
 import { CatalogModule } from '../../modules/catalogo/catalog.module';
 import { AdmModule } from './../../modules/adm/adm.module';
 import { VendasModule } from './../../modules/vendas/vendas.module';
@@ -17,14 +16,13 @@ import { Customer_addressModule } from './../../modules/customer_address/custome
 import { CarrinhoModule } from './../../modules/carrinho/carrinho.module';
 import { CategoryModule } from './../../modules/category/category.module';
 import { ProductsModule } from '../../modules/products/products.module';
+import { FreteModule } from './../../modules/frete/frete.module';
 
 import { ComentarioProdutoController } from 'src/modules/comentario_produtos/comentario_produtos.controller';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from '../database/auth/auth.module';
 import { AuthdbModule } from '../database/authdb.module';
-
-
 
 @Module({
   imports: [
@@ -40,15 +38,15 @@ import { AuthdbModule } from '../database/authdb.module';
     Customer_addressModule,
     CarrinhoModule,
     CategoryModule,
-    ProductsModule
-
-
+    ProductsModule,
+    FreteModule,
   ],
   controllers: [
     VendasProdutosController,
     ComentarioProdutoController,
-    Avaliacoes_produtosController, AppController],
-  providers: [
-    Avaliacoes_produtosService, AppService],
+    Avaliacoes_produtosController,
+    AppController,
+  ],
+  providers: [Avaliacoes_produtosService, AppService],
 })
-export class AppModule { }
+export class AppModule {}

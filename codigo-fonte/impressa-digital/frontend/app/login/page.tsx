@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useAuth } from "../contexts/Authprovider";
 import Link from "next/link";
+import LoginModal from "./LoginModal";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -24,22 +25,26 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen justify-center bg-white">
-      {/* Área da esquerda */}
-      <div className="flex flex-col items-center justify-center w-1/2 p-10 text-center">
+    <div className="flex min-h-screen bg-white">
+      <Suspense fallback={<div>Loading...</div>}>
+        <LoginModal />
+      </Suspense>
+
+      {/* Área esquerda - informações */}
+      <div className="hidden md:flex flex-col items-center justify-center w-1/2 p-10 text-center">
         <img
           src="/images/logo_impressa_digital.png"
           alt="Logo"
           className="w-100 mb-6"
         />
-        <p className="text-gray-600 text-xl max-w-md justify-center">
+        <p className="text-gray-600 text-xl max-w-md">
           Na Impressa Digital, você transforma ideias em personalizados únicos
           e celebra momentos inesquecíveis.
         </p>
       </div>
 
-      {/* Área da direita - Card de login */}
-      <div className="flex w-1/2 items-center justify-center">
+      {/* Área direita - Card de login */}
+      <div className="flex flex-1 items-center justify-center p-8">
         <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -77,9 +82,12 @@ export default function LoginPage() {
           )}
 
           <div className="text-center mt-4">
-            <Link href="/recuperar-senha" className="text-sm text-gray-500">
-              Recuperar senha
-            </Link>
+            <p className="text-sm text-gray-500">
+              Esqueceu sua senha?{" "}
+              <Link href="/forgot_password" className="text-sm text-green-600">
+                Recuperar senha
+              </Link>
+            </p>
           </div>
 
           <div className="border-t mt-6 pt-4 text-center">

@@ -1,3 +1,4 @@
+// Authprovider.tsx (atualizado)
 "use client";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
@@ -9,6 +10,7 @@ interface User {
   role?: string;
   cpf?: string;
   birthDate?: string;
+  phone: string;
 }
 
 interface AuthContextType {
@@ -25,48 +27,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Checa se já existe sessão ativa via cookie
- useEffect(() => {
-  const checkSession = async () => {
-    try {
-      console.log('Verificando sessão...');
-      const res = await fetch("http://localhost:3000/auth/me", {
-        method: "GET",
-        credentials: "include",
-      });
-      
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.user);
-      } else {
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/auth/me", {
+          method: "GET",
+          credentials: "include",
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error("Erro ao recuperar sessão:", err);
         setUser(null);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Erro ao recuperar sessão:", err);
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-  console.log(user)
-  checkSession();
-}, []);
+    };
+    checkSession();
+  }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const res = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // 👈 cookie vai ser gravado aqui
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
-      if (!res.ok) return false;
+      if (!res.ok) {
+        console.error("Login falhou:", res.status, res.statusText);
+        return false;
+      }
 
       const data = await res.json();
+      console.log("Login bem-sucedido:", data);
+      
       setUser(data.user);
 
-      router.push("/perfil");
+      // Pequeno delay para garantir que o cookie foi salvo
+      setTimeout(() => {
+        router.push("/");
+        router.refresh(); // Força atualização para o middleware
+      }, 100);
+      
       return true;
     } catch (error) {
       console.error("Erro de login:", error);
@@ -78,13 +87,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await fetch("http://localhost:3000/auth/logout", {
         method: "POST",
-        credentials: "include", // 👈 backend remove cookie
+        credentials: "include",
       });
     } catch (err) {
       console.error("Erro no logout:", err);
     } finally {
       setUser(null);
-      router.push("/login");
+      router.push("/");
+      router.refresh();
     }
   };
 

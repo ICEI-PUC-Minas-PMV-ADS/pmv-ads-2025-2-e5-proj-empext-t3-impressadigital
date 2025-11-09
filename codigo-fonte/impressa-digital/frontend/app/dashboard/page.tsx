@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 function StatCard({ title, value }: { title: string; value: number | string }) {
     return (
-        <div className="w-64 lg:w-56 relative h-40 rounded-2xl border border-gray-200 bg-white  p-4 flex items-center justify-center">
+        <div className="w-64 lg:w-56 relative h-40 rounded-2xl border border-gray-200 bg-white  p-4 flex items-center">
             <span className="absolute top-3 left-4 text-md font-bold">{title}</span>
             <span className="text-5xl font-extrabold text-[#4DC53E] leading-none">{value}</span>
         </div>
@@ -247,7 +247,7 @@ export default function Dashboard() {
     const temasEmDestaque = featuredCategories.length;
 
     return (
-        <div className="text-black flex flex-col gap-6">
+        <div className=" flex flex-col items-center justify-center text-black gap-6">
             <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
 
             <div className="flex flex-wrap gap-4 lg:gap-2">

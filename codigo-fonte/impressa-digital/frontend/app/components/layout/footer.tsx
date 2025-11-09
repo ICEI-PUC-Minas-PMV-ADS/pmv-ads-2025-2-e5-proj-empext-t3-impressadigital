@@ -1,8 +1,8 @@
 export default function Footer() {
 
   return (
-    // Mudança de bg-gray-900 para bg-gray-800 para um preto mais claro/cinza escuro
-    <footer className="bg-gray-800 text-gray-200 p-8 text-center md:text-left">
+    // Mudança do fundo para um preto mais claro (#1A1A1A)
+    <footer className="bg-[#1A1A1A] text-gray-200 p-8 text-center md:text-left">
       <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
         
         {/* Coluna 1: Nome e contato (Mantida alinhada à esquerda no desktop) */}
@@ -48,8 +48,8 @@ export default function Footer() {
       </div>
 
       {/* Linha inferior */}
-      {/* Ajustei a borda para border-gray-700 para manter a visibilidade contra o novo fundo */}
-      <div className="mt-8 border-t border-gray-700 pt-4 text-sm text-gray-400 text-center">
+      {/* Alteração da borda para branca (border-white) */}
+      <div className="mt-8 border-t border-white pt-4 text-sm text-gray-400 text-center">
         © 2025 Gráfica Impressa Digital — Todos os direitos reservados.<br />
       </div>
     </footer>
