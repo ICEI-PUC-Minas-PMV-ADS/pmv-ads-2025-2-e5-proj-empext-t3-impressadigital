@@ -25,6 +25,7 @@ async function bootstrap() {
       'http://localhost:3001',
       'http://localhost:8081',
       'http://localhost:19006',
+      'https://impressadigital.pages.dev',
     ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
