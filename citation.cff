@@ -1,29 +1,25 @@
-message: Please cite this software using these metadata.
-title:
+message: Rede social para troca de dicad conhecimentos e experiências acadêmicas 
+title: Impressa Digital
 authors:
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
+ - family-names: Mucio Duarte
+    given-names: Brian
+  - family-names: Cambraia Nunes
+    given-names: Erick 
+- family-names: de Sousa e Silva
+    given-names: Douglas Henrique
+- family-names: da Silva Machado 
+    given-names: Luiza Maria
+- family-names: de Souza e Maia
+    given-names: Marcelly Giovanna
+- family-names: Salomé Rocha Silva
+    given-names: Mateus
   - name-suffix: Professor
     affiliation: PUC Minas
-    family-names: 
-    given-names: 
-  - name-suffix: Professor
-    affiliation: PUC Minas
-    family-names: 
-    given-names: 
+    family-names: da Costa
+    given-names: José Wilson 
 keywords:
-  - 
-  - 
-repository-code: 
+  - Shopping
+  - Gerenciador de mercadorias
+repository-code: https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-2-e5-proj-empext-t3-impressadigital
 version: 1.0.0
-date-released: 2023-10-31
+date-released: 2025-12-08
