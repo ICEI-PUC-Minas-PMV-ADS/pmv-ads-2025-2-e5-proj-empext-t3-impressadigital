@@ -23,6 +23,9 @@ export class AuthService {
 
 
   async login(email: string, password: string): Promise<{ user: any; token: string }> {
+
+    console.log("LOGANDO COM O TOKEN SECRET:", process.env.JWT_SECRET);
+
     const user = await this.validateUser(email, password);
 
     const payload = { sub: user.id, email: user.email, name: user.name, phone:user.phone, role: user.role, cpf: user.cpf, birthDate: user.birthDate };
