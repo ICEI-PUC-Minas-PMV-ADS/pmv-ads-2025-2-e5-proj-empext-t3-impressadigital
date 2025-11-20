@@ -7,24 +7,24 @@ export class MailService {
   private transporter;
 
   constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
-    });
+  this.transporter = nodemailer.createTransport({
+    host: 'smtp.elasticemail.com',
+    port: 2525,
+    secure: false,  
+    auth: {
+      user: process.env.MAIL_USER, 
+      pass: process.env.MAIL_PASS, 
+    },
+  });
 
-    this.transporter.verify((error, success) => {
-      if (error) {
-        this.logger.error('Erro ao conectar no SMTP do Gmail', error);
-      } else {
-        this.logger.log('SMTP do Gmail pronto para enviar e-mails');
-      }
-    });
-  }
+  this.transporter.verify((error, success) => {
+    if (error) {
+      this.logger.error('Erro ao conectar no SMTP do Elastic Email', error);
+    } else {
+      this.logger.log('SMTP do Elastic Email pronto para enviar e-mails');
+    }
+  });
+}
 
   async sendPasswordReset(email: string, token: string) {
     const resetUrl = `${process.env.FRONTEND_URL}/reset_password?token=${token}`;
