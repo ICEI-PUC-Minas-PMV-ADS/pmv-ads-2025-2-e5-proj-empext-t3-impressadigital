@@ -6,22 +6,27 @@ export class MailService {
   private readonly logger = new Logger(MailService.name);
   private transporter;
 
-  constructor() {
+   constructor() {
   this.transporter = nodemailer.createTransport({
-    host: 'smtp.elasticemail.com',
-    port: 2525,
-    secure: false,  
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,         
+    ignoreTLS: false,      
     auth: {
-      user: process.env.MAIL_USER, 
-      pass: process.env.MAIL_PASS, 
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
     },
+    tls: {
+      rejectUnauthorized: false, 
+    },
+    family: 4, 
   });
 
   this.transporter.verify((error, success) => {
     if (error) {
-      this.logger.error('Erro ao conectar no SMTP do Elastic Email', error);
+      this.logger.error('❌ Erro conexão SMTP:', error);
     } else {
-      this.logger.log('SMTP do Elastic Email pronto para enviar e-mails');
+      this.logger.log('✅ Gmail SMTP conectado com sucesso na porta 587!');
     }
   });
 }
