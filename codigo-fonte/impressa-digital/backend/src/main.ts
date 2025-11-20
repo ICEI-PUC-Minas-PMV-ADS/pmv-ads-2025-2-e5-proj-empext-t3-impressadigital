@@ -20,16 +20,25 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: [
+  origin: (origin, callback) => {
+    const allowed = [
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:8081',
       'http://localhost:19006',
       'https://impressadigital.pages.dev',
-    ],
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    credentials: true,
-  });
+    ];
+
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origem não permitida pelo CORS'));
+    }
+  },
+  credentials: true,
+  allowedHeaders: 'Content-Type, Authorization',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+});
 
   await app.listen(process.env.PORT ?? 3000);
 }
