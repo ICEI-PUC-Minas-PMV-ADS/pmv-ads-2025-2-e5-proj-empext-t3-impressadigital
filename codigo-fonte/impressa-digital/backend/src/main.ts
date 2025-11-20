@@ -7,6 +7,7 @@ import { ValidationPipe } from '@nestjs/common';
 dotenv.config();
 
 async function bootstrap() {
+  console.log("JWT_SECRET BACKEND:", JSON.stringify(process.env.JWT_SECRET));
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
