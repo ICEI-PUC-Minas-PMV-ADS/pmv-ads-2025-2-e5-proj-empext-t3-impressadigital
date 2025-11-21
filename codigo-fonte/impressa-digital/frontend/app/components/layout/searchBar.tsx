@@ -9,6 +9,7 @@ export interface Produto {
   slug?: string;
   categoria?: { nome: string };
   midias?: { url?: string }[];
+  preco?: number;
 }
 
 interface SearchBarProps {
@@ -18,7 +19,7 @@ interface SearchBarProps {
   loadingSearch: boolean;
   activeIndex: number;
   setActiveIndex: (index: number) => void;
-  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  handleKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void; // opcional
 }
 
 export function SearchBar({
@@ -43,10 +44,21 @@ export function SearchBar({
         onKeyDown={handleKeyDown}
         className="flex-1 rounded-l-full border border-gray-300 bg-gray-100 px-5 py-3 text-sm placeholder-gray-500 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
       />
-        <button className="bg-[#2ab906] hover:bg-green-600 rounded-r-full px-4 flex items-center justify-center text-white transition" type="submit" > 
-            <svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 -960 960 960" width="22" fill="currentColor" > <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" /> </svg> 
-        
-        </button>
+
+      <button
+        className="bg-[#2ab906] hover:bg-green-600 rounded-r-full px-4 flex items-center justify-center text-white transition"
+        type="submit"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="22"
+          viewBox="0 -960 960 960"
+          width="22"
+          fill="currentColor"
+        >
+          <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+        </svg>
+      </button>
 
       {/* Dropdown */}
       {searchTerm && (
@@ -70,21 +82,22 @@ export function SearchBar({
                 >
                   <div className="w-10 h-10 bg-gray-100 border rounded-md overflow-hidden">
                     <img
-                    src={p.midias?.[0]?.url || "/placeholder.jpg"}
-                    alt={p.nome}
-                    width={40}
-                    height={40}
-                    style={{ borderRadius: "8px", objectFit: "cover" }}
+                      src={p.midias?.[0]?.url || "/placeholder.jpg"}
+                      alt={p.nome}
+                      width={40}
+                      height={40}
+                      style={{ borderRadius: "8px", objectFit: "cover" }}
                     />
                   </div>
+
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-800 truncate">
                       {p.nome}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {(p as any)?.preco
-                        ? `R$ ${Number((p as any).preco || 0).toFixed(2).replace(".", ",")}`
 
+                    <p className="text-xs text-gray-500">
+                      {p.preco
+                        ? `R$ ${Number(p.preco).toFixed(2).replace(".", ",")}`
                         : p.categoria?.nome || ""}
                     </p>
                   </div>
