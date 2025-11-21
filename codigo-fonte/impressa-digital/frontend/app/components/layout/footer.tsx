@@ -3,7 +3,13 @@ export default function Footer() {
   return (
     // Mudança do fundo para um preto mais claro (#1A1A1A)
     <footer className="bg-[#1A1A1A] text-gray-200 p-8 text-center md:text-left">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+      {/* AJUSTE PRINCIPAL:
+        - Em vez de md:grid-cols-3, usamos md:flex e md:justify-between 
+        - Isso garante que as três colunas sejam tratadas como itens flexíveis 
+          e espaçadas para que a do meio fique centralizada entre as duas laterais. 
+        - Em telas pequenas, ele ainda usa o layout de grade (grid) padrão.
+      */}
+      <div className="max-w-6xl mx-auto grid md:flex md:justify-between gap-8">
         
         {/* Coluna 1: Nome e contato (Mantida alinhada à esquerda no desktop) */}
         <div>
@@ -21,7 +27,9 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div> 
+        {/* Coluna 2: Serviços (Centralizada com justify-between) */}
+        {/* Adicionei 'md:mx-auto' para garantir que ela não estique e se mantenha no centro da área disponível, embora 'justify-between' seja o principal responsável pela centralização visual. */}
+        <div className="md:mx-auto"> 
           <h3 className="text-lg font-semibold mb-3">Serviços</h3>
           
           
@@ -34,6 +42,7 @@ export default function Footer() {
           </ul>
         </div>
 
+        {/* Coluna 3: Informações */}
         <div>
           <h3 className="text-lg font-semibold mb-3">Informações</h3>
           <p className="text-sm mb-2">
