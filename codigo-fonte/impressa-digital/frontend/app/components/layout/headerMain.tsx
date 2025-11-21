@@ -33,20 +33,20 @@ const Toast = ({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -20, scale: 0.9 }}
           transition={{ duration: 0.28, ease: "easeOut" }}
-          className={`fixed top-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3 rounded-lg shadow-lg text-white font-medium backdrop-blur-sm ${
+          className={`fixed top-6 right-6 z-[9999] flex items-center gap-3 px-4 sm:px-5 py-2 sm:py-3 rounded-lg shadow-lg text-white font-medium backdrop-blur-sm ${
             type === "success" ? "bg-green-600/95" : "bg-red-600/95"
           }`}
         >
           {type === "success" ? (
-            <AiOutlineCheckCircle className="text-2xl" />
+            <AiOutlineCheckCircle className="text-xl sm:text-2xl" />
           ) : (
-            <AiOutlineCloseCircle className="text-2xl" />
+            <AiOutlineCloseCircle className="text-xl sm:text-2xl" />
           )}
-          <span className="text-sm md:text-base">{message}</span>
+          <span className="text-sm sm:text-base">{message}</span>
           <button
             onClick={onClose}
             aria-label="Fechar notificação"
-            className="ml-3 text-white/80 hover:text-white transition-colors text-lg leading-none"
+            className="ml-2 sm:ml-3 text-white/80 hover:text-white transition-colors text-lg leading-none"
           >
             ×
           </button>
@@ -71,6 +71,7 @@ interface Produto {
 
 export default function HeaderMain() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [allCategories, setAllCategories] = useState<Categoria[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
@@ -79,16 +80,13 @@ export default function HeaderMain() {
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [toast, setToast] = useState<
-    { message: string; type: "success" | "error" } | null
-  >(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   const categoriesRef = useRef<HTMLLIElement | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { itemCount } = useCart();
   const { user, logout } = useAuth();
-
   const menuItems = ["Sobre nós", "Contato"];
 
   // Funções de toggle
@@ -146,6 +144,7 @@ export default function HeaderMain() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMobileMenuOpen]);
 
+  // Fetch categorias
   useEffect(() => {
     const fetchCategories = async () => {
       setLoadingCategories(true);
@@ -164,35 +163,24 @@ export default function HeaderMain() {
   }, []);
 
   useEffect(() => {
-    if (searchTerm.trim().length < 3) {
-      setSearchResults([]);
-      return;
-    }
-
-    const normalize = (str: string) =>
-      str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-
+    if (searchTerm.trim().length < 3) { setSearchResults([]); return; }
+    const normalize = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const timeout = setTimeout(async () => {
       setLoadingSearch(true);
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
         const data: Produto[] = await res.json();
-
-        const filtered = data.filter(
-          (p) =>
-            normalize(p.nome).includes(normalize(searchTerm)) ||
-            normalize(p.categoria?.nome || "").includes(normalize(searchTerm))
+        setSearchResults(
+          data.filter(
+            p =>
+              normalize(p.nome).includes(normalize(searchTerm)) ||
+              normalize(p.categoria?.nome || "").includes(normalize(searchTerm))
+          )
         );
-
-        setSearchResults(filtered);
-      } catch (err) {
-        console.error(err);
+      } catch {
         setSearchResults([]);
-      } finally {
-        setLoadingSearch(false);
-      }
+      } finally { setLoadingSearch(false); }
     }, 300);
-
     return () => clearTimeout(timeout);
   }, [searchTerm]);
 
@@ -225,13 +213,7 @@ export default function HeaderMain() {
       <div className="flex items-center justify-between gap-4 px-6 py-4 md:px-8 lg:px-12 xl:px-16 lg:gap-8">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
-          <Image
-            src="/images/logo_impressa_digital.png"
-            alt="Logo"
-            width={160}
-            height={60}
-            className="object-contain"
-          />
+          <Image src="/images/logo_impressa_digital.png" alt="Logo" width={140} height={50} className="object-contain" />
         </Link>
 
         {/* Menu desktop (escondido em mobile) */}
@@ -258,7 +240,6 @@ export default function HeaderMain() {
                   />
                 </svg>
               </button>
-
               <AnimatePresence>
                 {isCategoriesOpen && (
                   <motion.div
@@ -288,8 +269,7 @@ export default function HeaderMain() {
                 )}
               </AnimatePresence>
             </li>
-
-            {menuItems.map((item) => (
+            {menuItems.map(item => (
               <li key={item}>
                 <Link
                   href={
@@ -304,7 +284,7 @@ export default function HeaderMain() {
               </li>
             ))}
           </ul>
-        </div>
+        </nav>
 
         {/* Barra de busca Desktop (escondida em mobile) */}
         <div className="hidden md:block flex-1 mx-4 lg:mx-8 xl:mx-12 max-w-xl">
@@ -552,13 +532,7 @@ export default function HeaderMain() {
       </AnimatePresence>
 
       {/* Toast */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </header>
   );
 }
