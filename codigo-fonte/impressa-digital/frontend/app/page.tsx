@@ -39,6 +39,8 @@ export default function Home({ children }: { children: ReactNode }) {
   }, []);
 
   return (
+    <div>
+
     <div className="min-h-screen bg-[#f5f5f5] flex flex-col">
       <HeaderDashboard />
 
@@ -48,8 +50,9 @@ export default function Home({ children }: { children: ReactNode }) {
           titulo="Produtos em Destaque" 
           produtos={produtos} 
           produtosPorPagina={12} 
-        />
+          />
       </div>
+          </div>
      <Footer />
     </div>
   
