@@ -364,11 +364,10 @@ export default function HeaderMain() {
                   <Image
                     src="/images/pessoa.png.png"
                     alt="Ícone de Pessoa"
-                    // === AJUSTE AQUI: Defina o width e height para o tamanho desejado da imagem interna ===
+            
                     width={24}   // Por exemplo, 24px. Ajuste conforme o quão "pequena" você quer que ela seja.
                     height={24}  // Por exemplo, 24px.
-                  // === REMOVIDAS AS CLASSES w-full h-full object-cover para que o width/height sejam respeitados ===
-                  // A centralização é feita pelo flexbox do div pai.
+          
                   />
                 )}
               </div>
