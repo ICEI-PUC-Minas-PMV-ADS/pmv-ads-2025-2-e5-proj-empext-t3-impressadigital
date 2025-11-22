@@ -4,6 +4,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { div } from "framer-motion/client";
 
 interface RelatedProduct {
     id: number;
@@ -127,7 +128,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                 setLoading(false);
             }
         };
-
+        
         fetchRelatedProducts();
     }, [productIdentifier]);
 
@@ -152,6 +153,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
         products.length <= itemsPerView;
 
     return (
+<div className="flex-1 py-6 w-full bg-[#F9FAFB] rounded-x100 shadow-sm hover:shadow-md transition flex flex-col overflow-hidden p-6 mt-10" > 
         <section className="p-6 mt-10 relative">
             <h2 className="text-2xl text-[#A1A1A1] text-center font-bold mb-4">Produtos Relacionados</h2>
             
@@ -159,9 +161,9 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                 {/* Seta para a Esquerda */}
                 {showCarousel && !isAtStart && (
                     <button 
-                        onClick={() => scrollCarousel('left')} 
-                        className="  p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition translate-x-1/2"
-                        aria-label="Rolar para a esquerda"
+                    onClick={() => scrollCarousel('left')} 
+                    className="  p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition translate-x-1/2"
+                    aria-label="Rolar para a esquerda"
                     >
                         &lt;
                     </button>
@@ -174,14 +176,14 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                     className="flex overflow-x-auto w-full space-x-4 p-2 scrollbar-hide snap-x snap-mandatory" 
                     // Se for menor ou igual a 5, o overflow fica 'hidden' para não permitir a rolagem
                     style={{ overflowX: showCarousel ? 'scroll' : 'hidden' }}
-                >
+                    >
                     {products.map((p) => (
                         <Link 
-                            key={p.id} 
-                            href={`/product/${p.slug}`}
-                            // flex-shrink-0: Garante que o item não encolha. 
-                            // w-1/5: Garante que 5 itens caibam na tela (100% / 5).
-                            className="flex-shrink-0 w-2/5 md:w-1/5 snap-start" 
+                        key={p.id} 
+                        href={`/product/${p.slug}`}
+                        // flex-shrink-0: Garante que o item não encolha. 
+                        // w-1/5: Garante que 5 itens caibam na tela (100% / 5).
+                        className="flex-shrink-0 w-2/5 md:w-1/5 snap-start" 
                         >
                             <div className="flex flex-col bg-[#F3F3F3] rounded-lg p-2 shadow-sm h-full">
                                 <div className="flex items-center justify-center px-2 py-2  rounded-lg h-32">
@@ -191,7 +193,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                                         src={p.midias?.[0]?.url || "/images/placeholder.png"}
                                         alt={p.nome}
                                         className="rounded max-h-full object-contain"
-                                    />
+                                        />
                                 </div>
                                 <p className="text-sm mt-2 flex-grow">{p.nome}</p>
                                 <button className="bg-[#35b814] text-white px-5 py-1 rounded-2xl text-sm mt-2 self-center w-full">
@@ -205,14 +207,15 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                 {/* Seta para a Direita */}
                 {showCarousel && !isAtEnd && (
                     <button 
-                        onClick={() => scrollCarousel('right')} 
-                        className=" p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition -translate-x-1/2"
-                        aria-label="Rolar para a direita"
+                    onClick={() => scrollCarousel('right')} 
+                    className=" p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition -translate-x-1/2"
+                    aria-label="Rolar para a direita"
                     >
                         &gt;
                     </button>
                 )}
             </div>
         </section>
+</div>
     );
 }
