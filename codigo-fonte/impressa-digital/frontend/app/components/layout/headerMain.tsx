@@ -7,7 +7,7 @@ import { useAuth } from "../../contexts/Authprovider";
 import { motion, AnimatePresence } from "framer-motion";
 import { SearchBar } from "./searchBar";
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
-import { FiMenu, FiX } from "react-icons/fi"; 
+import { FiMenu, FiX } from "react-icons/fi";
 
 
 const Toast = ({
@@ -33,9 +33,8 @@ const Toast = ({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -20, scale: 0.9 }}
           transition={{ duration: 0.28, ease: "easeOut" }}
-          className={`fixed top-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3 rounded-lg shadow-lg text-white font-medium backdrop-blur-sm ${
-            type === "success" ? "bg-green-600/95" : "bg-red-600/95"
-          }`}
+          className={`fixed top-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3 rounded-lg shadow-lg text-white font-medium backdrop-blur-sm ${type === "success" ? "bg-green-600/95" : "bg-red-600/95"
+            }`}
         >
           {type === "success" ? (
             <AiOutlineCheckCircle className="text-2xl" />
@@ -94,7 +93,7 @@ export default function HeaderMain() {
   // Funções de toggle
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    setIsCategoriesOpen(false); 
+    setIsCategoriesOpen(false);
   };
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
@@ -109,7 +108,7 @@ export default function HeaderMain() {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
-      
+
       // Fecha Dropdown de Categorias (Desktop)
       if (
         categoriesRef.current &&
@@ -128,7 +127,7 @@ export default function HeaderMain() {
       ) {
         setShowUserMenu(false);
       }
-      
+
       // Fecha Menu Mobile
       if (
         mobileMenuRef.current &&
@@ -137,7 +136,7 @@ export default function HeaderMain() {
       ) {
         const mobileButton = document.getElementById('mobile-menu-button');
         if (mobileButton && mobileButton.contains(target)) return;
-        
+
         setIsMobileMenuOpen(false);
       }
     }
@@ -239,14 +238,13 @@ export default function HeaderMain() {
           <ul className="flex gap-2 items-center lg:gap-4">
             <li className="relative" ref={categoriesRef}>
               <button
-                onClick={toggleCategoriesDropdown} 
+                onClick={toggleCategoriesDropdown}
                 className="bg-[#3cc10c] rounded-full px-4 py-2 text-white uppercase text-xs font-bold hover:bg-green-700 transition flex items-center gap-1 shadow-sm whitespace-nowrap lg:px-6 lg:py-2 lg:text-sm lg:gap-2"
               >
                 Categorias
                 <svg
-                  className={`w-4 h-4 transition-transform duration-300 ${
-                    isCategoriesOpen ? "rotate-180" : ""
-                  }`}
+                  className={`w-4 h-4 transition-transform duration-300 ${isCategoriesOpen ? "rotate-180" : ""
+                    }`}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -321,7 +319,7 @@ export default function HeaderMain() {
 
         {/* CONJUNTO DE ÍCONES DE AÇÃO */}
         <div className="flex items-center gap-4 flex-shrink-0">
-          
+
           {/* Botão Menu Hambúrguer (Apenas Mobile) */}
           <button
             id="mobile-menu-button"
@@ -331,7 +329,7 @@ export default function HeaderMain() {
           >
             {isMobileMenuOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
           </button>
-          
+
           {/* Carrinho */}
           <Link
             href="/perfil/carrinho"
@@ -359,11 +357,21 @@ export default function HeaderMain() {
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center gap-2 hover:opacity-80"
             >
-              <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold text-lg border border-gray-300">
-                {user?.name ? user.name.charAt(0).toUpperCase() : "?"}
+              <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold text-lg border border-gray-300 overflow-hidden">
+                {user?.name ? (
+                  user.name.charAt(0).toUpperCase()
+                ) : (
+                  <Image
+                    src="/images/pessoa.png.png"
+                    alt="Ícone de Pessoa"
+            
+                    width={24}   // Por exemplo, 24px. Ajuste conforme o quão "pequena" você quer que ela seja.
+                    height={24}  // Por exemplo, 24px.
+          
+                  />
+                )}
               </div>
             </button>
-
             <AnimatePresence>
               {showUserMenu && (
                 <motion.div
@@ -450,7 +458,7 @@ export default function HeaderMain() {
                   <FiX className="w-7 h-7" />
                 </button>
               </div>
-              
+
               {/* Barra de busca Mobile dentro do menu */}
               <div className="mb-6">
                 <SearchBar
@@ -467,14 +475,13 @@ export default function HeaderMain() {
               {/* Menu de Categorias Mobile */}
               <div className="mb-6 border-t pt-4">
                 <button
-                  onClick={toggleCategoriesDropdown} 
+                  onClick={toggleCategoriesDropdown}
                   className="w-full text-left flex justify-between items-center text-lg font-bold text-gray-700 hover:text-green-600 mb-2"
                 >
                   Categorias
                   <svg
-                    className={`w-5 h-5 transition-transform duration-300 ${
-                      isCategoriesOpen ? "rotate-180" : ""
-                    }`}
+                    className={`w-5 h-5 transition-transform duration-300 ${isCategoriesOpen ? "rotate-180" : ""
+                      }`}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
@@ -486,7 +493,7 @@ export default function HeaderMain() {
                     />
                   </svg>
                 </button>
-                
+
                 <AnimatePresence>
                   {isCategoriesOpen && (
                     <motion.div
@@ -504,8 +511,8 @@ export default function HeaderMain() {
                             key={cat.id}
                             href={`/categorias/${cat.slug}`}
                             onClick={() => {
-                                closeMobileMenu(); // Fecha o menu lateral
-                                closeCategoriesDropdown(); // <--- CHAMA A FUNÇÃO PARA FECHAR O DROPDOWN!
+                              closeMobileMenu(); // Fecha o menu lateral
+                              closeCategoriesDropdown(); // <--- CHAMA A FUNÇÃO PARA FECHAR O DROPDOWN!
                             }}
                             className="block py-1.5 text-gray-600 hover:text-green-600 transition text-base"
                           >
@@ -535,7 +542,7 @@ export default function HeaderMain() {
                   </Link>
                 ))}
               </nav>
-              
+
             </motion.div>
 
             {/* Overlay para fechar o menu ao clicar fora */}
