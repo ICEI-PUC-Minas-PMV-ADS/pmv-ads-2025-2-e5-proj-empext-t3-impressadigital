@@ -132,7 +132,7 @@ const EditarPerfil: React.FC = () => {
     try {
       setAddressLoading(true);
       const response = await fetch(
-        `{process.env.NEXT_PUBLIC_API_URL}/customer_address/user/${user.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/customer_address/user/${user.id}`,
         { credentials: "include" }
       );
       if (response.ok) {
@@ -149,7 +149,7 @@ const EditarPerfil: React.FC = () => {
   const handleSetPrimaryAddress = async (addressId: number) => {
     try {
       const res = await fetch(
-        `{process.env.NEXT_PUBLIC_API_URL}/customer_address/${addressId}/set-primary`,
+        `${process.env.NEXT_PUBLIC_API_URL}/customer_address/${addressId}/set-primary`,
         {
           method: "PATCH",
           credentials: "include",
@@ -309,8 +309,8 @@ const EditarPerfil: React.FC = () => {
     try {
       const method = editingAddress.id ? "PUT" : "POST";
       const url = editingAddress.id
-        ? `{process.env.NEXT_PUBLIC_API_URL}/customer_address/${editingAddress.id}`
-        : `{process.env.NEXT_PUBLIC_API_URL}/customer_address`;
+        ? `${process.env.NEXT_PUBLIC_API_URL}/customer_address/${editingAddress.id}`
+        : `${process.env.NEXT_PUBLIC_API_URL}/customer_address`;
       const payload: Partial<Address> & { user_id: number } = {
         logradouro: editingAddress.logradouro.trim(),
         numero: editingAddress.numero.trim(),
@@ -380,7 +380,7 @@ const EditarPerfil: React.FC = () => {
     try {
       setAddressLoading(true);
       const res = await fetch(
-        `{process.env.NEXT_PUBLIC_API_URL}/customer_address/${addressToDelete}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/customer_address/${addressToDelete}`,
         {
           method: "DELETE",
           credentials: "include",
