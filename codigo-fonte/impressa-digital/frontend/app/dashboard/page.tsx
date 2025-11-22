@@ -170,7 +170,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         const controller = new AbortController();
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
         const formatCurrency = (value: number) => {
             if (typeof value !== 'number' || isNaN(value)) return 'R$ 0,00';
