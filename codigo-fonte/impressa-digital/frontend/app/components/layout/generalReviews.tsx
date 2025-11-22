@@ -8,9 +8,7 @@ interface Review {
   user: { nome: string }; 
   avaliacoes: string;
   rating: number;
-  midias?: { url: string }[];
-  // Removendo 'produto', já que estamos pegando todas
-  // produto: { id: number }; 
+
 }
 
 export default function GeneralReviews() {
@@ -82,15 +80,7 @@ export default function GeneralReviews() {
               {renderStars(r.rating)}
           </div>
           <p className="text-gray-700 mt-2 line-clamp-4">{r.avaliacoes}</p>
-          {/* Opcional: Renderizar primeira mídia se existir */}
-          {r.midias && r.midias.length > 0 && (
-              <img 
-                // Certifique-se de que a URL existe antes de tentar renderizar
-                src={r.midias[0]?.url || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='} 
-                alt="Mídia da avaliação" 
-                className="mt-3 w-full h-32 object-cover rounded-md"
-              />
-          )}
+         
         </div>
       ))}
       <div className="col-span-full text-center mt-4">
