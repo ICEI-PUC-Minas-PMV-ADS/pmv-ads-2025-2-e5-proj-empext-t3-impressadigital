@@ -9,19 +9,24 @@ export class MailService {
   constructor() {
     this.transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
+      port: 587,         // Alterado para a porta TLS/STARTTLS mais comum
+      secure: false,     // Alterado para false, pois a porta 587 usa STARTTLS
       auth: {
         user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+        pass: process.env.MAIL_PASS, // Deve ser a App Password do Google
       },
+      tls: {
+        // Opção de compatibilidade para alguns servidores, recomendado pelo Nodemailer
+        ciphers: 'SSLv3'
+      }
     });
 
     this.transporter.verify((error, success) => {
       if (error) {
+        // Este erro é vital para o debug em produção
         this.logger.error('Erro ao conectar no SMTP do Gmail', error);
       } else {
-        this.logger.log('SMTP do Gmail pronto para enviar e-mails');
+        this.logger.log('SMTP do Gmail pronto para enviar e-mails (Porta 587)');
       }
     });
   }
@@ -59,7 +64,7 @@ export class MailService {
                         </p>
 
                         <a href="${resetUrl}" 
-                           style="display: inline-block; padding: 12px 25px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; transition: background-color 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                          style="display: inline-block; padding: 12px 25px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; transition: background-color 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
                           REDEFINIR SENHA
                         </a>
 

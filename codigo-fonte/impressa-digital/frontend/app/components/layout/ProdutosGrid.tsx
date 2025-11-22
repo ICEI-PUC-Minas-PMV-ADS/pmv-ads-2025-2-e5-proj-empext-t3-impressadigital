@@ -14,7 +14,6 @@ interface Produto {
   id: number;
   nome: string;
   slug: string;
-  preco?: number | string;
   midias?: Imagem[];
 }
 
@@ -22,24 +21,6 @@ interface ProdutosGridProps {
   titulo: string;
   produtos: Produto[];
   produtosPorPagina?: number;
-}
-
-function parsePrecoToNumber(val: number | string | undefined): number | null {
-  if (val === undefined || val === null) return null;
-  if (typeof val === "number") return Number.isFinite(val) ? val : null;
-
-  const cleaned = val.replace(/[^\d,.-]/g, "").trim();
-  if (!cleaned) return null;
-
-  let normalized = cleaned;
-  if (cleaned.includes(".") && cleaned.includes(",")) {
-    normalized = cleaned.replace(/\./g, "").replace(",", ".");
-  } else if (cleaned.includes(",")) {
-    normalized = cleaned.replace(",", ".");
-  }
-
-  const n = Number(normalized);
-  return Number.isFinite(n) ? n : null;
 }
 
 export default function ProdutosGrid({
@@ -70,29 +51,25 @@ export default function ProdutosGrid({
         <div
           className="
           grid
-          grid-cols-1       
+          grid-cols-1      
           sm:grid-cols-2     
           md:grid-cols-3     
           lg:grid-cols-4     
           gap-4 sm:gap-6
         ">
           {produtosPaginaAtual.map((produto) => {
-            const precoNum = parsePrecoToNumber(produto.preco);
-            const precoFormatado =
-              precoNum !== null
-                ? new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(precoNum)
-                : null;
-
             const imagemPrincipal = produto.midias?.find((m) => m.tipo === "imagem")?.url;
 
             return (
               <Link
                 key={produto.id}
                 href={`/product/${produto.slug}`}
-                className="bg-white rounded-xl shadow-sm hover:shadow-md transition flex flex-col overflow-hidden"
+                // Classes para o estilo Polaroid + Efeito 3D (Escala)
+                className="
+                  bg-white p-2 rounded-lg shadow-md transition 
+                  transform hover:shadow-xl hover:-translate-y-1 **hover:scale-105** flex flex-col overflow-hidden relative
+                "
+                style={{ minHeight: '300px' }}
               >
                 <div className="w-full aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
                   <img
@@ -102,20 +79,10 @@ export default function ProdutosGrid({
                   />
                 </div>
 
-                <div className="p-3 text-center flex flex-col flex-1">
-                  <h1 className="font-semibold text-gray-800 text-sm line-clamp-2 mb-1">
+                <div className="p-3 text-center flex flex-col flex-1 justify-center">
+                  <h1 className="font-semibold text-gray-800 text-sm line-clamp-2">
                     {produto.nome}
                   </h1>
-
-                  {precoFormatado && (
-                    <p className="text-green-700 font-semibold text-sm mb-3">
-                      {precoFormatado}
-                    </p>
-                  )}
-
-                  {/* <button className="mt-auto bg-green-600 text-white font-medium px-3 py-2 rounded-full hover:bg-green-700 transition text-xs">
-                    Ver opções
-                  </button> */}
                 </div>
               </Link>
             );
