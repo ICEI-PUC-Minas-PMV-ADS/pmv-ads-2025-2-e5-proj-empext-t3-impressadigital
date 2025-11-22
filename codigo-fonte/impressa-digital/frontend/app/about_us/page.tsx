@@ -48,7 +48,7 @@ export default function AboutUs() {
           className="object-contain mt-15"
         />
       </div>
-      <div className="flex-col px-20 pt-10 mt-10 bg-gray-100 ">
+      <div className="flex-col md:px-20 pt-10 mt-10 bg-gray-100 ">
         <h2 className="text-3xl text-[#A1A1A1] text-center font-bold mb-4">Avaliação geral</h2>
         <GeneralReviews />
       </div>

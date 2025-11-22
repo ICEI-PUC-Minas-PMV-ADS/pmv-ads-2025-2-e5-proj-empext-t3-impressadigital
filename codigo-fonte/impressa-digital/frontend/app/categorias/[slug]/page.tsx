@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import HeaderDashboard from "@/app/components/layout/headerMain";
 import ProdutosGrid from "@/app/components/layout/ProdutosGrid";
-import Footer from "@/app/components/layout/footer"; // ⬅️ IMPORTAÇÃO DO FOOTER
+import Footer from "@/app/components/layout/footer"; 
 
 interface Imagem {
   id: number;
