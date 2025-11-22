@@ -15,7 +15,7 @@ export class MailService {
 
     try {
       const response = await this.resend.emails.send({
-        from: process.env.EMAIL_FROM!,
+        from: process.env.MAIL_FROM!,
         to: email,
         subject: 'Recuperação de Senha - Impressa Digital',
         html: `
