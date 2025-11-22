@@ -1,44 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private transporter;
+  private resend: Resend;
 
   constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,         // Alterado para a porta TLS/STARTTLS mais comum
-      secure: false,     // Alterado para false, pois a porta 587 usa STARTTLS
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS, // Deve ser a App Password do Google
-      },
-      tls: {
-        // Opção de compatibilidade para alguns servidores, recomendado pelo Nodemailer
-        ciphers: 'SSLv3'
-      }
-    });
-
-    this.transporter.verify((error, success) => {
-      if (error) {
-        // Este erro é vital para o debug em produção
-        this.logger.error('Erro ao conectar no SMTP do Gmail', error);
-      } else {
-        this.logger.log('SMTP do Gmail pronto para enviar e-mails (Porta 587)');
-      }
-    });
+    this.resend = new Resend(process.env.RESEND_API_KEY);
   }
 
   async sendPasswordReset(email: string, token: string) {
     const resetUrl = `${process.env.FRONTEND_URL}/reset_password?token=${token}`;
 
     try {
-      await this.transporter.sendMail({
-        from: `"Suporte Impressa Digital" <${process.env.MAIL_USER}>`,
+      const response = await this.resend.emails.send({
+        from: process.env.MAIL_FROM!,
         to: email,
-        subject: 'Recuperação de Senha - Ação Necessária',
+        subject: 'Recuperação de Senha - Impressa Digital',
         html: `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; background-color: #f4f4f4; padding: 20px;">
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -64,7 +43,7 @@ export class MailService {
                         </p>
 
                         <a href="${resetUrl}" 
-                          style="display: inline-block; padding: 12px 25px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; transition: background-color 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                           style="display: inline-block; padding: 12px 25px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; transition: background-color 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
                           REDEFINIR SENHA
                         </a>
 
@@ -94,6 +73,11 @@ export class MailService {
           </div>
         `,
       });
+
+      if (response.error) {
+        this.logger.error('Erro ao enviar e-mail:', response.error);
+        throw new Error(response.error.message);
+      }
 
       this.logger.log(`E-mail de redefinição enviado para: ${email}`);
     } catch (err) {
