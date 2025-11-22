@@ -300,14 +300,14 @@ export default function ProductDetails({
             <h1 className="text-sm md:text-2xl font-bold">{product.nome}</h1>
             <div className="flex flex-wrap flex-row gap-2">
               <span
-                className="text-black font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
-                style={{ background: "#3DF034" }}
+                className="text-white font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
+                style={{ background: "#3cc10c" }}
               >
                 Personalizado
               </span>
               <span
-                className="text-black font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
-                style={{ background: "#3DF034" }}
+                className="text-white font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
+                style={{ background: "#3cc10c" }}
               >
                 {product.categoria?.nome || "Sem categoria"}
               </span>
@@ -329,10 +329,10 @@ export default function ProductDetails({
                 onClick={handleAddToCart} 
                 disabled={!product || isNaN(quantity) || quantity < 1} // Adicionado disabled para NaN
                 className={`
-                  text-white text-sm md:text-md font-semibold p-2 rounded-2xl focus:outline-none transition
-                  ${(!product || isNaN(quantity) || quantity < 1) 
+                  bg-[#3cc10c] text-white text-sm md:text-md font-semibold p-2 rounded-2xl focus:outline-none transition
+                   ${(!product || isNaN(quantity) || quantity < 1) 
                       ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-[#3DF034] hover:bg-green-600'
+                      : 'bg-[#3cc10c] hover:bg-green-600'
                   }`
                 }
               >
