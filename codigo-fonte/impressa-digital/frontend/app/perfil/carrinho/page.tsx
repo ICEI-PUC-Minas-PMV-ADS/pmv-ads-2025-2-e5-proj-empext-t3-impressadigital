@@ -741,10 +741,16 @@ export default function Carrinho() {
                             <span>{currency.format(subtotal + (isPickup ? 0 : (selectedShippingOption?.price || 0)))}</span>
                         </div>
 
+                        {/* Mensagem orientando seleção de frete */}
+                        {items.length > 0 && selectedAddressId && !isPickup && !selectedShippingOption && (
+                            <p className="text-[11px] text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-md p-2 text-center">
+                                Selecione uma opção de frete ou escolha "Retirada no local" para habilitar o envio.
+                            </p>
+                        )}
                         <button
                             type="button"
                             onClick={enviarWhatsapp}
-                            disabled={!items.length || !selectedAddressId}
+                            disabled={!items.length || !selectedAddressId || (!isPickup && !selectedShippingOption)}
                             className="w-full bg-[#25D366] cursor-pointer hover:bg-[#1ebe57] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-full transition-colors"
                         >
                             Enviar por WhatsApp
