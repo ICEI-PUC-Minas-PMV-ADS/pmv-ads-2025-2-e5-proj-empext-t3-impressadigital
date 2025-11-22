@@ -50,8 +50,8 @@ export default function Home({ children }: { children: ReactNode }) {
           produtosPorPagina={12} 
         />
       </div>
-
-      
+     <Footer />
     </div>
+  
   );
 }

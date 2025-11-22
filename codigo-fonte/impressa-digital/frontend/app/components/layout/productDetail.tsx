@@ -192,12 +192,12 @@ export default function ProductDetails({
       quantity: quantity,
       image:
         product.midias?.[selectedImageIndex]?.url || "/images/placeholder.png",
-      // Adicionando dimensões e peso
-      peso: Number(product.peso) || 0.5,
-      largura: Number(product.largura) || 10,
-      altura: Number(product.altura) || 10,
-      comprimento: Number(product.comprimento) || 10,
-    };
+        // Adicionando dimensões e peso
+        peso: Number(product.peso) || 0.5,
+        largura: Number(product.largura) || 10,
+        altura: Number(product.altura) || 10,
+        comprimento: Number(product.comprimento) || 10,
+      };
 
     const success = await addItemToCart(itemToAdd);
 
@@ -233,7 +233,7 @@ export default function ProductDetails({
 
   if (error || !product)
     return (
-      <div className="flex justify-center items-center w-full h-64">
+  <div className="flex justify-center items-center w-full h-64">
         <div className="text-2xl font-bold text-gray-700 text-center p-10">
           {error || "Produto não encontrado."}
         </div>
@@ -250,6 +250,8 @@ export default function ProductDetails({
         onClose={() => setIsModalOpen(false)}
         itemCount={itemCount}
       />
+{/* Aqui */}
+    <div className=" flex-1 py-6 w-full bg-[#F9FAFB] rounded-x100 shadow-sm hover:shadow-md transition flex flex-col overflow-hidden">  
 
       <div className="flex flex-col w-full md:p-6 items-center md:items-start gap-6 mt-6">
         <div className="flex flex-col md:flex-row w-full items-start gap-8">
@@ -264,22 +266,22 @@ export default function ProductDetails({
                 height={300}
                 alt={product.nome}
                 className="rounded-lg object-contain"
-              />
+                />
             </div>
 
             {/* Lista de Miniaturas (Thumbnails) */}
             {product.midias && product.midias.length > 1 && (
               <div className="flex justify-center gap-2 overflow-x-auto p-2">
                 {product.midias!.map((media, index) => (
-                    <div
-                        key={media.id}
-                        className={`cursor-pointer rounded-lg p-1 transition-all flex-shrink-0 
-                            ${index === selectedImageIndex
-                                ? "border-2 border-[#3DF034] shadow-md"
-                                : "border-2 border-transparent hover:border-gray-300"
-                            }`}
-                        onMouseOver={() => setSelectedImageIndex(index)}
-                        style={{ width: "80px", height: "80px" }}
+                  <div
+                  key={media.id}
+                  className={`cursor-pointer rounded-lg p-1 transition-all flex-shrink-0 
+                    ${index === selectedImageIndex
+                      ? "border-2 border-[#3DF034] shadow-md"
+                      : "border-2 border-transparent hover:border-gray-300"
+                    }`}
+                    onMouseOver={() => setSelectedImageIndex(index)}
+                    style={{ width: "80px", height: "80px" }}
                     >
                         <Image
                             src={media.url}
@@ -287,7 +289,7 @@ export default function ProductDetails({
                             height={70}
                             alt={`Miniatura ${index + 1}`}
                             className="rounded object-cover w-full h-full"
-                        />
+                            />
                     </div>
                 ))}
               </div>
@@ -300,15 +302,15 @@ export default function ProductDetails({
             <h1 className="text-sm md:text-2xl font-bold">{product.nome}</h1>
             <div className="flex flex-wrap flex-row gap-2">
               <span
-                className="text-black font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
-                style={{ background: "#3DF034" }}
-              >
+                className="text-white font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
+                style={{ background: "#3cc10c" }}
+                >
                 Personalizado
               </span>
               <span
-                className="text-black font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
-                style={{ background: "#3DF034" }}
-              >
+                className="text-white font-bold mt-2 px-4 py-1 rounded-2xl w-fit"
+                style={{ background: "#3cc10c" }}
+                >
                 {product.categoria?.nome || "Sem categoria"}
               </span>
             </div>
@@ -322,20 +324,20 @@ export default function ProductDetails({
               <CustomQuantitySelect
                 quantity={quantity}
                 onChange={handleChangeQuantity} 
-              />
+                />
               {/* Botão Adicionar ao Carrinho */}
               <button
                 type="button"
                 onClick={handleAddToCart} 
                 disabled={!product || isNaN(quantity) || quantity < 1} // Adicionado disabled para NaN
                 className={`
-                  text-white text-sm md:text-md font-semibold p-2 rounded-2xl focus:outline-none transition
+                  bg-[#3cc10c] text-white text-sm md:text-md font-semibold p-2 rounded-2xl focus:outline-none transition
                   ${(!product || isNaN(quantity) || quantity < 1) 
-                      ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-[#3DF034] hover:bg-green-600'
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-[#3cc10c] hover:bg-green-600'
                   }`
                 }
-              >
+                >
                 Adicionar ao Carrinho
               </button>
             </div>
@@ -359,6 +361,7 @@ export default function ProductDetails({
             {product.descricao}</p>
         </div>
       </div>
+  </div>
     </>
   );
 }
