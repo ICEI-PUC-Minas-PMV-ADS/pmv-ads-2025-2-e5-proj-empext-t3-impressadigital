@@ -46,7 +46,18 @@ interface ShippingOption {
 }
 
 const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+// Tenta inferir a URL da API local quando a variável de ambiente não estiver definida
+const inferLocalApi = () => {
+    if (typeof window !== 'undefined') {
+        // Se o front estiver na porta 3000, assumimos o backend em 3001
+        if (window.location.port === '3000') return 'http://localhost:3001';
+    }
+    // Fallback padrão (backend em 3000)
+    return 'http://localhost:3000';
+};
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || inferLocalApi();
 
 // --- Funções Auxiliares de Frete ---
 
@@ -290,7 +301,15 @@ export default function Carrinho() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${BASE_URL}/carrinho`, { cache: 'no-store' });
+            // Exige usuário logado para buscar o carrinho correto
+            if (!user?.id) {
+                setItems([]);
+                setTotalItemCount(0);
+                setLoading(false);
+                return;
+            }
+
+            const res = await fetch(`${BASE_URL}/carrinho/user/${user.id}`, { cache: 'no-store', credentials: 'include' });
             if (!res.ok) throw new Error(`Erro ao buscar carrinho (${res.status})`);
             const registros: BackendCarrinho[] = await res.json();
 
@@ -348,7 +367,7 @@ export default function Carrinho() {
         } finally {
             setLoading(false);
         }
-    }, [setTotalItemCount]);
+    }, [setTotalItemCount, user?.id]);
 
     useEffect(() => {
         fetchData();
@@ -572,6 +591,11 @@ export default function Carrinho() {
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center">Carrinho de compras</h2>
             <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
                 <div className="flex-1 flex flex-col gap-5 sm:gap-6">
+                    {!authLoading && !user && (
+                        <div className="text-center text-sm text-gray-700 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                            Faça login para ver e gerenciar seu carrinho.
+                        </div>
+                    )}
                     {loading && <p className="text-center text-gray-500 animate-pulse">Carregando itens...</p>}
                     {error && !loading && (
                         <div className="text-center text-red-600 text-sm">

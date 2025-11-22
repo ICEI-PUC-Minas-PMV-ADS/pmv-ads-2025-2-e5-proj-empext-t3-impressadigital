@@ -45,6 +45,13 @@ export class CarrinhoService {
     return await this.carrinhoRepository.find();
   }
 
+  async findByUserId(userId: number): Promise<Carrinho[]> {
+    if (!userId) {
+      throw new BadRequestException('userId é obrigatório');
+    }
+    return await this.carrinhoRepository.find({ where: { user_id: userId } });
+  }
+
   async findById(id: number): Promise<Carrinho> {
     const item = await this.carrinhoRepository.findOne({ where: { id } });
     if (!item) {

@@ -2,6 +2,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useCallback } from "react";
+import { useAuth } from "./Authprovider";
 
 // Defina o tipo de item que será armazenado no carrinho
 interface MinimalCartItem {
@@ -36,18 +37,31 @@ export const useCart = () => {
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   // Estado que armazena a contagem total de itens no carrinho
   const [itemCount, setItemCount] = useState(0); 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const { user } = useAuth();
+
+  // URL da API com fallback inteligente
+  const inferLocalApi = () => {
+    if (typeof window !== 'undefined') {
+      if (window.location.port === '3000') return 'http://localhost:3001';
+    }
+    return 'http://localhost:3000';
+  };
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || inferLocalApi();
 
   // Simula a adição ao backend e atualiza a contagem local
   const addItemToCart = useCallback(async (item: MinimalCartItem): Promise<boolean> => {
     try {
+        if (!user?.id) {
+          console.warn("Usuário não autenticado ao adicionar ao carrinho");
+          return false;
+        }
         // Simulação da chamada ao backend para ADICIONAR
         const res = await fetch(`${BASE_URL}/carrinho`, { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            // O backend espera apenas o produto_id e user_id (simulado)
-            // Se o seu backend espera a quantidade, inclua-a (aqui está simulado com 1)
-            body: JSON.stringify({ produto_id: item.produtoId, user_id: 1, quantidade: item.quantity }), 
+            credentials: 'include',
+            // Backend espera produto_id, user_id e (opcional) quantidade
+            body: JSON.stringify({ produto_id: item.produtoId, user_id: user.id, quantidade: item.quantity }), 
         });
 
         if (!res.ok) {
@@ -56,13 +70,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         }
 
         // Se a adição for bem-sucedida, incrementa a contagem no estado global
-        setItemCount(prev => prev + item.quantity); 
+    setItemCount(prev => prev + item.quantity); 
         return true;
     } catch (e) {
         console.error("Erro ao comunicar com o backend:", e);
         return false;
     }
-  }, [BASE_URL]);
+  }, [BASE_URL, user?.id]);
   
   // Função para sincronizar a contagem após carregar o carrinho
   const setTotalItemCount = useCallback((count: number) => {
