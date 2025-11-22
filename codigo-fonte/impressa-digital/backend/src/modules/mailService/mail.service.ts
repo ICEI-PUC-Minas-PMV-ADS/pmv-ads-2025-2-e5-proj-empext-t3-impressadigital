@@ -1,44 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private transporter;
+  private resend: Resend;
 
-   constructor() {
-  this.transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,         
-    ignoreTLS: false,      
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
-    },
-    tls: {
-      rejectUnauthorized: false, 
-    },
-    family: 4, 
-  });
-
-  this.transporter.verify((error, success) => {
-    if (error) {
-      this.logger.error('❌ Erro conexão SMTP:', error);
-    } else {
-      this.logger.log('✅ Gmail SMTP conectado com sucesso na porta 587!');
-    }
-  });
-}
+  constructor() {
+    this.resend = new Resend(process.env.RESEND_API_KEY);
+  }
 
   async sendPasswordReset(email: string, token: string) {
     const resetUrl = `${process.env.FRONTEND_URL}/reset_password?token=${token}`;
 
     try {
-      await this.transporter.sendMail({
-        from: `"Suporte Impressa Digital" <${process.env.MAIL_USER}>`,
+      const response = await this.resend.emails.send({
+        from: process.env.EMAIL_FROM!,
         to: email,
-        subject: 'Recuperação de Senha - Ação Necessária',
+        subject: 'Recuperação de Senha - Impressa Digital',
         html: `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; background-color: #f4f4f4; padding: 20px;">
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -94,6 +73,11 @@ export class MailService {
           </div>
         `,
       });
+
+      if (response.error) {
+        this.logger.error('Erro ao enviar e-mail:', response.error);
+        throw new Error(response.error.message);
+      }
 
       this.logger.log(`E-mail de redefinição enviado para: ${email}`);
     } catch (err) {
