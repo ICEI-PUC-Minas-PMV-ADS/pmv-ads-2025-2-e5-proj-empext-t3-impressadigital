@@ -13,8 +13,15 @@ const nextConfig: NextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
-
-  }
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/backend/:path*',
+        destination: 'https://impressadigital-production.up.railway.app/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

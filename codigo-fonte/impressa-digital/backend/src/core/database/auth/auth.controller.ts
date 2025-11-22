@@ -27,9 +27,9 @@ export class AuthController {
 
     // seta cookie seguro
     res.cookie('token', token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      httpOnly: true, 
+      secure: true, 
+      sameSite: 'lax',
       path: '/',
       maxAge: 1000 * 60 * 60 * 24,
     });
@@ -39,7 +39,12 @@ export class AuthController {
 
   @Post('logout')
   async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('token');
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      path: '/'
+    });
     return { message: 'Logout realizado com sucesso' };
   }
 

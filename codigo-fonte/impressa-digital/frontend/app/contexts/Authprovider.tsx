@@ -1,4 +1,3 @@
-// Authprovider.tsx (atualizado)
 "use client";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
@@ -32,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
           method: "GET",
-          credentials: "include",
+          credentials: "include", 
         });
         
         if (res.ok) {
@@ -66,14 +65,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const data = await res.json();
-      console.log("Login bem-sucedido:", data);
       
       setUser(data.user);
 
-      // Pequeno delay para garantir que o cookie foi salvo
       setTimeout(() => {
         router.push("/");
-        router.refresh(); // Força atualização para o middleware
+        router.refresh(); 
       }, 100);
       
       return true;
