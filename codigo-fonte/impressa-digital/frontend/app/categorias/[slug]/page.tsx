@@ -28,7 +28,9 @@ interface Categoria {
   slug: string;
   produtos?: Produto[];
 }
+
 export const runtime = 'edge';
+
 export default function CategoriaPage() {
   const params = useParams();
   const slug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug;
@@ -37,7 +39,6 @@ export default function CategoriaPage() {
   const [produtosComMidias, setProdutosComMidias] = useState<Produto[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Buscar os produtos com todos os campos, incluindo a mídia
   const fetchProdutoCompleto = async (produtoId: number): Promise<Produto | null> => {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${produtoId}`);
@@ -61,19 +62,14 @@ export default function CategoriaPage() {
       const data: Categoria = await res.json();
       setCategoria(data);
 
-      // Buscar todos os produtos que foram carregados na função de produtos completos
-      if (data.produtos && data.produtos.length > 0) {       
+      if (data.produtos && data.produtos.length > 0) {
         const produtosCompletosPromises = data.produtos.map(async (produtoBasico) => {
           const produtoCompleto = await fetchProdutoCompleto(produtoBasico.id);
-          if (produtoCompleto) {
-            return produtoCompleto;
-          }
-          return produtoBasico; 
+          return produtoCompleto || produtoBasico;
         });
 
         const produtosCompletos = await Promise.all(produtosCompletosPromises);
         setProdutosComMidias(produtosCompletos);
-
       } else {
         setProdutosComMidias([]);
       }
@@ -90,43 +86,65 @@ export default function CategoriaPage() {
     fetchCategoria();
   }, [slug]);
 
+
+  // -------------------------------
+  // ESTADO: CARREGANDO
+  // -------------------------------
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <HeaderDashboard />
-        <p className="text-center py-10">Carregando categoria...</p>
-        <Footer /> {/* ⬅️ FOOTER RENDERIZADO NO ESTADO DE CARREGAMENTO */}
+
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-center py-10">Carregando categoria...</p>
+        </main>
+
+        <Footer />
       </div>
     );
   }
 
+  // -------------------------------
+  // ESTADO: NÃO ENCONTRADO
+  // -------------------------------
   if (!categoria) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <HeaderDashboard />
-        <p className="text-center py-10 text-red-600 font-semibold">
-          Categoria não encontrada 🚫
-        </p>
-        <Footer /> {/* ⬅️ FOOTER RENDERIZADO NO ESTADO DE ERRO */}
+
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-center py-10 text-red-600 font-semibold">
+            Categoria não encontrada 🚫
+          </p>
+        </main>
+
+        <Footer />
       </div>
     );
   }
 
+  // -------------------------------
+  // ESTADO: CONTEÚDO
+  // -------------------------------
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <HeaderDashboard />
-      {produtosComMidias.length === 0 ? (
-        <p className="text-center py-10 text-gray-500">
-          Nenhum produto encontrado para esta categoria.
-        </p>
-      ) : (
-        <ProdutosGrid 
-          titulo={`Produtos em ${categoria.nome}`} 
-          produtos={produtosComMidias} 
-          produtosPorPagina={30} 
-        />
-      )}
-      <Footer /> {/* ⬅️ FOOTER RENDERIZADO NO ESTADO DE CONTEÚDO */}
+
+      <main className="flex-1">
+        {produtosComMidias.length === 0 ? (
+          <p className="text-center py-10 text-gray-500">
+            Nenhum produto encontrado para esta categoria.
+          </p>
+        ) : (
+          <ProdutosGrid 
+            titulo={`Produtos em ${categoria.nome}`} 
+            produtos={produtosComMidias} 
+            produtosPorPagina={30} 
+          />
+        )}
+      </main>
+
+      <Footer />
     </div>
   );
 }

@@ -1,17 +1,9 @@
 export default function Footer() {
-
   return (
-    // Mudança do fundo para um preto mais claro (#1A1A1A)
     <footer className="bg-[#1A1A1A] text-gray-200 p-8 text-center md:text-left">
-      {/* AJUSTE PRINCIPAL:
-        - Em vez de md:grid-cols-3, usamos md:flex e md:justify-between 
-        - Isso garante que as três colunas sejam tratadas como itens flexíveis 
-          e espaçadas para que a do meio fique centralizada entre as duas laterais. 
-        - Em telas pequenas, ele ainda usa o layout de grade (grid) padrão.
-      */}
       <div className="max-w-6xl mx-auto grid md:flex md:justify-between gap-8">
         
-        {/* Coluna 1: Nome e contato (Mantida alinhada à esquerda no desktop) */}
+        {/* Coluna 1 */}
         <div>
           <h2 className="text-2xl font-semibold mb-2">
             Gráfica <span className="text-white">Impressa Digital</span>
@@ -20,19 +12,15 @@ export default function Footer() {
             Impressões rápidas e qualidade profissional.
           </p>
           <ul className="text-sm space-y-1">
-
-            <li><span className="text-green-400">📍</span> <strong>Endereço:</strong> Av. Vilarinho, 2550 – Minas Caixa</li> 
-            <li><span className="text-green-400">📞</span> <strong>Telefone:</strong> (31) 9 9140-7186</li> 
+            <li><span className="text-green-400">📍</span> <strong>Endereço:</strong> Av. Vilarinho, 2550 – Minas Caixa</li>
+            <li><span className="text-green-400">📞</span> <strong>Telefone:</strong> (31) 9 9140-7186</li>
             <li><span className="text-green-400">✉️</span> <strong>E-mail:</strong> <a href="mailto:contato@impressadigital.com.br" className="underline text-white">contato@impressadigital.com.br</a></li>
           </ul>
         </div>
 
-        {/* Coluna 2: Serviços (Centralizada com justify-between) */}
-        {/* Adicionei 'md:mx-auto' para garantir que ela não estique e se mantenha no centro da área disponível, embora 'justify-between' seja o principal responsável pela centralização visual. */}
-        <div className="md:mx-auto"> 
+        {/* Coluna 2 */}
+        <div className="md:mx-auto">
           <h3 className="text-lg font-semibold mb-3">Serviços</h3>
-          
-          
           <ul className="text-sm space-y-1 list-disc list-inside marker:text-green-400"> 
             <li>Personalizados</li>
             <li>Convite de casamento</li>
@@ -42,12 +30,13 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Coluna 3: Informações */}
+        {/* Coluna 3 */}
         <div>
           <h3 className="text-lg font-semibold mb-3">Informações</h3>
           <p className="text-sm mb-2">
             Atendimento via WhatsApp. Pedidos personalizados com orçamento gratuito.
           </p>
+
           <h3 className="text-lg font-semibold mb-1">Horário</h3>
           <p className="text-sm">
             Segunda a Sexta: 8:30h às 17:30h<br />
@@ -56,10 +45,8 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Linha inferior */}
-      {/* Alteração da borda para branca (border-white) */}
       <div className="mt-8 border-t border-white pt-4 text-sm text-gray-400 text-center">
-        © 2025 Gráfica Impressa Digital — Todos os direitos reservados.<br />
+        © 2025 Gráfica Impressa Digital — Todos os direitos reservados.
       </div>
     </footer>
   );
