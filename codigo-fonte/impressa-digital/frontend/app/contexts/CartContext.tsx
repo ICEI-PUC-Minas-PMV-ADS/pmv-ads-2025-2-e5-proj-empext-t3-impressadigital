@@ -36,7 +36,7 @@ export const useCart = () => {
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   // Estado que armazena a contagem total de itens no carrinho
   const [itemCount, setItemCount] = useState(0); 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   // Simula a adição ao backend e atualiza a contagem local
   const addItemToCart = useCallback(async (item: MinimalCartItem): Promise<boolean> => {
