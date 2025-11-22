@@ -11,6 +11,13 @@ export class CarrinhoController {
     return this.carrinhoService.findAll();
   }
 
+  @Get('user/:userId')
+  async findByUser(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Carrinho[]> {
+    return this.carrinhoService.findByUserId(userId);
+  }
+
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Carrinho> {
     return this.carrinhoService.findById(id);
