@@ -22,3 +22,6 @@ O grupo deve colocar aqui todas as atas dos encontros realizados com o parceiro,
 
 ## Reunião - 16/10/2025
 <img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/511c22f8-e042-41ff-bcf4-b6a059adddbd" />
+
+## Reunião - 22/11/2025
+<img width="1600" height="899" alt="image" src="https://github.com/user-attachments/assets/5bd85353-d1f5-414d-8a02-f96605650273" />
