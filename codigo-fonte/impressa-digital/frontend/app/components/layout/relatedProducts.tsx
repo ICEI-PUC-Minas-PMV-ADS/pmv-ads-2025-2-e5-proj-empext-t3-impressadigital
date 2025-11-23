@@ -29,16 +29,16 @@ interface MainProductInfo {
 
 interface RelatedProductsProps {
     // Recebe o slug
-    productIdentifier: string | string[] | undefined; 
+    productIdentifier: string | string[] | undefined;
 }
 
 export default function RelatedProducts({ productIdentifier }: RelatedProductsProps) {
     const [products, setProducts] = useState<RelatedProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    
+
     // Novo estado e ref para o carrossel
-    const [currentIndex, setCurrentIndex] = useState(0); 
+    const [currentIndex, setCurrentIndex] = useState(0);
     const productsContainerRef = useRef<HTMLDivElement>(null);
 
     // Função para rolar o carrossel (avança de 5 em 5)
@@ -46,7 +46,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
         if (productsContainerRef.current) {
             const container = productsContainerRef.current;
             // Largura do item (calculado com base em 5 itens visíveis)
-            const itemWidth = container.scrollWidth / products.length; 
+            const itemWidth = container.scrollWidth / products.length;
             const scrollDistance = itemWidth * 5; // Rola 5 itens
 
             if (direction === 'right') {
@@ -75,7 +75,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
             setLoading(false);
             return;
         }
-        
+
         const slug = Array.isArray(productIdentifier) ? productIdentifier[0] : productIdentifier;
 
 
@@ -84,28 +84,28 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                 // 1. Busca o produto principal para obter Categoria ID e Status
                 const mainProductRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/slug/${slug}`);
                 if (!mainProductRes.ok) throw new Error("Erro ao buscar o produto principal.");
-                
+
                 const mainProduct = (await mainProductRes.json()) as MainProductInfo;
-                
+
                 // CRÍTICO: Se o produto principal estiver inativo, para a busca de relacionados.
                 if (mainProduct.status === "inativo") {
                     setError("Produto principal inativo. Não buscando recomendações.");
                     setLoading(false);
                     return;
                 }
-                
+
                 const categoryId = mainProduct.categoria.id;
                 let finalProducts: RelatedProduct[] = [];
 
                 // 2. Tenta buscar produtos da MESMA categoria
                 let relatedRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?categoria_id=${categoryId}`);
                 let relatedData: RelatedProduct[] = await relatedRes.json();
-                
+
                 // 3. Filtra produtos inativos e o produto principal
                 let filteredCategoryProducts = relatedData
                     .filter(p => p.id !== mainProduct.id) // Exclui o produto principal
                     .filter(p => p.status === 'ativo'); // **FILTRO DE STATUS INATIVO**
-                
+
                 // 4. Lógica de Fallback
                 if (filteredCategoryProducts.length === 0) { // Se não encontrou NENHUM na mesma categoria
                     // Busca TODOS os produtos ativos (fallback)
@@ -118,7 +118,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                 } else {
                     finalProducts = filteredCategoryProducts;
                 }
-                
+
                 setProducts(finalProducts);
 
             } catch (err) {
@@ -128,7 +128,7 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
                 setLoading(false);
             }
         };
-        
+
         fetchRelatedProducts();
     }, [productIdentifier]);
 
@@ -148,74 +148,81 @@ export default function RelatedProducts({ productIdentifier }: RelatedProductsPr
     const itemsPerView = 5;
     const showCarousel = products.length > itemsPerView;
     const isAtStart = productsContainerRef.current ? productsContainerRef.current.scrollLeft === 0 : true;
-    const isAtEnd = productsContainerRef.current ? 
-        productsContainerRef.current.scrollLeft >= productsContainerRef.current.scrollWidth - productsContainerRef.current.offsetWidth - 1 : 
+    const isAtEnd = productsContainerRef.current ?
+        productsContainerRef.current.scrollLeft >= productsContainerRef.current.scrollWidth - productsContainerRef.current.offsetWidth - 1 :
         products.length <= itemsPerView;
 
     return (
-<div className="flex-1 py-6 w-full bg-[#F9FAFB] rounded-x100 shadow-sm hover:shadow-md transition flex flex-col overflow-hidden p-6 mt-10" > 
-        <section className="p-6 mt-10 relative">
-            <h2 className="text-2xl text-[#A1A1A1] text-center font-bold mb-4">Produtos Relacionados</h2>
-            
-            <div className="relative flex items-center  justify-center">
-                {/* Seta para a Esquerda */}
-                {showCarousel && !isAtStart && (
-                    <button 
-                    onClick={() => scrollCarousel('left')} 
-                    className="  p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition translate-x-1/2"
-                    aria-label="Rolar para a esquerda"
-                    >
-                        &lt;
-                    </button>
-                )}
+        <div className="flex-1 py-6 w-full bg-[#F9FAFB] rounded-x100 shadow-sm hover:shadow-md transition flex flex-col overflow-hidden p-6 mt-10" >
+            <section className="p-6 mt-10 relative">
+                <h2 className="text-2xl text-[#A1A1A1] text-center font-bold mb-4">Produtos Relacionados</h2>
 
-                {/* Container dos Produtos - Habilita rolagem horizontal */}
-                <div 
-                    ref={productsContainerRef}
-                    // Oculta a barra de rolagem nativa, permite rolagem forçada por setas
-                    className="flex overflow-x-auto w-full space-x-4 p-2 scrollbar-hide snap-x snap-mandatory" 
-                    // Se for menor ou igual a 5, o overflow fica 'hidden' para não permitir a rolagem
-                    style={{ overflowX: showCarousel ? 'scroll' : 'hidden' }}
-                    >
-                    {products.map((p) => (
-                        <Link 
-                        key={p.id} 
-                        href={`/product/${p.slug}`}
-                        // flex-shrink-0: Garante que o item não encolha. 
-                        // w-1/5: Garante que 5 itens caibam na tela (100% / 5).
-                        className="flex-shrink-0 w-2/5 md:w-1/5 snap-start" 
+                <div className="relative flex items-center justify-center">
+                    {/* Seta para a Esquerda */}
+                    {showCarousel && !isAtStart && (
+                        <button
+                            onClick={() => scrollCarousel('left')}
+                            className=" absolute left-0 z-10 p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition -translate-x-1/2"
+                            aria-label="Rolar para a esquerda"
                         >
-                            <div className="flex flex-col bg-[#F3F3F3] rounded-lg p-2 shadow-sm h-full">
-                                <div className="flex items-center justify-center px-2 py-2  rounded-lg h-32">
-                                    <Image
-                                        width={150}
-                                        height={150}
-                                        src={p.midias?.[0]?.url || "/images/placeholder.png"}
-                                        alt={p.nome}
-                                        className="rounded max-h-full object-contain"
-                                        />
-                                </div>
-                                <p className="text-sm mt-2 flex-grow">{p.nome}</p>
-                                <button className="bg-[#35b814] text-white px-5 py-1 rounded-2xl text-sm mt-2 self-center w-full">
-                                    Ver opções
-                                </button>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+                            &lt;
+                        </button>
+                    )}
 
-                {/* Seta para a Direita */}
-                {showCarousel && !isAtEnd && (
-                    <button 
-                    onClick={() => scrollCarousel('right')} 
-                    className=" p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition -translate-x-1/2"
-                    aria-label="Rolar para a direita"
+                    {/* Container dos Produtos - Habilita rolagem horizontal */}
+                    <div
+                        ref={productsContainerRef}
+                        // Oculta a barra de rolagem nativa, permite rolagem forçada por setas
+                        className="flex overflow-x-auto w-full space-x-4 p-2 scrollbar-hide snap-x snap-mandatory"
+                        // Se for menor ou igual a 5, o overflow fica 'hidden' para não permitir a rolagem
+                        style={{ overflowX: showCarousel ? 'scroll' : 'hidden' }}
                     >
-                        &gt;
-                    </button>
-                )}
-            </div>
-        </section>
-</div>
+                        {products.map((p) => (
+                            <Link
+                                key={p.id}
+                                href={`/product/${p.slug}`}
+                                // CLASSES DE ESTILIZAÇÃO (CARTÃO POLAROID + EFEITO 3D/ESCALA)
+                                className="
+                            flex-shrink-0 w-2/5 md:w-1/5 snap-start 
+                            bg-white p-2 rounded-lg shadow-md transition 
+                            transform hover:shadow-xl hover:-translate-y-1 **hover:scale-105** flex flex-col overflow-hidden relative
+                        "
+                                style={{ minHeight: '250px' }} // Altura mínima adaptada para o carrossel
+                            >
+                                <div className="flex flex-col h-full">
+                                    {/* CONTAINER DA IMAGEM: Garante o formato quadrado (aspect-square) e centralização */}
+                                    <div className="w-full aspect-square bg-gray-100 flex items-center justify-center overflow-hidden rounded-md">
+                                        <Image
+                                            width={150} // Reduced width
+                                            height={150} // Reduced height to match width for square
+                                            src={p.midias?.[0]?.url || "/images/placeholder.png"}
+                                            alt={p.nome}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    {/* CONTAINER DO NOME */}
+                                    <div className="p-1 text-center flex flex-col flex-1 justify-center">
+                                        <h1 className="font-semibold text-gray-800 text-sm line-clamp-2">
+                                            {p.nome}
+                                        </h1>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* Seta para a Direita */}
+                    {showCarousel && !isAtEnd && (
+                        <button
+                            onClick={() => scrollCarousel('right')}
+                            className=" absolute right-0 z-10 p-2 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition translate-x-1/2"
+                            aria-label="Rolar para a direita"
+                        >
+                            &gt;
+                        </button>
+                    )}
+                </div>
+            </section>
+        </div>
     );
 }
