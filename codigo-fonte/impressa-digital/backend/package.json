@@ -26,6 +26,7 @@
     "migration:revert": "npm run typeorm migration:revert -- -d ./src/core/database/typeorm.migration-config.ts"
   },
   "dependencies": {
+    "@elasticemail/elasticemail-client": "^4.0.26",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
@@ -39,7 +40,6 @@
     "class-validator": "^0.14.2",
     "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
-    "elasticemail": "^0.2.0",
     "mysql2": "^3.15.0",
     "nodemailer": "^7.0.10",
     "passport": "^0.7.0",
