@@ -6,7 +6,8 @@ Arquivo de apresentação (em slides) da proposta de solução
 
 
 Apresentação em slide da proposta da solução junto com imagens reais do site final
-[Apresentação comercial para empresa de agronegócios verde moderna (1).pdf](https://github.com/user-attachments/files/23972957/Apresentacao.comercial.para.empresa.de.agronegocios.verde.moderna.1.pdf)
+[Impressa Digital.pdf](https://github.com/user-attachments/files/23972960/Impressa.Digital.pdf)
+
 
 
 
