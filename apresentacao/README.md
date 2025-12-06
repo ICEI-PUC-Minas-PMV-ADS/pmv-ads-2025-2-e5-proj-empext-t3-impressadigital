@@ -6,6 +6,8 @@ Arquivo de apresentação (em slides) da proposta de solução
 
 
 Apresentação em slide da proposta da solução junto com imagens reais do site final
+
+
 [Impressa Digital.pdf](https://github.com/user-attachments/files/23972960/Impressa.Digital.pdf)
 
 
