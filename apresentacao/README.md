@@ -5,6 +5,10 @@ Arquivo de apresentação (em slides) da proposta de solução
 [Apresentação impressa digital.pdf](https://github.com/user-attachments/files/22053319/Apresentacao.impressa.digital.pdf)
 
 
+Apresentação em slide da proposta da solução junto com imagens reais do site final
+[Apresentação comercial para empresa de agronegócios verde moderna (1).pdf](https://github.com/user-attachments/files/23972957/Apresentacao.comercial.para.empresa.de.agronegocios.verde.moderna.1.pdf)
+
+
 
 # Etapa 5 - Apresentação da Solução
 - Apresentação para Mostra de Extensão Eixo 5 ADS:
